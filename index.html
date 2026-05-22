@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Tennis AI Coach — il tuo assistente tattico in campo. Suggerimenti live, scouting avversario, sincronizzazione coach-giocatore.">
+<title>Tennis AI Coach</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0D1B2A;--bg2:#111f30;--card:#162033;--amber:#F0A500;--amber2:#BA7517;--text:#E8EAF0;--muted:#7a8499;--border:#1e2d40;--teal:#1D9E75}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
+nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;gap:12px;flex-wrap:wrap}
+.logo{font-size:16px;font-weight:600;color:var(--amber)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.lang-toggle{display:flex;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.lang-btn{padding:6px 12px;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--muted);cursor:pointer}
+.lang-btn.active{background:rgba(240,165,0,.15);color:var(--amber)}
+.nav-cta{background:var(--amber);color:#0D1B2A;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none}
+.nav-cta:hover{background:var(--amber2)}
+.hero{padding:72px 24px 48px;text-align:center;max-width:700px;margin:0 auto}
+.badge{display:inline-block;background:rgba(240,165,0,.12);color:var(--amber);font-size:11px;font-weight:600;letter-spacing:1.2px;padding:4px 12px;border-radius:20px;text-transform:uppercase;margin-bottom:20px}
+h1{font-size:clamp(28px,6vw,46px);font-weight:700;line-height:1.15;color:#fff;margin-bottom:16px}
+h1 span{color:var(--amber)}
+.hero-sub{font-size:clamp(15px,3vw,18px);color:var(--muted);max-width:540px;margin:0 auto 36px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--amber);color:#0D1B2A;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
+.btn-primary:hover{background:var(--amber2)}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);padding:14px 28px;border-radius:10px;font-size:15px;font-weight:500;text-decoration:none;display:inline-block}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
+.mockup-wrap{padding:32px 24px;text-align:center}
+.phone-frame{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:36px;padding:12px;max-width:240px;width:100%}
+.phone-screen{background:#0a1520;border-radius:26px;overflow:hidden;aspect-ratio:9/19.5}
+.screen-content{padding:14px 10px;height:100%;display:flex;flex-direction:column;gap:7px}
+.screen-tag{background:rgba(240,165,0,.15);color:var(--amber);font-size:9px;font-weight:700;letter-spacing:.8px;padding:2px 8px;border-radius:4px;display:inline-block;text-transform:uppercase}
+.screen-msg{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:9px;text-align:left}
+.screen-msg-title{font-size:11px;font-weight:700;color:#fff;line-height:1.3}
+.screen-msg-sub{font-size:9px;color:var(--muted);margin-top:3px}
+.screen-pill{display:inline-block;background:rgba(29,158,117,.15);color:var(--teal);font-size:8px;padding:2px 7px;border-radius:10px;border:1px solid rgba(29,158,117,.3)}
+section{padding:56px 24px}
+.section-label{text-align:center;font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--amber);text-transform:uppercase;margin-bottom:12px}
+h2{text-align:center;font-size:clamp(22px,4vw,32px);font-weight:700;color:#fff;margin-bottom:40px}
+.modes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:860px;margin:0 auto}
+.mode-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;text-align:center}
+.mode-card.featured{border-color:rgba(240,165,0,.4)}
+.mode-icon{font-size:32px;margin-bottom:16px}
+.mode-card h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
+.mode-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.mode-tag{display:inline-block;font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;margin-bottom:14px}
+.mode-tag.popular{background:rgba(240,165,0,.15);color:var(--amber)}
+.mode-tag.solo{background:rgba(29,158,117,.1);color:var(--teal)}
+.mode-tag.player{background:rgba(240,165,0,.08);color:var(--muted)}
+.engine-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.engine-inner{max-width:700px;margin:0 auto;text-align:center}
+.engine-inner p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:20px}
+.books-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+.book-pill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--muted)}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;max-width:900px;margin:0 auto}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px}
+.feature-icon{width:38px;height:38px;border-radius:10px;background:rgba(240,165,0,.1);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:18px}
+.feature-card h3{font-size:15px;font-weight:600;color:#fff;margin-bottom:7px}
+.feature-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.how-inner{max-width:640px;margin:0 auto}
+.steps{display:flex;flex-direction:column;gap:22px;margin-top:36px}
+.step{display:flex;gap:16px;align-items:flex-start}
+.step-num{width:30px;height:30px;border-radius:50%;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);color:var(--amber);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
+.step-text h4{font-size:15px;font-weight:600;color:#fff;margin-bottom:4px}
+.step-text p{font-size:13px;color:var(--muted)}
+.cta-banner{text-align:center}
+.cta-banner h2{margin-bottom:10px}
+.cta-banner p{color:var(--muted);margin-bottom:26px;font-size:14px}
+.pwa-note{font-size:12px;color:var(--muted);margin-top:12px}
+footer{padding:28px 24px;text-align:center;border-top:1px solid var(--border)}
+.footer-links{display:flex;gap:20px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none}
+.footer-links a:hover{color:var(--amber)}
+.footer-copy{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">🎾 Tennis AI Coach</span>
+  <div class="nav-right">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('it')">IT</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <a href="https://tennis-ai-coach-chi.vercel.app" class="nav-cta" target="_blank" data-it="Apri app" data-en="Open app">Apri app</a>
+  </div>
+</nav>
+
+<section class="hero" style="padding-top:72px;padding-bottom:48px">
+  <div class="badge" data-it="Assistente tattico live" data-en="Live tactical assistant">Assistente tattico live</div>
+  <h1 data-it="Il coach che ti serve<br><span>in campo</span>" data-en="The coach you need<br><span>on court</span>">Il coach che ti serve<br><span>in campo</span></h1>
+  <p class="hero-sub" data-it="Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Per coach che vogliono dare il massimo — anche a bordo campo." data-en="Real-time tactical analysis, adapted to your player and the opponent. For coaches who want to give their best — even from the sideline.">Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Per coach che vogliono dare il massimo — anche a bordo campo.</p>
+  <div class="cta-row">
+    <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary" target="_blank" data-it="Prova gratis →" data-en="Try for free →">Prova gratis →</a>
+    <a href="#modes" class="btn-ghost" data-it="Scopri le modalità" data-en="Explore modes">Scopri le modalità</a>
+  </div>
+</section>
+
+<div class="mockup-wrap">
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <div class="screen-content">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:9px;color:#7a8499">SET 0·0 &nbsp; GAME 0·0</span>
+          <span class="screen-pill" data-it="Dati limitati" data-en="Limited data">Dati limitati</span>
+        </div>
+        <span class="screen-tag" data-it="Costruire" data-en="Build">Costruire</span>
+        <div class="screen-msg">
+          <div class="screen-msg-title" data-it="Costruisci dalla diagonale e attacca quando accorcia." data-en="Build from the diagonal and attack when they shorten.">Costruisci dalla diagonale e attacca quando accorcia.</div>
+          <div class="screen-msg-sub" data-it="Diagonale profonda x2, poi avanza" data-en="Deep diagonal x2, then step in">Diagonale profonda x2, poi avanza</div>
+        </div>
+        <div class="screen-msg" style="border-color:rgba(240,165,0,.2)">
+          <div style="font-size:8px;font-weight:700;color:var(--amber);letter-spacing:.5px;margin-bottom:3px" data-it="ATTENZIONE" data-en="ATTENTION">ATTENZIONE</div>
+          <div class="screen-msg-title" style="font-size:10px;font-weight:500" data-it="Entra solo sulla palla corta." data-en="Step in only on the short ball.">Entra solo sulla palla corta.</div>
+        </div>
+        <div class="screen-msg">
+          <div style="font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px" data-it="CONSIGLIO MENTALE" data-en="MENTAL TIP">CONSIGLIO MENTALE</div>
+          <div class="screen-msg-title" style="font-size:10px;font-weight:500" data-it="Resta presente, cerca le occasioni." data-en="Stay present, look for opportunities.">Resta presente, cerca le occasioni.</div>
+        </div>
+        <div style="background:var(--amber);border-radius:8px;padding:7px;text-align:center;margin-top:auto">
+          <span style="font-size:10px;font-weight:700;color:#0D1B2A" data-it="▷ Torna al match" data-en="▷ Back to match">▷ Torna al match</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="modes">
+  <div class="section-label" data-it="Tre modalità" data-en="Three modes">Tre modalità</div>
+  <h2 data-it="Un'app, tre modi di usarla" data-en="One app, three ways to use it">Un'app, tre modi di usarla</h2>
+  <div class="modes-grid">
+    <div class="mode-card featured">
+      <div class="mode-tag popular" data-it="Modalità principale" data-en="Main mode">Modalità principale</div>
+      <div class="mode-icon">👨‍🏫📱</div>
+      <h3 data-it="Coach + Giocatore" data-en="Coach + Player">Coach + Giocatore</h3>
+      <p data-it="Il coach gestisce l'analisi da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale." data-en="The coach manages the analysis from the sideline. The player receives tactical messages on their device during changeovers, in real time.">Il coach gestisce l'analisi da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale.</p>
+    </div>
+    <div class="mode-card">
+      <div class="mode-tag solo" data-it="Autonomo" data-en="Standalone">Autonomo</div>
+      <div class="mode-icon">👨‍🏫</div>
+      <h3 data-it="Solo Coach" data-en="Coach only">Solo Coach</h3>
+      <p data-it="Il coach usa l'app in autonomia per analizzare il match, prendere note tattiche e consultare i suggerimenti del motore — senza che il giocatore sia connesso." data-en="The coach uses the app independently to analyse the match, take tactical notes and consult the engine's suggestions — without the player being connected.">Il coach usa l'app in autonomia per analizzare il match, prendere note tattiche e consultare i suggerimenti del motore — senza che il giocatore sia connesso.</p>
+    </div>
+    <div class="mode-card">
+      <div class="mode-tag player" data-it="Autoanalisi" data-en="Self-analysis">Autoanalisi</div>
+      <div class="mode-icon">🎾</div>
+      <h3 data-it="Giocatore autonomo" data-en="Player only">Giocatore autonomo</h3>
+      <p data-it="Il giocatore senza coach può inserire il proprio piano, tracciare i punti e ricevere indicazioni tattiche in autonomia durante il match." data-en="Players without a coach can enter their plan, track points and receive tactical guidance independently during the match.">Il giocatore senza coach può inserire il proprio piano, tracciare i punti e ricevere indicazioni tattiche in autonomia durante il match.</p>
+    </div>
+  </div>
+</section>
+
+<section class="engine-section">
+  <div class="engine-inner">
+    <div class="section-label" data-it="Il motore tattico" data-en="The tactical engine">Il motore tattico</div>
+    <h2 data-it="Anni di esperienza dei migliori coach,<br>condensati in un algoritmo" data-en="Years of expertise from top coaches,<br>condensed into an algorithm">Anni di esperienza dei migliori coach,<br>condensati in un algoritmo</h2>
+    <p data-it="Il motore tattico di Tennis AI Coach aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Pattern di gioco, gestione mentale, lettura dell'avversario, adattamento dinamico: tutto quello che si trova nei principali libri di riferimento sul tennis — reso accessibile in tempo reale, al cambio campo." data-en="The Tennis AI Coach tactical engine aggregates the principles of the world's most authoritative experts in tennis tactics and psychology. Game patterns, mental management, reading the opponent, dynamic adaptation: everything found in the leading tennis reference books — made accessible in real time, at changeover.">Il motore tattico di Tennis AI Coach aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Pattern di gioco, gestione mentale, lettura dell'avversario, adattamento dinamico: tutto quello che si trova nei principali libri di riferimento sul tennis — reso accessibile in tempo reale, al cambio campo.</p>
+    <p data-it="Non si tratta di un chatbot generico. È un sistema deterministico con oltre 280 scenari di gioco, 26 pattern tattici, memoria storica e adattamento contestuale. Affidabile, coerente, pensato per il campo." data-en="This is not a generic chatbot. It is a deterministic system with over 280 game scenarios, 26 tactical patterns, match history and contextual adaptation. Reliable, consistent, built for the court.">Non si tratta di un chatbot generico. È un sistema deterministico con oltre 280 scenari di gioco, 26 pattern tattici, memoria storica e adattamento contestuale. Affidabile, coerente, pensato per il campo.</p>
+    <div class="books-row">
+      <span class="book-pill" data-it="Tattica" data-en="Tactics">Tattica</span>
+      <span class="book-pill" data-it="Psicologia" data-en="Psychology">Psicologia</span>
+      <span class="book-pill" data-it="Analisi avversario" data-en="Opponent analysis">Analisi avversario</span>
+      <span class="book-pill" data-it="Gestione match" data-en="Match management">Gestione match</span>
+      <span class="book-pill" data-it="Pattern di gioco" data-en="Game patterns">Pattern di gioco</span>
+      <span class="book-pill" data-it="Resilienza mentale" data-en="Mental resilience">Resilienza mentale</span>
+      <span class="book-pill" data-it="Servizio" data-en="Serve">Servizio</span>
+      <span class="book-pill" data-it="Risposta" data-en="Return">Risposta</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-label" data-it="Funzionalità" data-en="Features">Funzionalità</div>
+  <h2 data-it="Tutto quello che serve in campo" data-en="Everything you need on court">Tutto quello che serve in campo</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3 data-it="Suggerimenti tattici live" data-en="Live tactical suggestions">Suggerimenti tattici live</h3>
+      <p data-it="Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi." data-en="At changeover the engine analyses the context and suggests the most suitable tactical pattern. Simple, direct, usable in 5 seconds.">Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3 data-it="Scouting avversario" data-en="Opponent scouting">Scouting avversario</h3>
+      <p data-it="Importa il profilo dell'avversario dai principali database del tennis italiano con un click. Forma recente, superficie preferita, punti forti e deboli." data-en="Import the opponent's profile from the main Italian tennis databases in one click. Recent form, preferred surface, strengths and weaknesses.">Importa il profilo dell'avversario dai principali database del tennis italiano con un click. Forma recente, superficie preferita, punti forti e deboli.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <h3 data-it="Memoria tattica" data-en="Tactical memory">Memoria tattica</h3>
+      <p data-it="L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti si affinano nel tempo." data-en="The app remembers what worked in previous matches against the same opponent. Suggestions improve over time.">L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti si affinano nel tempo.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗣️</div>
+      <h3 data-it="AI in linguaggio naturale" data-en="Natural language AI">AI in linguaggio naturale</h3>
+      <p data-it="Dì o scrivi un'osservazione in campo. L'AI interpreta e aggiorna automaticamente l'analisi tattica, senza dover toccare menu o checkbox." data-en="Say or type an observation on court. The AI interprets it and automatically updates the tactical analysis — no menus or checkboxes needed.">Dì o scrivi un'osservazione in campo. L'AI interpreta e aggiorna automaticamente l'analisi tattica, senza dover toccare menu o checkbox.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3 data-it="Statistiche in tempo reale" data-en="Real-time statistics">Statistiche in tempo reale</h3>
+      <p data-it="Traccia ogni punto: tipo di colpo, effetto, direzione. Statistiche live su servizio, risposta e break point. Storico disponibile dopo il match." data-en="Track every point: shot type, effect, direction. Live stats on serve, return and break points. History available after the match.">Traccia ogni punto: tipo di colpo, effetto, direzione. Statistiche live su servizio, risposta e break point. Storico disponibile dopo il match.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗺️</div>
+      <h3 data-it="Schemi tattici animati" data-en="Animated tactical diagrams">Schemi tattici animati</h3>
+      <p data-it="Ogni suggerimento tattico include uno schema visivo animato del campo con traiettorie, posizioni e zone di tiro. Immediato, anche sotto stress." data-en="Every tactical suggestion includes an animated visual court diagram with trajectories, positions and target zones. Immediate, even under stress.">Ogni suggerimento tattico include uno schema visivo animato del campo con traiettorie, posizioni e zone di tiro. Immediato, anche sotto stress.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="how-inner">
+    <div class="section-label" data-it="Come funziona" data-en="How it works">Come funziona</div>
+    <h2 data-it="Pronto in 2 minuti,<br>utile per tutta la partita" data-en="Ready in 2 minutes,<br>useful for the whole match">Pronto in 2 minuti,<br>utile per tutta la partita</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-text">
+          <h4 data-it="Setup pre-match" data-en="Pre-match setup">Setup pre-match</h4>
+          <p data-it="Scegli il piano tattico, importa il profilo dell'avversario, seleziona il formato di gioco. 2 minuti in tutto." data-en="Choose the tactical plan, import the opponent's profile, select the match format. 2 minutes total.">Scegli il piano tattico, importa il profilo dell'avversario, seleziona il formato di gioco. 2 minuti in tutto.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-text">
+          <h4 data-it="Connessione opzionale con il giocatore" data-en="Optional player connection">Connessione opzionale con il giocatore</h4>
+          <p data-it="Il coach genera un codice. Il giocatore lo inserisce sul proprio dispositivo e riceve i messaggi tattici in tempo reale." data-en="The coach generates a code. The player enters it on their device and receives tactical messages in real time.">Il coach genera un codice. Il giocatore lo inserisce sul proprio dispositivo e riceve i messaggi tattici in tempo reale.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-text">
+          <h4 data-it="Aggiornamento durante il match" data-en="In-match updates">Aggiornamento durante il match</h4>
+          <p data-it="Il coach aggiorna il punteggio e aggiunge segnali live. Il motore adatta i suggerimenti in base al contesto." data-en="The coach updates the score and adds live signals. The engine adapts suggestions based on context.">Il coach aggiorna il punteggio e aggiunge segnali live. Il motore adatta i suggerimenti in base al contesto.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-text">
+          <h4 data-it="Debrief e memoria" data-en="Debrief and memory">Debrief e memoria</h4>
+          <p data-it="Dopo il match, salva note e feedback. L'app costruisce una memoria tattica che migliora i suggerimenti nelle partite successive." data-en="After the match, save notes and feedback. The app builds tactical memory that improves suggestions in future matches.">Dopo il match, salva note e feedback. L'app costruisce una memoria tattica che migliora i suggerimenti nelle partite successive.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <h2 data-it="Pronto per il campo?" data-en="Ready for the court?">Pronto per il campo?</h2>
+  <p data-it="Funziona come app installabile su iPhone e Android. Nessun download richiesto." data-en="Works as an installable app on iPhone and Android. No download required.">Funziona come app installabile su iPhone e Android. Nessun download richiesto.</p>
+  <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary" target="_blank" data-it="Apri Tennis AI Coach →" data-en="Open Tennis AI Coach →">Apri Tennis AI Coach →</a>
+  <div class="pwa-note" data-it="Su iPhone: Safari → Condividi → Aggiungi a schermata Home" data-en="On iPhone: Safari → Share → Add to Home Screen">Su iPhone: Safari → Condividi → Aggiungi a schermata Home</div>
+</section>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://tennis-ai-coach-chi.vercel.app" target="_blank" data-it="Apri app" data-en="Open app">Apri app</a>
+    <a href="https://tennis-ai-coach-chi.vercel.app" target="_blank">Privacy Policy</a>
+    <a href="mailto:info@filipponeri.com" data-it="Contatto" data-en="Contact">Contatto</a>
+  </div>
+  <div class="footer-copy">© 2026 Tennis AI Coach · info@filipponeri.com</div>
+</footer>
+
+<script>
+function setLang(lang){
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===lang.toUpperCase()));
+  document.querySelectorAll('[data-it]').forEach(el=>{
+    const txt=el.getAttribute('data-'+lang);
+    if(!txt)return;
+    if(el.tagName==='A'||el.tagName==='BUTTON'){el.textContent=txt;return;}
+    el.innerHTML=txt;
+  });
+  document.documentElement.lang=lang;
+}
+</script>
+</body>
+</html>
