@@ -3,274 +3,869 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Tennis AI Coach — il tuo assistente tattico in campo. Suggerimenti live, scouting avversario, sincronizzazione coach-giocatore.">
+<meta name="description" content="Tennis AI Coach — il tuo assistente tattico in campo in tempo reale.">
 <title>Tennis AI Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0D1B2A;--bg2:#111f30;--card:#162033;--amber:#F0A500;--amber2:#BA7517;--text:#E8EAF0;--muted:#7a8499;--border:#1e2d40;--teal:#1D9E75}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;line-height:1.6}
-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:100;gap:12px;flex-wrap:wrap}
-.logo{font-size:16px;font-weight:600;color:var(--amber)}
-.nav-right{display:flex;align-items:center;gap:10px}
-.lang-toggle{display:flex;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
-.lang-btn{padding:6px 12px;font-size:12px;font-weight:600;border:none;background:transparent;color:var(--muted);cursor:pointer}
-.lang-btn.active{background:rgba(240,165,0,.15);color:var(--amber)}
-.nav-cta{background:var(--amber);color:#0D1B2A;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none}
-.nav-cta:hover{background:var(--amber2)}
-.hero{padding:72px 24px 48px;text-align:center;max-width:700px;margin:0 auto}
-.badge{display:inline-block;background:rgba(240,165,0,.12);color:var(--amber);font-size:11px;font-weight:600;letter-spacing:1.2px;padding:4px 12px;border-radius:20px;text-transform:uppercase;margin-bottom:20px}
-h1{font-size:clamp(28px,6vw,46px);font-weight:700;line-height:1.15;color:#fff;margin-bottom:16px}
-h1 span{color:var(--amber)}
-.hero-sub{font-size:clamp(15px,3vw,18px);color:var(--muted);max-width:540px;margin:0 auto 36px}
-.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn-primary{background:var(--amber);color:#0D1B2A;padding:14px 28px;border-radius:10px;font-size:15px;font-weight:700;text-decoration:none;display:inline-block}
-.btn-primary:hover{background:var(--amber2)}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border);padding:14px 28px;border-radius:10px;font-size:15px;font-weight:500;text-decoration:none;display:inline-block}
-.btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
-.mockup-wrap{padding:32px 24px;text-align:center}
-.phone-frame{display:inline-block;background:var(--card);border:1px solid var(--border);border-radius:36px;padding:12px;max-width:240px;width:100%}
-.phone-screen{background:#0a1520;border-radius:26px;overflow:hidden;aspect-ratio:9/19.5}
-.screen-content{padding:14px 10px;height:100%;display:flex;flex-direction:column;gap:7px}
-.screen-tag{background:rgba(240,165,0,.15);color:var(--amber);font-size:9px;font-weight:700;letter-spacing:.8px;padding:2px 8px;border-radius:4px;display:inline-block;text-transform:uppercase}
-.screen-msg{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:9px;text-align:left}
-.screen-msg-title{font-size:11px;font-weight:700;color:#fff;line-height:1.3}
-.screen-msg-sub{font-size:9px;color:var(--muted);margin-top:3px}
-.screen-pill{display:inline-block;background:rgba(29,158,117,.15);color:var(--teal);font-size:8px;padding:2px 7px;border-radius:10px;border:1px solid rgba(29,158,117,.3)}
-section{padding:56px 24px}
-.section-label{text-align:center;font-size:11px;font-weight:600;letter-spacing:1.5px;color:var(--amber);text-transform:uppercase;margin-bottom:12px}
-h2{text-align:center;font-size:clamp(22px,4vw,32px);font-weight:700;color:#fff;margin-bottom:40px}
-.modes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;max-width:860px;margin:0 auto}
-.mode-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;text-align:center}
-.mode-card.featured{border-color:rgba(240,165,0,.4)}
-.mode-icon{font-size:32px;margin-bottom:16px}
-.mode-card h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:10px}
-.mode-card p{font-size:13px;color:var(--muted);line-height:1.6}
-.mode-tag{display:inline-block;font-size:10px;font-weight:600;padding:3px 10px;border-radius:12px;margin-bottom:14px}
-.mode-tag.popular{background:rgba(240,165,0,.15);color:var(--amber)}
-.mode-tag.solo{background:rgba(29,158,117,.1);color:var(--teal)}
-.mode-tag.player{background:rgba(240,165,0,.08);color:var(--muted)}
-.engine-section{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.engine-inner{max-width:700px;margin:0 auto;text-align:center}
-.engine-inner p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:20px}
-.books-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
-.book-pill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--muted)}
-.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;max-width:900px;margin:0 auto}
-.feature-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px}
-.feature-icon{width:38px;height:38px;border-radius:10px;background:rgba(240,165,0,.1);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:18px}
-.feature-card h3{font-size:15px;font-weight:600;color:#fff;margin-bottom:7px}
-.feature-card p{font-size:13px;color:var(--muted);line-height:1.6}
-.how-inner{max-width:640px;margin:0 auto}
-.steps{display:flex;flex-direction:column;gap:22px;margin-top:36px}
-.step{display:flex;gap:16px;align-items:flex-start}
-.step-num{width:30px;height:30px;border-radius:50%;background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);color:var(--amber);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px}
-.step-text h4{font-size:15px;font-weight:600;color:#fff;margin-bottom:4px}
-.step-text p{font-size:13px;color:var(--muted)}
-.cta-banner{text-align:center}
-.cta-banner h2{margin-bottom:10px}
-.cta-banner p{color:var(--muted);margin-bottom:26px;font-size:14px}
-.pwa-note{font-size:12px;color:var(--muted);margin-top:12px}
-footer{padding:28px 24px;text-align:center;border-top:1px solid var(--border)}
-.footer-links{display:flex;gap:20px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
-.footer-links a{font-size:13px;color:var(--muted);text-decoration:none}
-.footer-links a:hover{color:var(--amber)}
-.footer-copy{font-size:12px;color:var(--muted)}
+:root{
+  --ink:#0a1520;
+  --ink2:#0f1e2e;
+  --card:#132030;
+  --gold:#F0A500;
+  --gold2:#c4820a;
+  --cream:#F5EDD8;
+  --muted:#6b8099;
+  --border:#1a2d42;
+  --teal:#18a077;
+  --white:#f0f4f8;
+  --font-display:'Bebas Neue',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--ink);color:var(--white);font-family:var(--font-body);overflow-x:hidden;line-height:1.6}
+
+/* ─── NOISE TEXTURE ─── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:1000;opacity:.5;
+}
+
+/* ─── NAV ─── */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 40px;position:fixed;top:0;left:0;right:0;
+  z-index:100;
+  background:linear-gradient(to bottom,rgba(10,21,32,.95) 0%,transparent 100%);
+  backdrop-filter:blur(12px);
+}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-text{font-family:var(--font-display);font-size:22px;letter-spacing:2px;color:var(--white)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.lang-sw{display:flex;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.lang-sw button{padding:5px 11px;font-size:11px;font-weight:600;letter-spacing:.5px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:var(--font-body)}
+.lang-sw button.on{background:rgba(240,165,0,.2);color:var(--gold)}
+.cta-nav{background:var(--gold);color:var(--ink);padding:9px 22px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;letter-spacing:.3px;transition:background .2s}
+.cta-nav:hover{background:var(--gold2)}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:120px 40px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-court{
+  position:absolute;right:-5%;top:50%;transform:translateY(-50%);
+  width:52%;max-width:700px;opacity:.13;
+}
+.hero-court svg{width:100%;height:auto}
+.hero-content{position:relative;z-index:2;max-width:620px}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);
+  border-radius:20px;padding:5px 14px;margin-bottom:28px;
+  font-size:12px;font-weight:600;letter-spacing:1.5px;
+  color:var(--gold);text-transform:uppercase;
+}
+.hero-eyebrow span{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;}
+
+h1{
+  font-family:var(--font-display);
+  font-size:clamp(52px,9vw,100px);
+  line-height:.95;letter-spacing:3px;
+  color:var(--white);margin-bottom:8px;
+}
+h1 em{color:var(--gold);font-style:normal}
+.hero-sub{
+  font-size:clamp(15px,2vw,18px);color:var(--muted);
+  max-width:480px;margin:20px 0 40px;line-height:1.7;
+}
+.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn-primary{
+  background:var(--gold);color:var(--ink);
+  padding:15px 32px;border-radius:10px;
+  font-weight:700;font-size:15px;text-decoration:none;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:all .2s;letter-spacing:.3px;
+}
+.btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-primary svg{width:16px;height:16px}
+.btn-ghost{
+  color:var(--muted);font-size:14px;text-decoration:none;
+  display:inline-flex;align-items:center;gap:6px;
+  transition:color .2s;letter-spacing:.2px;
+}
+.btn-ghost:hover{color:var(--white)}
+.hero-stats{
+  display:flex;gap:40px;margin-top:56px;
+  padding-top:40px;border-top:1px solid var(--border);
+}
+.hero-stat-num{
+  font-family:var(--font-display);font-size:36px;
+  letter-spacing:2px;color:var(--gold);display:block;
+}
+.hero-stat-label{font-size:12px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
+
+/* ─── PHONE MOCKUP ─── */
+.hero-phone{
+  position:absolute;right:8%;top:50%;transform:translateY(-50%) rotate(3deg);
+  width:min(22%,220px);z-index:3;
+  filter:drop-shadow(0 40px 80px rgba(0,0,0,.6));
+}
+.phone-shell{
+  background:#0a1520;border:1px solid rgba(255,255,255,.12);
+  border-radius:44px;padding:12px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05),
+             0 0 60px rgba(240,165,0,.08);
+}
+.phone-notch{width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin:0 auto 10px}
+.phone-screen{background:#0d1b2a;border-radius:32px;overflow:hidden;padding:14px 12px;aspect-ratio:9/19.5}
+.ps-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.ps-score{font-family:var(--font-display);font-size:20px;letter-spacing:2px;color:var(--white)}
+.ps-badge{background:rgba(240,165,0,.15);border:1px solid rgba(240,165,0,.3);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:600;color:var(--gold);letter-spacing:.5px}
+.ps-tag{background:rgba(240,165,0,.12);color:var(--gold);font-size:8px;font-weight:700;letter-spacing:.8px;padding:2px 7px;border-radius:3px;display:inline-block;text-transform:uppercase;margin-bottom:8px}
+.ps-msg{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:9px;margin-bottom:7px}
+.ps-msg-main{font-size:11px;font-weight:600;color:var(--white);line-height:1.3}
+.ps-msg-sub{font-size:9px;color:var(--muted);margin-top:3px}
+.ps-warn{background:rgba(240,165,0,.06);border:1px solid rgba(240,165,0,.2);border-radius:9px;padding:8px;margin-bottom:7px}
+.ps-warn-label{font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:2px}
+.ps-warn-text{font-size:10px;color:rgba(245,237,216,.7)}
+.ps-btn{background:var(--gold);border-radius:7px;padding:8px;text-align:center;font-size:10px;font-weight:700;color:var(--ink)}
+
+/* ─── SECTIONS ─── */
+section{padding:96px 40px}
+.section-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;text-align:center}
+h2{font-family:var(--font-display);font-size:clamp(36px,6vw,64px);letter-spacing:2px;text-align:center;color:var(--white);margin-bottom:48px;line-height:1}
+h2 span{color:var(--gold)}
+
+/* ─── MODES ─── */
+.modes{background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.modes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;max-width:1100px;margin:0 auto}
+.mode-card{
+  background:var(--card);padding:40px 32px;
+  position:relative;overflow:hidden;transition:background .3s;
+}
+.mode-card:hover{background:#19304a}
+.mode-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.mode-card:hover::before{opacity:1}
+.mode-num{
+  font-family:var(--font-display);font-size:64px;letter-spacing:2px;
+  color:rgba(240,165,0,.08);line-height:1;margin-bottom:16px;
+}
+.mode-tag{
+  display:inline-block;font-size:10px;font-weight:600;letter-spacing:1.5px;
+  text-transform:uppercase;padding:3px 10px;border-radius:20px;
+  margin-bottom:14px;
+}
+.mode-tag.best{background:rgba(240,165,0,.12);color:var(--gold);border:1px solid rgba(240,165,0,.25)}
+.mode-tag.pro{background:rgba(24,160,119,.1);color:var(--teal);border:1px solid rgba(24,160,119,.25)}
+.mode-tag.free{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
+.mode-title{font-family:var(--font-display);font-size:28px;letter-spacing:1.5px;color:var(--white);margin-bottom:12px}
+.mode-desc{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* ─── ENGINE ─── */
+.engine-section{
+  background:linear-gradient(135deg,var(--ink) 0%,#0d2035 50%,var(--ink) 100%);
+  position:relative;overflow:hidden;
+}
+.engine-section::before{
+  content:'';position:absolute;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(240,165,0,.06) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.engine-inner{max-width:800px;margin:0 auto;text-align:center;position:relative}
+.engine-lead{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.8;margin-bottom:32px}
+.engine-numbers{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;margin:40px 0;
+}
+.engine-num{background:var(--card);padding:28px 20px;text-align:center}
+.engine-num-val{font-family:var(--font-display);font-size:48px;letter-spacing:2px;color:var(--gold);display:block;line-height:1}
+.engine-num-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+.engine-desc{font-size:14px;color:var(--muted);line-height:1.8}
+.concept-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
+.cpill{
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:20px;padding:5px 14px;font-size:12px;color:var(--muted);
+}
+
+/* ─── FEATURES ─── */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;max-width:1100px;margin:0 auto}
+.feat-card{
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:28px;transition:border-color .3s,transform .3s;
+}
+.feat-card:hover{border-color:rgba(240,165,0,.3);transform:translateY(-3px)}
+.feat-icon{
+  width:44px;height:44px;border-radius:12px;background:rgba(240,165,0,.08);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:18px;
+}
+.feat-title{font-size:16px;font-weight:600;color:var(--white);margin-bottom:8px}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* ─── HOW ─── */
+.how-inner{max-width:680px;margin:0 auto}
+.how-steps{display:flex;flex-direction:column;gap:0}
+.how-step{display:flex;gap:24px;padding:28px 0;border-bottom:1px solid var(--border);position:relative}
+.how-step:last-child{border-bottom:none}
+.step-num-wrap{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0}
+.step-circle{
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);
+  color:var(--gold);font-family:var(--font-display);font-size:18px;letter-spacing:1px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-content h4{font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
+.step-content p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* ─── CTA FINAL ─── */
+.cta-final{
+  text-align:center;
+  background:linear-gradient(to bottom,var(--ink) 0%,#081218 100%);
+  border-top:1px solid var(--border);
+}
+.cta-final h2{margin-bottom:16px}
+.cta-final p{color:var(--muted);margin-bottom:36px;font-size:15px}
+.pwa-note{
+  font-size:12px;color:var(--muted);margin-top:14px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.pwa-note::before,.pwa-note::after{content:'';flex:1;max-width:60px;height:1px;background:var(--border)}
+
+/* ─── FOOTER ─── */
+footer{
+  padding:32px 40px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.footer-links{display:flex;gap:24px}
+.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-links a:hover{color:var(--gold)}
+.footer-copy{font-size:12px;color:rgba(107,128,153,.6)}
+
+/* ─── ANIMATIONS ─── */
+.reveal{opacity:1;transform:none}
+.reveal.visible{opacity:1;transform:none}
+
+
+
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:768px){
+  nav{padding:14px 20px}
+  .hero{padding:100px 20px 60px;flex-direction:column}
+  .hero-court,.hero-phone{display:none}
+  .hero-stats{gap:24px;flex-wrap:wrap}
+  section{padding:64px 20px}
+  .engine-numbers{grid-template-columns:repeat(2,1fr)}
+  footer{flex-direction:column;align-items:flex-start;padding:24px 20px}
+  .modes-grid{grid-template-columns:1fr}
+  h2{text-align:left}
+  .section-eyebrow{text-align:left}
+}
 </style>
 </head>
 <body>
 
+<!-- NAV -->
 <nav>
-  <span class="logo">🎾 Tennis AI Coach</span>
+  <div class="logo-mark">
+    <div class="logo-icon">🎾</div>
+    <span class="logo-text">TENNIS AI COACH</span>
+  </div>
   <div class="nav-right">
-    <div class="lang-toggle">
-      <button class="lang-btn active" onclick="setLang('it')">IT</button>
-      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    <div class="lang-sw">
+      <button class="on" onclick="setLang('it')">IT</button>
+      <button onclick="setLang('en')">EN</button>
     </div>
-    <a href="https://tennis-ai-coach-chi.vercel.app" class="nav-cta" target="_blank" data-it="Apri app" data-en="Open app">Apri app</a>
+    <a href="https://tennis-ai-coach-chi.vercel.app" class="cta-nav" target="_blank" data-it="Apri app" data-en="Open app">Apri app</a>
   </div>
 </nav>
 
-<section class="hero" style="padding-top:72px;padding-bottom:48px">
-  <div class="badge" data-it="Assistente tattico live" data-en="Live tactical assistant">Assistente tattico live</div>
-  <h1 data-it="Il coach che ti serve<br><span>in campo</span>" data-en="The coach you need<br><span>on court</span>">Il coach che ti serve<br><span>in campo</span></h1>
-  <p class="hero-sub" data-it="Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Per coach che vogliono dare il massimo — anche a bordo campo." data-en="Real-time tactical analysis, adapted to your player and the opponent. For coaches who want to give their best — even from the sideline.">Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Per coach che vogliono dare il massimo — anche a bordo campo.</p>
-  <div class="cta-row">
-    <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary" target="_blank" data-it="Prova gratis →" data-en="Try for free →">Prova gratis →</a>
-    <a href="#modes" class="btn-ghost" data-it="Scopri le modalità" data-en="Explore modes">Scopri le modalità</a>
+<!-- HERO -->
+<section class="hero">
+  <!-- Court SVG background -->
+  <div class="hero-court">
+    <svg viewBox="0 0 400 680" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="10" y="10" width="380" height="660" fill="#8B4513" rx="3"/>
+      <rect x="10" y="10" width="50" height="660" fill="#6B3510" opacity=".6"/>
+      <rect x="340" y="10" width="50" height="660" fill="#6B3510" opacity=".6"/>
+      <rect x="10" y="10" width="380" height="660" fill="none" stroke="white" stroke-width="2.5"/>
+      <line x1="60" y1="10" x2="60" y2="670" stroke="white" stroke-width="1.5"/>
+      <line x1="340" y1="10" x2="340" y2="670" stroke="white" stroke-width="1.5"/>
+      <line x1="10" y1="340" x2="390" y2="340" stroke="white" stroke-width="4"/>
+      <line x1="60" y1="165" x2="340" y2="165" stroke="white" stroke-width="1.5"/>
+      <line x1="60" y1="515" x2="340" y2="515" stroke="white" stroke-width="1.5"/>
+      <line x1="200" y1="165" x2="200" y2="515" stroke="white" stroke-width="1.5"/>
+      <circle cx="200" cy="340" r="5" fill="white"/>
+      <rect x="7" y="337" width="8" height="8" fill="white" rx="1"/>
+      <rect x="385" y="337" width="8" height="8" fill="white" rx="1"/>
+    </svg>
   </div>
-</section>
 
-<div class="mockup-wrap">
-  <div class="phone-frame">
-    <div class="phone-screen">
-      <div class="screen-content">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <span style="font-size:9px;color:#7a8499">SET 0·0 &nbsp; GAME 0·0</span>
-          <span class="screen-pill" data-it="Dati limitati" data-en="Limited data">Dati limitati</span>
+  <!-- Phone mockup -->
+  <div class="hero-phone reveal">
+    <div class="phone-shell">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <!-- Score: break point situation -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div>
+            <div style="font-family:var(--font-display);font-size:13px;letter-spacing:1px;color:rgba(255,255,255,.5)">SET 5·4&nbsp;&nbsp;GAME</div>
+            <div style="font-family:var(--font-display);font-size:22px;letter-spacing:2px;color:white">30·40</div>
+          </div>
+          <div style="text-align:right">
+            <div style="background:rgba(240,165,0,.2);border:1px solid rgba(240,165,0,.4);border-radius:4px;padding:2px 7px;font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.5px">PALLA BREAK</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:3px" data-it="Io servo" data-en="I serve">Io servo</div>
+          </div>
         </div>
-        <span class="screen-tag" data-it="Costruire" data-en="Build">Costruire</span>
-        <div class="screen-msg">
-          <div class="screen-msg-title" data-it="Costruisci dalla diagonale e attacca quando accorcia." data-en="Build from the diagonal and attack when they shorten.">Costruisci dalla diagonale e attacca quando accorcia.</div>
-          <div class="screen-msg-sub" data-it="Diagonale profonda x2, poi avanza" data-en="Deep diagonal x2, then step in">Diagonale profonda x2, poi avanza</div>
+        <!-- Alert -->
+        <div style="background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.25);border-radius:8px;padding:8px;margin-bottom:6px">
+          <div style="font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:3px" data-it="⚡ MOMENTO CRITICO" data-en="⚡ KEY MOMENT">⚡ MOMENTO CRITICO</div>
+          <div style="font-size:10px;font-weight:600;color:white;line-height:1.3" data-it="Serve al corpo — toglili il ritmo" data-en="Body serve — disrupt their rhythm">Serve al corpo — toglili il ritmo</div>
         </div>
-        <div class="screen-msg" style="border-color:rgba(240,165,0,.2)">
-          <div style="font-size:8px;font-weight:700;color:var(--amber);letter-spacing:.5px;margin-bottom:3px" data-it="ATTENZIONE" data-en="ATTENTION">ATTENZIONE</div>
-          <div class="screen-msg-title" style="font-size:10px;font-weight:500" data-it="Entra solo sulla palla corta." data-en="Step in only on the short ball.">Entra solo sulla palla corta.</div>
+        <!-- Tactic -->
+        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;margin-bottom:6px">
+          <div style="font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-bottom:3px;text-transform:uppercase" data-it="Piano A" data-en="Plan A">Piano A</div>
+          <div style="font-size:11px;font-weight:600;color:white;line-height:1.3" data-it="Diagonale profonda × 2 → attacca quando accorcia" data-en="Deep diagonal × 2 → attack on short ball">Diagonale profonda × 2 → attacca quando accorcia</div>
         </div>
-        <div class="screen-msg">
-          <div style="font-size:8px;font-weight:700;color:var(--muted);letter-spacing:.5px;margin-bottom:3px" data-it="CONSIGLIO MENTALE" data-en="MENTAL TIP">CONSIGLIO MENTALE</div>
-          <div class="screen-msg-title" style="font-size:10px;font-weight:500" data-it="Resta presente, cerca le occasioni." data-en="Stay present, look for opportunities.">Resta presente, cerca le occasioni.</div>
-        </div>
-        <div style="background:var(--amber);border-radius:8px;padding:7px;text-align:center;margin-top:auto">
-          <span style="font-size:10px;font-weight:700;color:#0D1B2A" data-it="▷ Torna al match" data-en="▷ Back to match">▷ Torna al match</span>
+        <!-- Mental -->
+        <div style="background:rgba(29,158,117,.07);border:1px solid rgba(29,158,117,.2);border-radius:8px;padding:7px">
+          <div style="font-size:8px;font-weight:700;color:#5DCAA5;letter-spacing:.5px;margin-bottom:2px" data-it="MENTALE" data-en="MENTAL">MENTALE</div>
+          <div style="font-size:9px;color:rgba(245,237,216,.65);line-height:1.4" data-it="Respira, scegli il target. Un punto alla volta." data-en="Breathe, pick your target. One point at a time.">Respira, scegli il target. Un punto alla volta.</div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<section id="modes">
-  <div class="section-label" data-it="Tre modalità" data-en="Three modes">Tre modalità</div>
-  <h2 data-it="Un'app, tre modi di usarla" data-en="One app, three ways to use it">Un'app, tre modi di usarla</h2>
-  <div class="modes-grid">
-    <div class="mode-card featured">
-      <div class="mode-tag popular" data-it="Modalità principale" data-en="Main mode">Modalità principale</div>
-      <div class="mode-icon">👨‍🏫📱</div>
-      <h3 data-it="Coach + Giocatore" data-en="Coach + Player">Coach + Giocatore</h3>
-      <p data-it="Il coach gestisce l'analisi da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale." data-en="The coach manages the analysis from the sideline. The player receives tactical messages on their device during changeovers, in real time.">Il coach gestisce l'analisi da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale.</p>
+  <div class="hero-content">
+    <div class="hero-eyebrow reveal">
+      <span></span>
+      <span data-it="Assistente tattico live" data-en="Live tactical assistant">Assistente tattico live</span>
     </div>
-    <div class="mode-card">
-      <div class="mode-tag solo" data-it="Autonomo" data-en="Standalone">Autonomo</div>
-      <div class="mode-icon">👨‍🏫</div>
-      <h3 data-it="Solo Coach" data-en="Coach only">Solo Coach</h3>
-      <p data-it="Il coach usa l'app in autonomia per analizzare il match, prendere note tattiche e consultare i suggerimenti del motore — senza che il giocatore sia connesso." data-en="The coach uses the app independently to analyse the match, take tactical notes and consult the engine's suggestions — without the player being connected.">Il coach usa l'app in autonomia per analizzare il match, prendere note tattiche e consultare i suggerimenti del motore — senza che il giocatore sia connesso.</p>
+    <h1 class="reveal reveal-delay-1" data-it="IL COACH<br>CHE TI SERVE<br><em>IN CAMPO</em>" data-en="THE COACH<br>YOU NEED<br><em>ON COURT</em>">IL COACH<br>CHE TI SERVE<br><em>IN CAMPO</em></h1>
+    <p class="hero-sub reveal reveal-delay-2" data-it="Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Ogni cambio campo diventa un vantaggio." data-en="Real-time tactical analysis adapted to your player and the opponent. Every changeover becomes an advantage.">Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Ogni cambio campo diventa un vantaggio.</p>
+    <div class="hero-ctas reveal reveal-delay-3">
+      <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary" target="_blank" data-it="Inizia ora" data-en="Start now">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l7 7-7 7M1 8h14"/></svg>
+        <span data-it="Inizia ora" data-en="Start now">Inizia ora</span>
+      </a>
+      <a href="#modes" class="btn-ghost" data-it="Scopri le modalità ↓" data-en="Explore modes ↓">Scopri le modalità ↓</a>
     </div>
-    <div class="mode-card">
-      <div class="mode-tag player" data-it="Autoanalisi" data-en="Self-analysis">Autoanalisi</div>
-      <div class="mode-icon">🎾</div>
-      <h3 data-it="Giocatore autonomo" data-en="Player only">Giocatore autonomo</h3>
-      <p data-it="Il giocatore senza coach può inserire il proprio piano, tracciare i punti e ricevere indicazioni tattiche in autonomia durante il match." data-en="Players without a coach can enter their plan, track points and receive tactical guidance independently during the match.">Il giocatore senza coach può inserire il proprio piano, tracciare i punti e ricevere indicazioni tattiche in autonomia durante il match.</p>
+    <div class="hero-stats reveal">
+      <div>
+        <span class="hero-stat-num">337+</span>
+        <span class="hero-stat-label" data-it="Scenari tattici" data-en="Tactical scenarios">Scenari tattici</span>
+      </div>
+      <div>
+        <span class="hero-stat-num">33</span>
+        <span class="hero-stat-label" data-it="Pattern di gioco" data-en="Game patterns">Pattern di gioco</span>
+      </div>
+      <div>
+        <span class="hero-stat-num">60</span>
+        <span class="hero-stat-label" data-it="Schemi visivi" data-en="Visual diagrams">Schemi visivi</span>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- MODES -->
+<section class="modes" id="modes">
+  <div class="section-eyebrow reveal" data-it="Come si usa" data-en="How to use it">Come si usa</div>
+  <h2 class="reveal" data-it="TRE MODI<br>DI <span>GIOCARE</span>" data-en="THREE WAYS<br>TO <span>PLAY</span>">TRE MODI<br>DI <span>GIOCARE</span></h2>
+  <div class="modes-grid">
+    <div class="mode-card reveal">
+      <div class="mode-num">01</div>
+      <div class="mode-tag best" data-it="Consigliato" data-en="Recommended">Consigliato</div>
+      <div class="mode-title" data-it="COACH + GIOCATORE" data-en="COACH + PLAYER">COACH + GIOCATORE</div>
+      <p class="mode-desc" data-it="Il coach analizza da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale via cloud sync." data-en="The coach analyses from the sideline. The player receives tactical messages on their device during changeovers in real time via cloud sync.">Il coach analizza da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale via cloud sync.</p>
+    </div>
+    <div class="mode-card reveal reveal-delay-1">
+      <div class="mode-num">02</div>
+      <div class="mode-tag pro" data-it="Solo coach" data-en="Coach only">Solo coach</div>
+      <div class="mode-title" data-it="SOLO COACH" data-en="COACH ONLY">SOLO COACH</div>
+      <p class="mode-desc" data-it="Il coach usa l'app in autonomia per analizzare il match, consultare i suggerimenti del motore e prendere note tattiche — senza che il giocatore sia connesso." data-en="The coach uses the app independently to analyse the match, consult the engine's suggestions and take tactical notes — without the player being connected.">Il coach usa l'app in autonomia per analizzare il match, consultare i suggerimenti del motore e prendere note tattiche — senza che il giocatore sia connesso.</p>
+    </div>
+    <div class="mode-card reveal reveal-delay-2">
+      <div class="mode-num">03</div>
+      <div class="mode-tag free" data-it="Autonomo" data-en="Self-guided">Autonomo</div>
+      <div class="mode-title" data-it="GIOCATORE AUTONOMO" data-en="PLAYER ONLY">GIOCATORE AUTONOMO</div>
+      <p class="mode-desc" data-it="Senza un coach? Inserisci il tuo piano tattico e ricevi indicazioni personalizzate durante il match. Traccia i punti e analizza le statistiche." data-en="No coach? Enter your tactical plan and receive personalised guidance during the match. Track points and analyse statistics.">Senza un coach? Inserisci il tuo piano tattico e ricevi indicazioni personalizzate durante il match. Traccia i punti e analizza le statistiche.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ENGINE -->
 <section class="engine-section">
   <div class="engine-inner">
-    <div class="section-label" data-it="Il motore tattico" data-en="The tactical engine">Il motore tattico</div>
-    <h2 data-it="Anni di esperienza dei migliori coach,<br>condensati in un algoritmo" data-en="Years of expertise from top coaches,<br>condensed into an algorithm">Anni di esperienza dei migliori coach,<br>condensati in un algoritmo</h2>
-    <p data-it="Il motore tattico di Tennis AI Coach aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Pattern di gioco, gestione mentale, lettura dell'avversario, adattamento dinamico: tutto quello che si trova nei principali libri di riferimento sul tennis — reso accessibile in tempo reale, al cambio campo." data-en="The Tennis AI Coach tactical engine aggregates the principles of the world's most authoritative experts in tennis tactics and psychology. Game patterns, mental management, reading the opponent, dynamic adaptation: everything found in the leading tennis reference books — made accessible in real time, at changeover.">Il motore tattico di Tennis AI Coach aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Pattern di gioco, gestione mentale, lettura dell'avversario, adattamento dinamico: tutto quello che si trova nei principali libri di riferimento sul tennis — reso accessibile in tempo reale, al cambio campo.</p>
-    <p data-it="Non si tratta di un chatbot generico. È un sistema deterministico con oltre 280 scenari di gioco, 26 pattern tattici, memoria storica e adattamento contestuale. Affidabile, coerente, pensato per il campo." data-en="This is not a generic chatbot. It is a deterministic system with over 280 game scenarios, 26 tactical patterns, match history and contextual adaptation. Reliable, consistent, built for the court.">Non si tratta di un chatbot generico. È un sistema deterministico con oltre 280 scenari di gioco, 26 pattern tattici, memoria storica e adattamento contestuale. Affidabile, coerente, pensato per il campo.</p>
-    <div class="books-row">
-      <span class="book-pill" data-it="Tattica" data-en="Tactics">Tattica</span>
-      <span class="book-pill" data-it="Psicologia" data-en="Psychology">Psicologia</span>
-      <span class="book-pill" data-it="Analisi avversario" data-en="Opponent analysis">Analisi avversario</span>
-      <span class="book-pill" data-it="Gestione match" data-en="Match management">Gestione match</span>
-      <span class="book-pill" data-it="Pattern di gioco" data-en="Game patterns">Pattern di gioco</span>
-      <span class="book-pill" data-it="Resilienza mentale" data-en="Mental resilience">Resilienza mentale</span>
-      <span class="book-pill" data-it="Servizio" data-en="Serve">Servizio</span>
-      <span class="book-pill" data-it="Risposta" data-en="Return">Risposta</span>
+    <div class="section-eyebrow reveal" data-it="Il motore tattico" data-en="The tactical engine">Il motore tattico</div>
+    <h2 class="reveal" data-it="ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span>" data-en="YEARS OF EXPERTISE<br><span>IN AN ALGORITHM</span>">ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span></h2>
+    <p class="engine-lead reveal" data-it="Il motore aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Non è un chatbot generico: è un sistema deterministico con logica tattica contestuale, memoria storica e adattamento dinamico." data-en="The engine aggregates principles from the world's most authoritative experts in tennis tactics and psychology. Not a generic chatbot: a deterministic system with contextual tactical logic, match history and dynamic adaptation.">Il motore aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Non è un chatbot generico: è un sistema deterministico con logica tattica contestuale, memoria storica e adattamento dinamico.</p>
+    <div class="engine-numbers reveal">
+      <div class="engine-num">
+        <span class="engine-num-val">337</span>
+        <span class="engine-num-label" data-it="Scenari E2E" data-en="E2E Scenarios">Scenari E2E</span>
+      </div>
+      <div class="engine-num">
+        <span class="engine-num-val">33</span>
+        <span class="engine-num-label" data-it="Pattern tattici" data-en="Tactical patterns">Pattern tattici</span>
+      </div>
+      <div class="engine-num">
+        <span class="engine-num-val">60</span>
+        <span class="engine-num-label" data-it="Schemi animati" data-en="Animated diagrams">Schemi animati</span>
+      </div>
+      <div class="engine-num">
+        <span class="engine-num-val">32</span>
+        <span class="engine-num-label" data-it="Contesti di gioco" data-en="Game contexts">Contesti di gioco</span>
+      </div>
+    </div>
+    <p class="engine-desc reveal" data-it="Il motore analizza contesto, punteggio, segnali live, scouting avversario e memoria storica per selezionare il pattern tattico più efficace in ogni momento della partita." data-en="The engine analyses context, score, live signals, opponent scouting and match history to select the most effective tactical pattern at every moment of the match.">Il motore analizza contesto, punteggio, segnali live, scouting avversario e memoria storica per selezionare il pattern tattico più efficace in ogni momento della partita.</p>
+    <div class="concept-pills reveal">
+      <span class="cpill">Home Base</span>
+      <span class="cpill">Bulldozer</span>
+      <span class="cpill">Rip & Charge</span>
+      <span class="cpill">Layup</span>
+      <span class="cpill">Backhand Cage</span>
+      <span class="cpill">Anti-pusher</span>
+      <span class="cpill">Toe Wiggle</span>
+      <span class="cpill">Imaginary Line</span>
     </div>
   </div>
 </section>
 
+<!-- FEATURES -->
 <section>
-  <div class="section-label" data-it="Funzionalità" data-en="Features">Funzionalità</div>
-  <h2 data-it="Tutto quello che serve in campo" data-en="Everything you need on court">Tutto quello che serve in campo</h2>
-  <div class="feature-grid">
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <h3 data-it="Suggerimenti tattici live" data-en="Live tactical suggestions">Suggerimenti tattici live</h3>
-      <p data-it="Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi." data-en="At changeover the engine analyses the context and suggests the most suitable tactical pattern. Simple, direct, usable in 5 seconds.">Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi.</p>
+  <div class="section-eyebrow reveal" data-it="Funzionalità" data-en="Features">Funzionalità</div>
+  <h2 class="reveal" data-it="TUTTO QUELLO<br>CHE SERVE IN <span>CAMPO</span>" data-en="EVERYTHING YOU NEED<br><span>ON COURT</span>">TUTTO QUELLO<br>CHE SERVE IN <span>CAMPO</span></h2>
+  <div class="feat-grid">
+    <div class="feat-card reveal">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title" data-it="Suggerimenti tattici live" data-en="Live tactical suggestions">Suggerimenti tattici live</div>
+      <p class="feat-desc" data-it="Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi." data-en="At changeover the engine analyses context and suggests the most suitable tactical pattern. Simple, direct, usable in 5 seconds.">Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🎯</div>
-      <h3 data-it="Scouting avversario" data-en="Opponent scouting">Scouting avversario</h3>
-      <p data-it="Importa il profilo dell'avversario dai principali database del tennis italiano con un click. Forma recente, superficie preferita, punti forti e deboli." data-en="Import the opponent's profile from the main Italian tennis databases in one click. Recent form, preferred surface, strengths and weaknesses.">Importa il profilo dell'avversario dai principali database del tennis italiano con un click. Forma recente, superficie preferita, punti forti e deboli.</p>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-icon">🗺️</div>
+      <div class="feat-title" data-it="Schemi tattici animati" data-en="Animated tactical diagrams">Schemi tattici animati</div>
+      <p class="feat-desc" data-it="Ogni suggerimento include uno schema visivo animato del campo con traiettorie e zone di tiro. Immediato anche sotto stress." data-en="Every suggestion includes an animated visual court diagram with trajectories and target zones. Immediate even under stress.">Ogni suggerimento include uno schema visivo animato del campo con traiettorie e zone di tiro. Immediato anche sotto stress.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🧠</div>
-      <h3 data-it="Memoria tattica" data-en="Tactical memory">Memoria tattica</h3>
-      <p data-it="L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti si affinano nel tempo." data-en="The app remembers what worked in previous matches against the same opponent. Suggestions improve over time.">L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti si affinano nel tempo.</p>
+    <div class="feat-card reveal reveal-delay-2">
+      <div class="feat-icon">🎯</div>
+      <div class="feat-title" data-it="Scouting avversario" data-en="Opponent scouting">Scouting avversario</div>
+      <p class="feat-desc" data-it="Importa il profilo dell'avversario dai principali database del tennis con un click. Forma recente, superficie preferita, punti forti e deboli." data-en="Import the opponent's profile from major tennis databases in one click. Recent form, preferred surface, strengths and weaknesses.">Importa il profilo dell'avversario dai principali database del tennis con un click. Forma recente, superficie preferita, punti forti e deboli.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🗣️</div>
-      <h3 data-it="AI in linguaggio naturale" data-en="Natural language AI">AI in linguaggio naturale</h3>
-      <p data-it="Dì o scrivi un'osservazione in campo. L'AI interpreta e aggiorna automaticamente l'analisi tattica, senza dover toccare menu o checkbox." data-en="Say or type an observation on court. The AI interprets it and automatically updates the tactical analysis — no menus or checkboxes needed.">Dì o scrivi un'osservazione in campo. L'AI interpreta e aggiorna automaticamente l'analisi tattica, senza dover toccare menu o checkbox.</p>
+    <div class="feat-card reveal">
+      <div class="feat-icon">🧠</div>
+      <div class="feat-title" data-it="Memoria tattica" data-en="Tactical memory">Memoria tattica</div>
+      <p class="feat-desc" data-it="L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti migliorano nel tempo." data-en="The app remembers what worked in previous matches against the same opponent. Suggestions improve over time.">L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti migliorano nel tempo.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">📊</div>
-      <h3 data-it="Statistiche in tempo reale" data-en="Real-time statistics">Statistiche in tempo reale</h3>
-      <p data-it="Traccia ogni punto: tipo di colpo, effetto, direzione. Statistiche live su servizio, risposta e break point. Storico disponibile dopo il match." data-en="Track every point: shot type, effect, direction. Live stats on serve, return and break points. History available after the match.">Traccia ogni punto: tipo di colpo, effetto, direzione. Statistiche live su servizio, risposta e break point. Storico disponibile dopo il match.</p>
+    <div class="feat-card reveal reveal-delay-1">
+      <div class="feat-icon">🗣️</div>
+      <div class="feat-title" data-it="AI in linguaggio naturale" data-en="Natural language AI">AI in linguaggio naturale</div>
+      <p class="feat-desc" data-it="Dì o scrivi un'osservazione. L'AI interpreta e aggiorna automaticamente l'analisi tattica senza menu o checkbox." data-en="Say or type an observation. The AI interprets and automatically updates the tactical analysis without menus or checkboxes.">Dì o scrivi un'osservazione. L'AI interpreta e aggiorna automaticamente l'analisi tattica senza menu o checkbox.</p>
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">🗺️</div>
-      <h3 data-it="Schemi tattici animati" data-en="Animated tactical diagrams">Schemi tattici animati</h3>
-      <p data-it="Ogni suggerimento tattico include uno schema visivo animato del campo con traiettorie, posizioni e zone di tiro. Immediato, anche sotto stress." data-en="Every tactical suggestion includes an animated visual court diagram with trajectories, positions and target zones. Immediate, even under stress.">Ogni suggerimento tattico include uno schema visivo animato del campo con traiettorie, posizioni e zone di tiro. Immediato, anche sotto stress.</p>
+    <div class="feat-card reveal reveal-delay-2">
+      <div class="feat-icon">📊</div>
+      <div class="feat-title" data-it="Statistiche e storico" data-en="Statistics and history">Statistiche e storico</div>
+      <p class="feat-desc" data-it="Traccia ogni punto con tipo di colpo, effetto e direzione. Statistiche live e storico completo — giocatore vs avversario." data-en="Track every point with shot type, effect and direction. Live stats and complete history — player vs opponent.">Traccia ogni punto con tipo di colpo, effetto e direzione. Statistiche live e storico completo — giocatore vs avversario.</p>
     </div>
   </div>
 </section>
 
-<section id="how">
+<!-- HOW -->
+<section style="background:var(--ink2);border-top:1px solid var(--border)">
+  <div class="section-eyebrow reveal" data-it="Come funziona" data-en="How it works">Come funziona</div>
+  <h2 class="reveal" data-it="PRONTO IN <span>2 MINUTI</span>" data-en="READY IN <span>2 MINUTES</span>">PRONTO IN <span>2 MINUTI</span></h2>
   <div class="how-inner">
-    <div class="section-label" data-it="Come funziona" data-en="How it works">Come funziona</div>
-    <h2 data-it="Pronto in 2 minuti,<br>utile per tutta la partita" data-en="Ready in 2 minutes,<br>useful for the whole match">Pronto in 2 minuti,<br>utile per tutta la partita</h2>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-text">
+    <div class="how-steps">
+      <div class="how-step reveal">
+        <div class="step-num-wrap"><div class="step-circle">1</div></div>
+        <div class="step-content">
           <h4 data-it="Setup pre-match" data-en="Pre-match setup">Setup pre-match</h4>
-          <p data-it="Scegli il piano tattico, importa il profilo dell'avversario, seleziona il formato di gioco. 2 minuti in tutto." data-en="Choose the tactical plan, import the opponent's profile, select the match format. 2 minutes total.">Scegli il piano tattico, importa il profilo dell'avversario, seleziona il formato di gioco. 2 minuti in tutto.</p>
+          <p data-it="Scegli il piano tattico, importa il profilo avversario, seleziona il formato di gioco. 2 minuti in tutto." data-en="Choose the tactical plan, import the opponent profile, select the match format. 2 minutes total.">Scegli il piano tattico, importa il profilo avversario, seleziona il formato di gioco. 2 minuti in tutto.</p>
         </div>
       </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-text">
-          <h4 data-it="Connessione opzionale con il giocatore" data-en="Optional player connection">Connessione opzionale con il giocatore</h4>
-          <p data-it="Il coach genera un codice. Il giocatore lo inserisce sul proprio dispositivo e riceve i messaggi tattici in tempo reale." data-en="The coach generates a code. The player enters it on their device and receives tactical messages in real time.">Il coach genera un codice. Il giocatore lo inserisce sul proprio dispositivo e riceve i messaggi tattici in tempo reale.</p>
+      <div class="how-step reveal reveal-delay-1">
+        <div class="step-num-wrap"><div class="step-circle">2</div></div>
+        <div class="step-content">
+          <h4 data-it="Connetti il giocatore (opzionale)" data-en="Connect the player (optional)">Connetti il giocatore (opzionale)</h4>
+          <p data-it="Il coach genera un codice. Il giocatore lo inserisce e vede i messaggi tattici in tempo reale sul suo dispositivo." data-en="The coach generates a code. The player enters it and sees tactical messages in real time on their device.">Il coach genera un codice. Il giocatore lo inserisce e vede i messaggi tattici in tempo reale sul suo dispositivo.</p>
         </div>
       </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-text">
-          <h4 data-it="Aggiornamento durante il match" data-en="In-match updates">Aggiornamento durante il match</h4>
-          <p data-it="Il coach aggiorna il punteggio e aggiunge segnali live. Il motore adatta i suggerimenti in base al contesto." data-en="The coach updates the score and adds live signals. The engine adapts suggestions based on context.">Il coach aggiorna il punteggio e aggiunge segnali live. Il motore adatta i suggerimenti in base al contesto.</p>
+      <div class="how-step reveal reveal-delay-2">
+        <div class="step-num-wrap"><div class="step-circle">3</div></div>
+        <div class="step-content">
+          <h4 data-it="Aggiorna durante il match" data-en="Update during the match">Aggiorna durante il match</h4>
+          <p data-it="Aggiorna il punteggio e aggiungi segnali live. Il motore adatta i suggerimenti al contesto in tempo reale." data-en="Update the score and add live signals. The engine adapts suggestions to context in real time.">Aggiorna il punteggio e aggiungi segnali live. Il motore adatta i suggerimenti al contesto in tempo reale.</p>
         </div>
       </div>
-      <div class="step">
-        <div class="step-num">4</div>
-        <div class="step-text">
+      <div class="how-step reveal">
+        <div class="step-num-wrap"><div class="step-circle">4</div></div>
+        <div class="step-content">
           <h4 data-it="Debrief e memoria" data-en="Debrief and memory">Debrief e memoria</h4>
-          <p data-it="Dopo il match, salva note e feedback. L'app costruisce una memoria tattica che migliora i suggerimenti nelle partite successive." data-en="After the match, save notes and feedback. The app builds tactical memory that improves suggestions in future matches.">Dopo il match, salva note e feedback. L'app costruisce una memoria tattica che migliora i suggerimenti nelle partite successive.</p>
+          <p data-it="L'AI genera l'analisi del match e i suggerimenti di allenamento. I dati vengono memorizzati per i prossimi incontri." data-en="The AI generates the match analysis and training suggestions. Data is remembered for future matches.">L'AI genera l'analisi del match e i suggerimenti di allenamento. I dati vengono memorizzati per i prossimi incontri.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="cta-banner" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
-  <h2 data-it="Pronto per il campo?" data-en="Ready for the court?">Pronto per il campo?</h2>
-  <p data-it="Funziona come app installabile su iPhone e Android. Nessun download richiesto." data-en="Works as an installable app on iPhone and Android. No download required.">Funziona come app installabile su iPhone e Android. Nessun download richiesto.</p>
-  <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary" target="_blank" data-it="Apri Tennis AI Coach →" data-en="Open Tennis AI Coach →">Apri Tennis AI Coach →</a>
-  <div class="pwa-note" data-it="Su iPhone: Safari → Condividi → Aggiungi a schermata Home" data-en="On iPhone: Safari → Share → Add to Home Screen">Su iPhone: Safari → Condividi → Aggiungi a schermata Home</div>
+
+
+<!-- ANIMATED DEMO -->
+<section style="background:var(--ink);padding:80px 40px;overflow:hidden">
+  <div class="section-eyebrow" data-it="Schemi tattici in tempo reale" data-en="Real-time tactical diagrams">Schemi tattici in tempo reale</div>
+  <h2 data-it="VEDI IL MOTORE<br>IN <span>AZIONE</span>" data-en="SEE THE ENGINE<br>IN <span>ACTION</span>">VEDI IL MOTORE<br>IN <span>AZIONE</span></h2>
+
+<style>
+.demo-grid{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;align-items:flex-start;max-width:1100px;margin:0 auto}
+.demo-card{text-align:center;flex:0 0 auto}
+.demo-label{font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.court-wrap{position:relative;width:200px;height:340px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0a1520;margin:0 auto}
+
+/* Court lines */
+.court-bg{position:absolute;inset:0}
+
+/* Ball animation */
+.ball{
+  position:absolute;width:10px;height:10px;
+  border-radius:50%;background:#c8e000;
+  box-shadow:0 0 8px rgba(200,224,0,.8);
+  transform:translate(-50%,-50%);
+}
+
+/* Trail effect */
+.trail{
+  position:absolute;
+  background:rgba(200,224,0,.3);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+}
+
+/* Player dot */
+.pdot{
+  position:absolute;width:28px;height:28px;border-radius:50%;
+  background:#EF9F27;border:2px solid #BA7517;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:bold;color:white;font-family:sans-serif;
+  transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease;
+}
+.odot{
+  position:absolute;width:24px;height:24px;border-radius:50%;
+  background:#D85A30;border:2px solid #993C1D;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:bold;color:white;font-family:sans-serif;
+  transform:translate(-50%,-50%);
+}
+.target-zone{
+  position:absolute;border:1.5px dashed #1D9E75;border-radius:4px;
+  background:rgba(29,158,117,.15);
+}
+
+/* SVG path overlay for drawing */
+.path-svg{position:absolute;inset:0;pointer-events:none}
+.path-line{
+  stroke:#c8e000;stroke-width:2.5;fill:none;
+  stroke-dasharray:400;stroke-dashoffset:400;
+  stroke-linecap:round;
+}
+.path-line.move-line{stroke:#1D9E75;stroke-width:2;}
+
+/* Footstep dots for player movement */
+.footsteps{position:absolute;pointer-events:none}
+.fstep{
+  position:absolute;width:5px;height:7px;border-radius:50%;
+  background:var(--teal);opacity:0;
+  transform:translate(-50%,-50%);
+}
+@keyframes stepAppear{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(0)}
+  50%{opacity:.9;transform:translate(-50%,-50%) scale(1)}
+  100%{opacity:.5;transform:translate(-50%,-50%) scale(.8)}
+}
+
+.path-line.draw{animation:drawPath 1s ease forwards}
+.path-line.draw2{animation:drawPath .8s ease .9s forwards}
+.path-line.draw-move{animation:drawPath .6s ease .5s forwards}
+
+@keyframes drawPath{to{stroke-dashoffset:0}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+
+<div class="demo-grid">
+
+  <!-- DIAGRAM 1: Diagonale e attacca -->
+  <div class="demo-card">
+    <div class="demo-label" data-it="Diagonale × 2 → attacca" data-en="Diagonal × 2 → attack">Diagonale × 2 → attacca</div>
+    <div class="court-wrap" id="court1">
+      <svg class="court-bg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="8" width="180" height="324" fill="#9B4F1A" opacity=".7" rx="2"/>
+        <rect x="10" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
+        <rect x="168" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
+        <rect x="10" y="8" width="180" height="324" fill="none" stroke="white" stroke-width="1.5"/>
+        <line x1="32" y1="8" x2="32" y2="332" stroke="white" stroke-width="1"/>
+        <line x1="168" y1="8" x2="168" y2="332" stroke="white" stroke-width="1"/>
+        <line x1="10" y1="170" x2="190" y2="170" stroke="white" stroke-width="2.5"/>
+        <line x1="32" y1="82" x2="168" y2="82" stroke="white" stroke-width="1"/>
+        <line x1="32" y1="258" x2="168" y2="258" stroke="white" stroke-width="1"/>
+        <line x1="100" y1="82" x2="100" y2="258" stroke="white" stroke-width="1"/>
+        <!-- target zone top-left -->
+        <rect x="34" y="12" width="44" height="38" rx="3" fill="#1D9E75" opacity=".2"/>
+        <rect x="34" y="12" width="44" height="38" rx="3" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="56" y="37" text-anchor="middle" fill="#5DCAA5" font-size="8" font-family="sans-serif">target</text>
+      </svg>
+
+      <!-- Animated path -->
+      <svg class="path-svg" viewBox="0 0 200 340" id="c1svg">
+        <defs>
+          <marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#c8e000" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+          <marker id="at1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+        </defs>
+        <!-- Step1: diagonal to backhand corner -->
+        <path class="path-line" id="p1a" d="M 100 318 Q 58 195 42 24" marker-end="url(#ah1)" stroke-dasharray="360" stroke-dashoffset="360"/>
+        <!-- Step2: player advances -->
+        <!-- footstep path (dashed circles) -->
+        <line class="path-line" id="m1" x1="100" y1="318" x2="75" y2="248" stroke="var(--teal)" stroke-width="0" stroke-dasharray="6 8" stroke-dashoffset="80"/>
+        <!-- Step3: attack open court after short ball -->
+        <path class="path-line draw2" id="p1b" d="M 75 245 Q 125 165 162 24" marker-end="url(#ah1)" stroke-dasharray="260" stroke-dashoffset="260"/>
+      </svg>
+
+      <!-- Player -->
+      <!-- footsteps c1 -->
+      <div id="fs1" style="position:absolute;inset:0;pointer-events:none"></div>
+      <div class="pdot" id="p1dot" style="left:100px;top:320px">P</div>
+      <!-- Opp -->
+      <div class="odot" style="left:50px;top:30px">O</div>
+    </div>
+  </div>
+
+  <!-- DIAGRAM 2: Serve + 1 -->
+  <div class="demo-card">
+    <div class="demo-label" data-it="Servizio wide + 1" data-en="Wide serve + 1">Servizio wide + 1</div>
+    <div class="court-wrap" id="court2">
+      <svg class="court-bg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="8" width="180" height="324" fill="#9B4F1A" opacity=".7" rx="2"/>
+        <rect x="10" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
+        <rect x="168" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
+        <rect x="10" y="8" width="180" height="324" fill="none" stroke="white" stroke-width="1.5"/>
+        <line x1="32" y1="8" x2="32" y2="332" stroke="white" stroke-width="1"/>
+        <line x1="168" y1="8" x2="168" y2="332" stroke="white" stroke-width="1"/>
+        <line x1="10" y1="170" x2="190" y2="170" stroke="white" stroke-width="2.5"/>
+        <line x1="32" y1="82" x2="168" y2="82" stroke="white" stroke-width="1"/>
+        <line x1="32" y1="258" x2="168" y2="258" stroke="white" stroke-width="1"/>
+        <line x1="100" y1="82" x2="100" y2="258" stroke="white" stroke-width="1"/>
+        <rect x="138" y="12" width="28" height="45" rx="3" fill="#1D9E75" opacity=".2"/>
+        <rect x="138" y="12" width="28" height="45" rx="3" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="152" y="40" text-anchor="middle" fill="#5DCAA5" font-size="7" font-family="sans-serif">target</text>
+      </svg>
+      <svg class="path-svg" viewBox="0 0 200 340" id="c2svg">
+        <defs>
+          <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#c8e000" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+          <marker id="at2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+        </defs>
+        <!-- serve wide: from baseline to service box left (crosses net at y=170) -->
+        <path class="path-line" id="p2a" d="M 130 318 Q 78 210 38 118" marker-end="url(#ah2)" stroke-dasharray="290" stroke-dashoffset="290"/>
+        <!-- opponent scramble to ball -->
+        <line class="path-line" id="p2r" x1="42" y1="30" x2="38" y2="118" stroke="rgba(216,90,48,.5)" stroke-width="1.5" stroke-dasharray="3 3 100" stroke-dashoffset="100"/>
+        <!-- player move to intercept -->
+        <line class="path-line" id="m2" x1="130" y1="318" x2="95" y2="195" stroke="var(--teal)" stroke-width="0" stroke-dasharray="6 8" stroke-dashoffset="135"/>
+        <!-- +1 open court -->
+        <path class="path-line draw2" id="p2b" d="M 95 192 Q 135 145 158 24" marker-end="url(#ah2)" stroke-dasharray="220" stroke-dashoffset="220"/>
+      </svg>
+      <div id="fs2" style="position:absolute;inset:0;pointer-events:none"></div>
+      <div class="pdot" id="p2dot" style="left:130px;top:320px">P</div>
+      <div class="odot" style="left:42px;top:30px">O</div>
+    </div>
+  </div>
+
+  <!-- DIAGRAM 3: Palla corta + rete -->
+  <div class="demo-card">
+    <div class="demo-label" data-it="Palla corta → chiudi a rete" data-en="Drop shot → close the net">Palla corta → chiudi a rete</div>
+    <div class="court-wrap" id="court3">
+      <svg class="court-bg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="8" width="180" height="324" fill="#9B4F1A" opacity=".7" rx="2"/>
+        <rect x="10" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
+        <rect x="168" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
+        <rect x="10" y="8" width="180" height="324" fill="none" stroke="white" stroke-width="1.5"/>
+        <line x1="32" y1="8" x2="32" y2="332" stroke="white" stroke-width="1"/>
+        <line x1="168" y1="8" x2="168" y2="332" stroke="white" stroke-width="1"/>
+        <line x1="10" y1="170" x2="190" y2="170" stroke="white" stroke-width="2.5"/>
+        <line x1="32" y1="82" x2="168" y2="82" stroke="white" stroke-width="1"/>
+        <line x1="32" y1="258" x2="168" y2="258" stroke="white" stroke-width="1"/>
+        <line x1="100" y1="82" x2="100" y2="258" stroke="white" stroke-width="1"/>
+        <rect x="130" y="12" width="36" height="42" rx="3" fill="#1D9E75" opacity=".2"/>
+        <rect x="130" y="12" width="36" height="42" rx="3" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
+      </svg>
+      <svg class="path-svg" viewBox="0 0 200 340" id="c3svg">
+        <defs>
+          <marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#c8e000" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+          <marker id="at3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+            <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"/>
+          </marker>
+        </defs>
+        <!-- drop shot: lands just past net in opp half (y=155) -->
+        <path class="path-line" id="p3a" d="M 100 310 Q 85 220 78 155" marker-end="url(#ah3)" stroke-dasharray="175" stroke-dashoffset="175"/>
+        <!-- player advance to net -->
+        <line class="path-line" id="m3" x1="100" y1="310" x2="100" y2="185" stroke="var(--teal)" stroke-width="0" stroke-dasharray="6 8" stroke-dashoffset="128"/>
+        <!-- opp runs to short ball (dashed) -->
+        <line class="path-line" id="p3r" x1="100" y1="38" x2="78" y2="148" stroke="rgba(216,90,48,.6)" stroke-width="1.5" stroke-dasharray="3 3 120" stroke-dashoffset="120"/>
+        <!-- volley winner into open court -->
+        <path class="path-line draw2" id="p3b" d="M 100 182 Q 150 145 162 24" marker-end="url(#ah3)" stroke-dasharray="200" stroke-dashoffset="200"/>
+      </svg>
+      <div id="fs3" style="position:absolute;inset:0;pointer-events:none"></div>
+      <div class="pdot" id="p3dot" style="left:100px;top:312px">P</div>
+      <div class="odot" style="left:100px;top:30px">O</div>
+    </div>
+  </div>
+
+</div>
+<p style="text-align:center;font-size:13px;color:var(--muted);margin-top:32px" data-it="60 schemi tattici animati — uno per ogni pattern del motore" data-en="60 animated tactical diagrams — one for every engine pattern">60 schemi tattici animati — uno per ogni pattern del motore</p>
+
+<script>
+(function(){
+  function makeFootsteps(containerId, x1, y1, x2, y2, delayMs){
+    var c = document.getElementById(containerId);
+    if(!c) return;
+    // clear old
+    c.innerHTML='';
+    var dx=x2-x1, dy=y2-y1, dist=Math.sqrt(dx*dx+dy*dy);
+    var steps=Math.floor(dist/14);
+    for(var i=1;i<=steps;i++){
+      var t=i/(steps+1);
+      var dot=document.createElement('div');
+      dot.style.cssText='position:absolute;width:'+(i%2===0?5:4)+'px;height:'+(i%2===0?7:5)+'px;border-radius:50%;background:#18a077;opacity:0;transform:translate(-50%,-50%);left:'+(x1+dx*t)+'px;top:'+(y1+dy*t)+'px';
+      c.appendChild(dot);
+      (function(d,idx){
+        setTimeout(function(){
+          d.style.transition='opacity .2s';
+          d.style.opacity='.75';
+          setTimeout(function(){d.style.opacity='.3';},400);
+        }, delayMs + idx*60);
+      })(dot, i);
+    }
+  }
+
+  function animCourt(svgId, paths, playerDot, playerFrom, playerTo, fsId, fsDelay){
+    var svg = document.getElementById(svgId);
+    if(!svg) return;
+
+    function run(){
+      paths.forEach(function(p){
+        var el = document.getElementById(p.id);
+        if(!el) return;
+        el.style.animation = 'none';
+        var da = p.da || '400';
+        el.style.strokeDasharray = da;
+        el.style.strokeDashoffset = da;
+        void el.getBoundingClientRect();
+      });
+      if(playerDot){
+        var pd = document.getElementById(playerDot);
+        if(pd){ pd.style.transition='none'; pd.style.left=playerFrom[0]+'px'; pd.style.top=playerFrom[1]+'px'; }
+      }
+      if(fsId) document.getElementById(fsId).innerHTML='';
+
+      paths.forEach(function(p){
+        var el = document.getElementById(p.id);
+        if(!el) return;
+        var delayMs = (p.delay||0)*1000;
+        setTimeout(function(){
+          el.style.animation = 'drawPath '+p.dur+'s ease forwards';
+          if(p.isMove){
+            if(playerDot){
+              var pd = document.getElementById(playerDot);
+              if(pd){
+                pd.style.transition = 'left '+p.dur+'s ease, top '+p.dur+'s ease';
+                pd.style.left = playerTo[0]+'px';
+                pd.style.top = playerTo[1]+'px';
+              }
+            }
+            if(fsId && p.fsCoords){
+              makeFootsteps(fsId, p.fsCoords[0], p.fsCoords[1], p.fsCoords[2], p.fsCoords[3], 0);
+            }
+          }
+        }, delayMs);
+      });
+    }
+
+    run();
+    setInterval(run, 4800);
+  }
+
+  // Court 1: diagonal
+  animCourt('c1svg',
+    [{id:'p1a',dur:.9,delay:0,da:'360'},{id:'m1',dur:.5,delay:.5,isMove:true,da:'80',fsCoords:[100,318,75,248]},{id:'p1b',dur:.8,delay:1.2,da:'260'}],
+    'p1dot',[100,320],[75,248],'fs1',500);
+
+  // Court 2: serve+1
+  animCourt('c2svg',
+    [{id:'p2a',dur:.7,delay:0,da:'290'},{id:'p2r',dur:.4,delay:.4,da:'100'},{id:'m2',dur:.5,delay:.9,isMove:true,da:'135',fsCoords:[130,318,95,195]},{id:'p2b',dur:.7,delay:1.5,da:'220'}],
+    'p2dot',[130,320],[95,195],'fs2',900);
+
+  animCourt('c3svg',
+    [{id:'p3a',dur:.6,delay:0,da:'175'},{id:'p3r',dur:.5,delay:.3,da:'120'},{id:'m3',dur:.5,delay:.5,isMove:true,da:'128',fsCoords:[100,310,100,185]},{id:'p3b',dur:.7,delay:1.2,da:'200'}],
+    'p3dot',[100,312],[100,185],'fs3',500);
+})();
+</script>
 </section>
 
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <div class="section-eyebrow reveal" data-it="Inizia ora" data-en="Get started">Inizia ora</div>
+  <h2 class="reveal" data-it="PRONTO PER<br>IL <span>CAMPO?</span>" data-en="READY FOR<br>THE <span>COURT?</span>">PRONTO PER<br>IL <span>CAMPO?</span></h2>
+  <p class="reveal" data-it="Funziona come app installabile su iPhone e Android. Nessun download richiesto." data-en="Works as an installable app on iPhone and Android. No download required.">Funziona come app installabile su iPhone e Android. Nessun download richiesto.</p>
+  <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary reveal" target="_blank" style="display:inline-flex;margin:0 auto">
+    <span data-it="Apri Tennis AI Coach" data-en="Open Tennis AI Coach">Apri Tennis AI Coach</span>
+    <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+  </a>
+  <div class="pwa-note reveal" data-it="Su iPhone: Safari → Condividi → Aggiungi a schermata Home" data-en="On iPhone: Safari → Share → Add to Home Screen">Su iPhone: Safari → Condividi → Aggiungi a schermata Home</div>
+</section>
+
+<!-- FOOTER -->
 <footer>
+  <div class="logo-mark">
+    <div class="logo-icon" style="width:24px;height:24px;font-size:12px">🎾</div>
+    <span style="font-family:var(--font-display);font-size:16px;letter-spacing:2px;color:var(--muted)">TENNIS AI COACH</span>
+  </div>
   <div class="footer-links">
     <a href="https://tennis-ai-coach-chi.vercel.app" target="_blank" data-it="Apri app" data-en="Open app">Apri app</a>
     <a href="https://tennis-ai-coach-chi.vercel.app" target="_blank">Privacy Policy</a>
-    <a href="mailto:info@filipponeri.com" data-it="Contatto" data-en="Contact">Contatto</a>
+    <a href="mailto:info@filipponeri.com">info@filipponeri.com</a>
   </div>
-  <div class="footer-copy">© 2026 Tennis AI Coach · info@filipponeri.com</div>
+  <span class="footer-copy">© 2026 Tennis AI Coach</span>
 </footer>
 
 <script>
+
+
+// Language
 function setLang(lang){
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.textContent===lang.toUpperCase()));
   document.querySelectorAll('[data-it]').forEach(el=>{
-    const txt=el.getAttribute('data-'+lang);
-    if(!txt)return;
-    if(el.tagName==='A'||el.tagName==='BUTTON'){el.textContent=txt;return;}
-    el.innerHTML=txt;
+    const t=el.getAttribute('data-'+lang);
+    if(!t)return;
+    if(el.tagName==='A'||el.tagName==='BUTTON'){el.textContent=t;return;}
+    el.innerHTML=t;
+  });
+  document.querySelectorAll('.lang-sw button').forEach(b=>{
+    b.classList.toggle('on',b.textContent===lang.toUpperCase());
   });
   document.documentElement.lang=lang;
 }
