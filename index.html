@@ -272,6 +272,76 @@ footer{
   h2{text-align:left}
   .section-eyebrow{text-align:left}
 }
+
+@media(max-width:768px){
+  /* Hero */
+  .hero{
+    padding:90px 20px 50px;min-height:auto;
+    flex-direction:column;align-items:flex-start;
+  }
+  .hero-court{display:none}
+  .hero-phone{
+    position:relative!important;right:auto!important;top:auto!important;
+    transform:none!important;width:180px!important;
+    margin:32px auto 0;display:block;
+    filter:drop-shadow(0 20px 40px rgba(0,0,0,.5))!important;
+  }
+  h1{font-size:clamp(44px,12vw,72px)}
+  .hero-stats{gap:20px;margin-top:32px;padding-top:24px}
+  .hero-stat-num{font-size:28px}
+
+  /* Nav */
+  nav{padding:12px 16px}
+  .logo-text{font-size:16px}
+
+  /* Sections */
+  section{padding:52px 20px}
+  h2{font-size:clamp(32px,9vw,52px);text-align:left}
+  .section-eyebrow{text-align:left}
+
+  /* Modes */
+  .modes-grid{grid-template-columns:1fr;gap:1px}
+  .mode-card{padding:28px 20px}
+
+  /* Engine numbers: 2x2 */
+  .engine-numbers{grid-template-columns:repeat(2,1fr)}
+  .engine-num-val{font-size:36px}
+
+  /* Features: 1 col */
+  .feat-grid{grid-template-columns:1fr}
+
+  /* How */
+  .how-inner{max-width:100%}
+
+  /* Demo: horizontal scroll carousel */
+  .demo-grid{
+    flex-wrap:nowrap!important;
+    overflow-x:auto;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    padding:0 20px 16px;
+    gap:16px!important;
+    justify-content:flex-start!important;
+    margin:0 -20px!important;
+  }
+  .demo-grid::-webkit-scrollbar{display:none}
+  .demo-card{
+    flex:0 0 auto!important;
+    scroll-snap-align:center;
+    min-width:200px;
+  }
+  .court-wrap{width:180px!important;height:306px!important}
+
+  /* CTA */
+  .cta-final h2{text-align:left}
+  .cta-final .btn-primary{display:flex}
+  .pwa-note{justify-content:flex-start}
+  .pwa-note::before,.pwa-note::after{display:none}
+
+  /* Footer */
+  footer{flex-direction:column;gap:16px;padding:24px 20px}
+  .footer-links{flex-wrap:wrap;gap:14px}
+}
 </style>
 </head>
 <body>
@@ -737,7 +807,8 @@ footer{
   </div>
 
 </div>
-<p style="text-align:center;font-size:13px;color:var(--muted);margin-top:32px" data-it="60 schemi tattici animati — uno per ogni pattern del motore" data-en="60 animated tactical diagrams — one for every engine pattern">60 schemi tattici animati — uno per ogni pattern del motore</p>
+<p style="text-align:center;font-size:11px;color:var(--muted);margin:12px 0 4px;display:none" id="swipe-hint">← scorri per vedere tutti gli schemi →</p>
+  <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:12px" data-it="60 schemi tattici animati — uno per ogni pattern del motore" data-en="60 animated tactical diagrams — one for every engine pattern">60 schemi tattici animati — uno per ogni pattern del motore</p>
 
 <script>
 (function(){
@@ -823,6 +894,11 @@ footer{
   animCourt('c3svg',
     [{id:'p3a',dur:.6,delay:0,da:'175'},{id:'p3r',dur:.5,delay:.3,da:'120'},{id:'m3',dur:.5,delay:.5,isMove:true,da:'128',fsCoords:[100,310,100,185]},{id:'p3b',dur:.7,delay:1.2,da:'200'}],
     'p3dot',[100,312],[100,185],'fs3',500);
+  // Show swipe hint on mobile
+  if(window.innerWidth < 768){
+    var hint = document.getElementById('swipe-hint');
+    if(hint) hint.style.display='block';
+  }
 })();
 </script>
 </section>
