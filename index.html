@@ -42,7 +42,7 @@ nav{
   backdrop-filter:blur(12px);
 }
 .logo-mark{display:flex;align-items:center;gap:10px}
-.logo-icon{width:32px;height:32px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.logo-icon{display:none}
 .logo-text{font-family:var(--font-display);font-size:22px;letter-spacing:2px;color:var(--white)}
 .nav-right{display:flex;align-items:center;gap:16px}
 .lang-sw{display:flex;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:6px;overflow:hidden}
@@ -275,72 +275,86 @@ footer{
 
 @media(max-width:768px){
   /* Hero */
-  .hero{
-    padding:90px 20px 50px;min-height:auto;
-    flex-direction:column;align-items:flex-start;
-  }
+  .hero{padding:90px 20px 44px;min-height:auto;flex-direction:column;align-items:flex-start}
   .hero-court{display:none}
-  .hero-phone{
-    position:relative!important;right:auto!important;top:auto!important;
-    transform:none!important;width:180px!important;
-    margin:32px auto 0;display:block;
-    filter:drop-shadow(0 20px 40px rgba(0,0,0,.5))!important;
-  }
-  h1{font-size:clamp(44px,12vw,72px)}
-  .hero-stats{gap:20px;margin-top:32px;padding-top:24px}
-  .hero-stat-num{font-size:28px}
+  .hero-phone{display:none}
+  .hero-eyebrow{display:none}
+  h1{font-size:clamp(44px,12vw,68px)}
+  .hero-stats{gap:20px;margin-top:28px;padding-top:22px}
+  .hero-stat-num{font-size:26px}
 
   /* Nav */
   nav{padding:12px 16px}
-  .logo-text{font-size:16px}
+  .logo-text{font-size:15px}
 
   /* Sections */
-  section{padding:52px 20px}
-  h2{font-size:clamp(32px,9vw,52px);text-align:left}
+  section{padding:48px 20px}
+  h2{font-size:clamp(30px,9vw,48px);text-align:left}
   .section-eyebrow{text-align:left}
 
-  /* Modes */
-  .modes-grid{grid-template-columns:1fr;gap:1px}
-  .mode-card{padding:28px 20px}
+  /* Modes: horizontal scroll */
+  .modes{padding:48px 0}
+  .modes h2,.modes .section-eyebrow{padding:0 20px}
+  .modes-grid{
+    display:flex;flex-wrap:nowrap;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    padding:0 20px 16px;gap:12px;
+  }
+  .modes-grid::-webkit-scrollbar{display:none}
+  .mode-card{
+    flex:0 0 80vw;max-width:300px;
+    scroll-snap-align:start;padding:24px 20px;
+  }
+  .mode-num{font-size:48px;margin-bottom:10px}
 
   /* Engine numbers: 2x2 */
   .engine-numbers{grid-template-columns:repeat(2,1fr)}
-  .engine-num-val{font-size:36px}
+  .engine-num-val{font-size:34px}
+  .engine-inner{text-align:left}
+  .concept-pills{justify-content:flex-start}
 
-  /* Features: 1 col */
-  .feat-grid{grid-template-columns:1fr}
+  /* Features: horizontal scroll */
+  .features-section{padding:48px 0}
+  .features-section h2,.features-section .section-eyebrow{padding:0 20px}
+  .feat-grid{
+    display:flex;flex-wrap:nowrap;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+    padding:0 20px 16px;gap:12px;
+    max-width:none;margin:0;
+  }
+  .feat-grid::-webkit-scrollbar{display:none}
+  .feat-card{
+    flex:0 0 75vw;max-width:280px;
+    scroll-snap-align:start;
+  }
 
   /* How */
   .how-inner{max-width:100%}
 
-  /* Demo: horizontal scroll carousel */
+  /* Demo: horizontal scroll */
   .demo-grid{
     flex-wrap:nowrap!important;
-    overflow-x:auto;
-    scroll-snap-type:x mandatory;
+    overflow-x:auto;scroll-snap-type:x mandatory;
     -webkit-overflow-scrolling:touch;
-    padding:0 20px 16px;
-    gap:16px!important;
+    padding:0 20px 16px;gap:16px!important;
     justify-content:flex-start!important;
     margin:0 -20px!important;
   }
   .demo-grid::-webkit-scrollbar{display:none}
-  .demo-card{
-    flex:0 0 auto!important;
-    scroll-snap-align:center;
-    min-width:200px;
-  }
-  .court-wrap{width:180px!important;height:306px!important}
+  .demo-card{flex:0 0 auto!important;scroll-snap-align:center;min-width:190px}
+  .court-wrap{width:175px!important;height:298px!important}
 
   /* CTA */
   .cta-final h2{text-align:left}
-  .cta-final .btn-primary{display:flex}
+  .cta-final .btn-primary{display:inline-flex}
   .pwa-note{justify-content:flex-start}
   .pwa-note::before,.pwa-note::after{display:none}
 
   /* Footer */
-  footer{flex-direction:column;gap:16px;padding:24px 20px}
-  .footer-links{flex-wrap:wrap;gap:14px}
+  footer{flex-direction:column;gap:14px;padding:24px 20px}
+  .footer-links{flex-wrap:wrap;gap:12px}
 }
 </style>
 </head>
@@ -349,7 +363,25 @@ footer{
 <!-- NAV -->
 <nav>
   <div class="logo-mark">
-    <div class="logo-icon">🎾</div>
+    <svg width="34" height="34" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Outer rounded square -->
+      <rect x="1" y="1" width="32" height="32" rx="8" fill="#0D1B2A" stroke="#F0A500" stroke-width="1.5"/>
+      <!-- Court lines: simplified top-view field -->
+      <!-- Outer court border (inner) -->
+      <rect x="5" y="5" width="24" height="24" rx="1" fill="none" stroke="#F0A500" stroke-width="1.2"/>
+      <!-- Net line horizontal center -->
+      <line x1="5" y1="17" x2="29" y2="17" stroke="#F0A500" stroke-width="1.8"/>
+      <!-- Service line top -->
+      <line x1="9" y1="10" x2="25" y2="10" stroke="#F0A500" stroke-width=".8" opacity=".7"/>
+      <!-- Service line bottom -->
+      <line x1="9" y1="24" x2="25" y2="24" stroke="#F0A500" stroke-width=".8" opacity=".7"/>
+      <!-- Center service line vertical -->
+      <line x1="17" y1="10" x2="17" y2="24" stroke="#F0A500" stroke-width=".8" opacity=".7"/>
+      <!-- Tactic arrow: diagonal trajectory -->
+      <path d="M 22 27 Q 11 20 8 9" stroke="#F0A500" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".9"/>
+      <!-- Arrow head -->
+      <path d="M 8 9 L 11 12 M 8 9 L 12 9" stroke="#F0A500" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
     <span class="logo-text">TENNIS AI COACH</span>
   </div>
   <div class="nav-right">
@@ -513,7 +545,7 @@ footer{
 </section>
 
 <!-- FEATURES -->
-<section>
+<section class="features-section">
   <div class="section-eyebrow reveal" data-it="Funzionalità" data-en="Features">Funzionalità</div>
   <h2 class="reveal" data-it="TUTTO QUELLO<br>CHE SERVE IN <span>CAMPO</span>" data-en="EVERYTHING YOU NEED<br><span>ON COURT</span>">TUTTO QUELLO<br>CHE SERVE IN <span>CAMPO</span></h2>
   <div class="feat-grid">
@@ -918,7 +950,16 @@ footer{
 <!-- FOOTER -->
 <footer>
   <div class="logo-mark">
-    <div class="logo-icon" style="width:24px;height:24px;font-size:12px">🎾</div>
+    <svg width="26" height="26" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="32" height="32" rx="8" fill="#0D1B2A" stroke="#F0A500" stroke-width="1.5"/>
+      <rect x="5" y="5" width="24" height="24" rx="1" fill="none" stroke="#F0A500" stroke-width="1.2"/>
+      <line x1="5" y1="17" x2="29" y2="17" stroke="#F0A500" stroke-width="1.8"/>
+      <line x1="9" y1="10" x2="25" y2="10" stroke="#F0A500" stroke-width=".8" opacity=".7"/>
+      <line x1="9" y1="24" x2="25" y2="24" stroke="#F0A500" stroke-width=".8" opacity=".7"/>
+      <line x1="17" y1="10" x2="17" y2="24" stroke="#F0A500" stroke-width=".8" opacity=".7"/>
+      <path d="M 22 27 Q 11 20 8 9" stroke="#F0A500" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".9"/>
+      <path d="M 8 9 L 11 12 M 8 9 L 12 9" stroke="#F0A500" stroke-width="1.2" stroke-linecap="round"/>
+    </svg>
     <span style="font-family:var(--font-display);font-size:16px;letter-spacing:2px;color:var(--muted)">TENNIS AI COACH</span>
   </div>
   <div class="footer-links">
