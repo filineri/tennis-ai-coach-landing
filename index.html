@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Tennis AI Coach — il tuo assistente tattico in campo in tempo reale.">
-<title>Tennis AI Coach</title>
+<title>Tennis AI Coach — Il match si decide al cambio campo</title>
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
@@ -356,6 +359,41 @@ footer{
   footer{flex-direction:column;gap:14px;padding:24px 20px}
   .footer-links{flex-wrap:wrap;gap:12px}
 }
+
+/* ─── PRICING ─── */
+.pricing-section{background:var(--ink2);border-top:1px solid var(--border);padding:100px 40px}
+.pricing-inner{max-width:1080px;margin:0 auto;text-align:center}
+.beta-banner{display:inline-flex;align-items:center;gap:10px;background:rgba(24,160,119,.12);border:1px solid rgba(24,160,119,.35);color:#5DCAA5;border-radius:24px;padding:8px 20px;font-size:13px;font-weight:600;letter-spacing:.5px;margin:26px 0 44px}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;text-align:left}
+.price-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;display:flex;flex-direction:column;position:relative;transition:transform .2s,border-color .2s}
+.price-card:hover{transform:translateY(-3px);border-color:rgba(240,165,0,.4)}
+.price-card.featured{border-color:var(--gold);background:linear-gradient(180deg,rgba(240,165,0,.07),var(--card) 45%)}
+.price-badge{position:absolute;top:-12px;left:28px;background:var(--gold);color:var(--ink);font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:12px;text-transform:uppercase}
+.price-tier{font-family:var(--font-display);font-size:26px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
+.price-for{font-size:12px;color:var(--muted);margin-bottom:18px;letter-spacing:.3px}
+.price-val{font-size:34px;font-weight:600;color:var(--white);margin-bottom:2px}
+.price-val small{font-size:13px;color:var(--muted);font-weight:400}
+.price-note{font-size:11px;color:var(--muted);margin-bottom:22px}
+.price-list{list-style:none;margin:0 0 26px;flex:1}
+.price-list li{font-size:13.5px;color:rgba(240,244,248,.85);padding:7px 0;border-bottom:1px solid rgba(26,45,66,.6);display:flex;gap:9px;align-items:baseline}
+.price-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0}
+.price-cta{display:block;text-align:center;padding:13px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;letter-spacing:.3px;transition:all .2s}
+.price-cta.solid{background:var(--gold);color:var(--ink)}
+.price-cta.solid:hover{background:var(--gold2)}
+.price-cta.line{border:1px solid var(--border);color:var(--white)}
+.price-cta.line:hover{border-color:var(--gold);color:var(--gold)}
+.price-foot{font-size:12px;color:var(--muted);margin-top:28px}
+/* ─── FAQ ─── */
+.faq-section{background:var(--ink);padding:100px 40px;border-top:1px solid var(--border)}
+.faq-inner{max-width:780px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border)}
+.faq-item summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 4px;font-size:16px;font-weight:600;color:var(--white)}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:'+';font-size:22px;color:var(--gold);transition:transform .2s;flex-shrink:0}
+.faq-item[open] summary::after{transform:rotate(45deg)}
+.faq-item p{padding:0 4px 24px;color:var(--muted);font-size:14.5px;line-height:1.75;max-width:660px}
+@media(max-width:760px){.pricing-section,.faq-section{padding:70px 22px}}
+
 </style>
 </head>
 <body>
@@ -454,8 +492,8 @@ footer{
       <span></span>
       <span data-it="Assistente tattico live" data-en="Live tactical assistant">Assistente tattico live</span>
     </div>
-    <h1 class="reveal reveal-delay-1" data-it="IL COACH<br>CHE TI SERVE<br><em>IN CAMPO</em>" data-en="THE COACH<br>YOU NEED<br><em>ON COURT</em>">IL COACH<br>CHE TI SERVE<br><em>IN CAMPO</em></h1>
-    <p class="hero-sub reveal reveal-delay-2" data-it="Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Ogni cambio campo diventa un vantaggio." data-en="Real-time tactical analysis adapted to your player and the opponent. Every changeover becomes an advantage.">Analisi tattica in tempo reale, adattata al tuo giocatore e all'avversario. Ogni cambio campo diventa un vantaggio.</p>
+    <h1 class="reveal reveal-delay-1" data-it="IL MATCH<br>SI DECIDE AL<br><em>CAMBIO CAMPO</em>" data-en="THE MATCH<br>IS WON AT THE<br><em>CHANGEOVER</em>">IL MATCH<br>SI DECIDE AL<br><em>CAMBIO CAMPO</em></h1>
+    <p class="hero-sub reveal reveal-delay-2" data-it="Hai 90 secondi per correggere la rotta — e di solito si ripete l'errore che sta facendo perdere. Tennis AI Coach legge punteggio, segnali live e avversario, e ti dà la mossa giusta. Con il perché." data-en="You get 90 seconds to change course — and most players repeat the mistake that's losing them the match. Tennis AI Coach reads the score, live signals and your opponent, and hands you the right move. With the reason why.">Hai 90 secondi per correggere la rotta — e di solito si ripete l'errore che sta facendo perdere. Tennis AI Coach legge punteggio, segnali live e avversario, e ti dà la mossa giusta. Con il perché.</p>
     <div class="hero-ctas reveal reveal-delay-3">
       <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary" target="_blank" data-it="Inizia ora" data-en="Start now">
         <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l7 7-7 7M1 8h14"/></svg>
@@ -511,7 +549,7 @@ footer{
   <div class="engine-inner">
     <div class="section-eyebrow reveal" data-it="Il motore tattico" data-en="The tactical engine">Il motore tattico</div>
     <h2 class="reveal" data-it="ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span>" data-en="YEARS OF EXPERTISE<br><span>IN AN ALGORITHM</span>">ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span></h2>
-    <p class="engine-lead reveal" data-it="Il motore aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Non è un chatbot generico: è un sistema deterministico con logica tattica contestuale, memoria storica e adattamento dinamico." data-en="The engine aggregates principles from the world's most authoritative experts in tennis tactics and psychology. Not a generic chatbot: a deterministic system with contextual tactical logic, match history and dynamic adaptation.">Il motore aggrega i principi dei più autorevoli esperti mondiali di tattica e psicologia del tennis. Non è un chatbot generico: è un sistema deterministico con logica tattica contestuale, memoria storica e adattamento dinamico.</p>
+    <p class="engine-lead reveal" data-it="Il motore si ispira ai principi della letteratura tattica e mentale di riferimento — da Winning Ugly di Brad Gilbert a The Inner Game of Tennis di Timothy Gallwey — e li trasforma in un sistema deterministico che sceglie in base a contesto, evidenza e memoria. Non è un chatbot: ogni consiglio arriva con la sua motivazione. «3 errori di rovescio negli ultimi 8 punti → gioca alto sul rovescio»." data-en="The engine draws on principles from the reference literature of tennis tactics and mindset — from Brad Gilbert's Winning Ugly to Timothy Gallwey's The Inner Game of Tennis — and turns them into a deterministic system choosing on context, evidence and memory. Not a chatbot: every suggestion comes with its reason. “3 backhand errors in the last 8 points → play high to the backhand”.">Il motore si ispira ai principi della letteratura tattica e mentale di riferimento — da Winning Ugly di Brad Gilbert a The Inner Game of Tennis di Timothy Gallwey — e li trasforma in un sistema deterministico che sceglie in base a contesto, evidenza e memoria. Non è un chatbot: ogni consiglio arriva con la sua motivazione. «3 errori di rovescio negli ultimi 8 punti → gioca alto sul rovescio».</p>
     <div class="engine-numbers reveal">
       <div class="engine-num">
         <span class="engine-num-val">337</span>
@@ -532,14 +570,14 @@ footer{
     </div>
     <p class="engine-desc reveal" data-it="Il motore analizza contesto, punteggio, segnali live, scouting avversario e memoria storica per selezionare il pattern tattico più efficace in ogni momento della partita." data-en="The engine analyses context, score, live signals, opponent scouting and match history to select the most effective tactical pattern at every moment of the match.">Il motore analizza contesto, punteggio, segnali live, scouting avversario e memoria storica per selezionare il pattern tattico più efficace in ogni momento della partita.</p>
     <div class="concept-pills reveal">
-      <span class="cpill">Home Base</span>
-      <span class="cpill">Bulldozer</span>
-      <span class="cpill">Rip & Charge</span>
-      <span class="cpill">Layup</span>
-      <span class="cpill">Backhand Cage</span>
-      <span class="cpill">Anti-pusher</span>
-      <span class="cpill">Toe Wiggle</span>
-      <span class="cpill">Imaginary Line</span>
+      <span class="cpill" data-it="Punto di recupero" data-en="Recovery base">Punto di recupero</span>
+      <span class="cpill" data-it="Il Martello" data-en="The Hammer">Il Martello</span>
+      <span class="cpill" data-it="Strappa &amp; attacca" data-en="Rip the return">Strappa &amp; attacca</span>
+      <span class="cpill" data-it="Chiusura comoda" data-en="Easy put-away">Chiusura comoda</span>
+      <span class="cpill" data-it="Gabbia sul rovescio" data-en="Backhand trap">Gabbia sul rovescio</span>
+      <span class="cpill" data-it="Anti-pusher" data-en="Anti-pusher">Anti-pusher</span>
+      <span class="cpill" data-it="Routine pre-punto" data-en="Pre-point routine">Routine pre-punto</span>
+      <span class="cpill" data-it="Linea di recupero" data-en="Recovery line">Linea di recupero</span>
     </div>
   </div>
 </section>
@@ -936,6 +974,85 @@ footer{
 </section>
 
 <!-- CTA FINAL -->
+
+<!-- PRICING -->
+<section class="pricing-section" id="prezzi">
+  <div class="pricing-inner">
+    <div class="section-eyebrow reveal" data-it="Piani e accesso" data-en="Plans &amp; access">Piani e accesso</div>
+    <h2 class="reveal" data-it="UN COACH TATTICO COSTA MENO<br><span>DI UN TUBO DI PALLE</span>" data-en="A TACTICAL COACH FOR LESS<br><span>THAN A CAN OF BALLS</span>">UN COACH TATTICO COSTA MENO<br><span>DI UN TUBO DI PALLE</span></h2>
+    <div class="beta-banner reveal"><span>●</span><span data-it="Beta privata in corso — accesso gratuito su invito, prezzi di lancio bloccati per i beta tester" data-en="Private beta running — free access by invite, launch pricing locked for beta testers">Beta privata in corso — accesso gratuito su invito, prezzi di lancio bloccati per i beta tester</span></div>
+    <div class="price-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">BASE</div>
+        <div class="price-for" data-it="Per il giocatore autonomo" data-en="For the independent player">Per il giocatore autonomo</div>
+        <!-- PREZZI PLACEHOLDER: conferma o modifica prima della pubblicazione -->
+        <div class="price-val" data-it="Gratis" data-en="Free">Gratis</div>
+        <div class="price-note" data-it="Per sempre" data-en="Forever">Per sempre</div>
+        <ul class="price-list">
+          <li data-it="Punteggio live e piano tattico" data-en="Live score and tactical plan">Punteggio live e piano tattico</li>
+          <li data-it="Schemi animati del campo" data-en="Animated court diagrams">Schemi animati del campo</li>
+          <li data-it="Point tracking e statistiche" data-en="Point tracking and stats">Point tracking e statistiche</li>
+          <li data-it="Storico match sul dispositivo" data-en="Match history on device">Storico match sul dispositivo</li>
+        </ul>
+        <a class="price-cta line" href="https://tennis-ai-coach-chi.vercel.app" target="_blank" data-it="Prova subito" data-en="Try it now">Prova subito</a>
+      </div>
+      <div class="price-card featured reveal reveal-delay-1">
+        <div class="price-badge" data-it="Più scelto" data-en="Most popular">Più scelto</div>
+        <div class="price-tier">PRO</div>
+        <div class="price-for" data-it="Per coach e agonisti" data-en="For coaches and competitors">Per coach e agonisti</div>
+        <div class="price-val">7,99€<small> /mese</small></div>
+        <div class="price-note" data-it="Prezzo di lancio beta" data-en="Beta launch price">Prezzo di lancio beta</div>
+        <ul class="price-list">
+          <li data-it="Tutto di BASE, più:" data-en="Everything in BASE, plus:">Tutto di BASE, più:</li>
+          <li data-it="Sync coach ↔ giocatore in tempo reale" data-en="Real-time coach ↔ player sync">Sync coach ↔ giocatore in tempo reale</li>
+          <li data-it="Scouting avversario con import 1-click" data-en="Opponent scouting with 1-click import">Scouting avversario con import 1-click</li>
+          <li data-it="Memoria tattica tra i match" data-en="Tactical memory across matches">Memoria tattica tra i match</li>
+          <li data-it="Debrief AI e piano di allenamento" data-en="AI debrief and training plan">Debrief AI e piano di allenamento</li>
+          <li data-it="Backup cloud e multi-dispositivo" data-en="Cloud backup and multi-device">Backup cloud e multi-dispositivo</li>
+        </ul>
+        <a class="price-cta solid" href="mailto:info@filipponeri.com?subject=Accesso%20beta%20Tennis%20AI%20Coach%20PRO" data-it="Richiedi accesso beta" data-en="Request beta access">Richiedi accesso beta</a>
+      </div>
+      <div class="price-card reveal reveal-delay-2">
+        <div class="price-tier">TEAM</div>
+        <div class="price-for" data-it="Per accademie e circoli" data-en="For academies and clubs">Per accademie e circoli</div>
+        <div class="price-val">19,99€<small> /mese</small></div>
+        <div class="price-note" data-it="Prezzo di lancio beta" data-en="Beta launch price">Prezzo di lancio beta</div>
+        <ul class="price-list">
+          <li data-it="Tutto di PRO, più:" data-en="Everything in PRO, plus:">Tutto di PRO, più:</li>
+          <li data-it="Roster giocatori illimitato" data-en="Unlimited player roster">Roster giocatori illimitato</li>
+          <li data-it="Più coach sullo stesso team" data-en="Multiple coaches per team">Più coach sullo stesso team</li>
+          <li data-it="Report condivisibili con i genitori" data-en="Shareable reports for parents">Report condivisibili con i genitori</li>
+        </ul>
+        <a class="price-cta line" href="mailto:info@filipponeri.com?subject=Tennis%20AI%20Coach%20TEAM" data-it="Parliamone" data-en="Let's talk">Parliamone</a>
+      </div>
+    </div>
+    <p class="price-foot" data-it="Una lezione privata costa 30–60€. Tennis AI Coach lavora con te a ogni match, per una frazione del prezzo." data-en="A private lesson runs €30–60. Tennis AI Coach works every match with you, for a fraction of the price.">Una lezione privata costa 30–60€. Tennis AI Coach lavora con te a ogni match, per una frazione del prezzo.</p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <div class="section-eyebrow reveal" data-it="Domande frequenti" data-en="FAQ">Domande frequenti</div>
+    <h2 class="reveal" style="margin-bottom:36px" data-it="PRIMA DI SCENDERE<br><span>IN CAMPO</span>" data-en="BEFORE YOU STEP<br><span>ON COURT</span>">PRIMA DI SCENDERE<br><span>IN CAMPO</span></h2>
+    <details class="faq-item reveal"><summary data-it="Posso usarlo in torneo?" data-en="Can I use it in tournaments?">Posso usarlo in torneo?</summary>
+      <p data-it="Le regole sul coaching variano per circuito, federazione e categoria: verifica sempre il regolamento del tuo torneo. Molte competizioni oggi ammettono il coaching da bordo campo; dove non è permesso, la modalità Solo Coach consente di analizzare il match e preparare il debrief senza alcuna comunicazione col giocatore, e la modalità autonoma è perfetta per allenamenti e amichevoli." data-en="Coaching rules vary by circuit, federation and category: always check your tournament's regulations. Many competitions now allow courtside coaching; where it isn't permitted, Coach-Only mode lets you analyse the match and prepare the debrief without any communication to the player, and autonomous mode is perfect for practice and friendlies.">Le regole sul coaching variano per circuito, federazione e categoria: verifica sempre il regolamento del tuo torneo. Molte competizioni oggi ammettono il coaching da bordo campo; dove non è permesso, la modalità Solo Coach consente di analizzare il match e preparare il debrief senza alcuna comunicazione col giocatore, e la modalità autonoma è perfetta per allenamenti e amichevoli.</p>
+    </details>
+    <details class="faq-item reveal"><summary data-it="Devo installare qualcosa?" data-en="Do I need to install anything?">Devo installare qualcosa?</summary>
+      <p data-it="No. È una web app installabile (PWA): si apre dal browser e si aggiunge alla schermata Home in due tocchi, su iPhone e Android. Niente store, niente download, sempre aggiornata." data-en="No. It's an installable web app (PWA): open it in the browser and add it to your Home screen in two taps, on iPhone and Android. No store, no download, always up to date.">No. È una web app installabile (PWA): si apre dal browser e si aggiunge alla schermata Home in due tocchi, su iPhone e Android. Niente store, niente download, sempre aggiornata.</p>
+    </details>
+    <details class="faq-item reveal"><summary data-it="E se perdo la connessione a metà match?" data-en="What if I lose connection mid-match?">E se perdo la connessione a metà match?</summary>
+      <p data-it="Il match viene salvato in automatico sul dispositivo a ogni punto. Se chiudi l'app, il telefono va in standby o cade la rete, al rientro trovi la card «Match in corso trovato» e riprendi esattamente da dove eri — punteggio, piano e undo inclusi." data-en="The match is autosaved on your device at every point. If the app closes, the phone sleeps or the network drops, on return you'll find the “Match in progress” card and resume exactly where you were — score, plan and undo included.">Il match viene salvato in automatico sul dispositivo a ogni punto. Se chiudi l'app, il telefono va in standby o cade la rete, al rientro trovi la card «Match in corso trovato» e riprendi esattamente da dove eri — punteggio, piano e undo inclusi.</p>
+    </details>
+    <details class="faq-item reveal"><summary data-it="I suggerimenti sono sempre gli stessi?" data-en="Are the suggestions always the same?">I suggerimenti sono sempre gli stessi?</summary>
+      <p data-it="No: il motore sceglie tra 337 scenari e 60 schemi in base a punteggio, segnali live, scouting e memoria dei match precedenti, evitando di ripetere i piani appena proposti. Due match non producono mai lo stesso percorso tattico — e ogni consiglio mostra l'evidenza che lo ha generato." data-en="No: the engine picks from 337 scenarios and 60 diagrams based on score, live signals, scouting and memory of previous matches, avoiding plans it just proposed. No two matches produce the same tactical path — and every suggestion shows the evidence behind it.">No: il motore sceglie tra 337 scenari e 60 schemi in base a punteggio, segnali live, scouting e memoria dei match precedenti, evitando di ripetere i piani appena proposti. Due match non producono mai lo stesso percorso tattico — e ogni consiglio mostra l'evidenza che lo ha generato.</p>
+    </details>
+    <details class="faq-item reveal"><summary data-it="Che fine fanno i miei dati?" data-en="What happens to my data?">Che fine fanno i miei dati?</summary>
+      <p data-it="I dati del match vivono prima di tutto sul tuo dispositivo. Con un account, profili e storico vengono salvati nel tuo spazio cloud personale, accessibile solo a te. Puoi esportare o eliminare tutto in qualsiasi momento." data-en="Match data lives on your device first. With an account, profiles and history are saved to your personal cloud space, accessible only to you. You can export or delete everything at any time.">I dati del match vivono prima di tutto sul tuo dispositivo. Con un account, profili e storico vengono salvati nel tuo spazio cloud personale, accessibile solo a te. Puoi esportare o eliminare tutto in qualsiasi momento.</p>
+    </details>
+  </div>
+</section>
+
 <section class="cta-final">
   <div class="section-eyebrow reveal" data-it="Inizia ora" data-en="Get started">Inizia ora</div>
   <h2 class="reveal" data-it="PRONTO PER<br>IL <span>CAMPO?</span>" data-en="READY FOR<br>THE <span>COURT?</span>">PRONTO PER<br>IL <span>CAMPO?</span></h2>
@@ -967,7 +1084,7 @@ footer{
     <a href="https://tennis-ai-coach-chi.vercel.app" target="_blank">Privacy Policy</a>
     <a href="mailto:info@filipponeri.com">info@filipponeri.com</a>
   </div>
-  <span class="footer-copy">© 2026 Tennis AI Coach</span>
+  <span class="footer-copy" data-it="© 2026 Tennis AI Coach · I titoli e i marchi citati appartengono ai rispettivi autori, editori e titolari. Nessuna affiliazione, sponsorizzazione o endorsement è implicata." data-en="© 2026 Tennis AI Coach · Cited titles and trademarks belong to their respective authors, publishers and owners. No affiliation, sponsorship or endorsement is implied.">© 2026 Tennis AI Coach · I titoli e i marchi citati appartengono ai rispettivi autori, editori e titolari. Nessuna affiliazione, sponsorizzazione o endorsement è implicata.</span>
 </footer>
 
 <script>
