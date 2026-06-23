@@ -608,73 +608,84 @@ footer{
     <div class="section-eyebrow reveal" data-it="Il motore tattico" data-en="The tactical engine">Il motore tattico</div>
     <h2 class="reveal" data-it="ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span>" data-en="YEARS OF EXPERTISE<br><span>IN AN ALGORITHM</span>">ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span></h2>
     <p class="engine-lead reveal" data-it="Il motore si ispira ai principi della letteratura tattica e mentale di riferimento — da Winning Ugly di Brad Gilbert a The Inner Game of Tennis di Timothy Gallwey — e li trasforma in un sistema deterministico che sceglie in base a contesto, evidenza e memoria. Non è un chatbot: ogni consiglio arriva con la sua motivazione. «3 errori di rovescio negli ultimi 8 punti → gioca alto sul rovescio»." data-en="The engine draws on principles from the reference literature of tennis tactics and mindset — from Brad Gilbert's Winning Ugly to Timothy Gallwey's The Inner Game of Tennis — and turns them into a deterministic system choosing on context, evidence and memory. Not a chatbot: every suggestion comes with its reason. “3 backhand errors in the last 8 points → play high to the backhand”.">Il motore si ispira ai principi della letteratura tattica e mentale di riferimento — da Winning Ugly di Brad Gilbert a The Inner Game of Tennis di Timothy Gallwey — e li trasforma in un sistema deterministico che sceglie in base a contesto, evidenza e memoria. Non è un chatbot: ogni consiglio arriva con la sua motivazione. «3 errori di rovescio negli ultimi 8 punti → gioca alto sul rovescio».</p>
-    <div class="how-it-works-inner" style="position: relative; overflow: hidden; padding: 20px 0 40px;">
-    <style>
-        .diagram-box { transition: box-shadow 0.15s ease, transform 0.15s ease; position: relative; z-index: 5; }
-        .input-flash { box-shadow: 0 0 25px rgba(24, 160, 119, 0.9) !important; transform: scale(1.03); }
-        .engine-flash { box-shadow: 0 0 35px rgba(240, 165, 0, 0.9) !important; transform: scale(1.04); }
-        .output-flash { box-shadow: 0 0 25px rgba(240, 165, 0, 0.6) !important; transform: scale(1.03); }
-        .flow-dot { position: absolute; width: 10px; height: 10px; border-radius: 50%; pointer-events: none; z-index: 10; transform: translate(-50%, -50%); }
-        @media (max-width: 768px) {
-            .diagram-headers { display: none !important; }
-            .diagram-container { grid-template-columns: 1fr !important; gap: 20px !important; }
-            #diagram-svg, .flow-dot { display: none !important; }
-            .column-engine { margin: 10px 0; }
-        }
-    </style>
-    <svg id="diagram-svg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; display: block;"></svg>
-    <div style="max-width: 1100px; margin: 0 auto; position: relative; z-index: 3;">
-        <div class="diagram-headers" style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; margin-bottom: 40px;">
-            <h3 style="color: #18A077; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; margin: 0;" data-it="Cosa conosce l'app" data-en="What the app knows">Cosa conosce l'app</h3>
-            <h3 style="color: #F0A500; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; margin: 0;" data-it="Il Motore" data-en="The Engine">Il Motore</h3>
-            <h3 style="color: #F0A500; font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; margin: 0;" data-it="Cosa vedi" data-en="What you see">Cosa vedi</h3>
-        </div>
-        <div class="diagram-container" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 40px; align-items: center; position: relative;">
-            <div class="column-inputs" style="display: flex; flex-direction: column; gap: 18px;">
-                <div class="diagram-box input-box" id="box-input0" style="background: rgba(24, 160, 119, 0.12); border: 2px solid #18A077; border-radius: 16px; padding: 14px 22px;">
-                    <div style="font-size: 1.1rem; font-weight: bold; color: white;" data-it="Scouting avversario" data-en="Opponent Scouting">Scouting avversario</div>
-                    <div style="font-size: 0.85rem; color: #7ad6b4; margin-top: 4px;" data-it="Punti deboli, stile, storico match" data-en="Weaknesses, style, match history">Punti deboli, stile, storico match</div>
-                </div>
-                <div class="diagram-box input-box" id="box-input1" style="background: rgba(24, 160, 119, 0.12); border: 2px solid #18A077; border-radius: 16px; padding: 14px 22px;">
-                    <div style="font-size: 1.1rem; font-weight: bold; color: white;" data-it="Contesto live" data-en="Live Context">Contesto live</div>
-                    <div style="font-size: 0.85rem; color: #7ad6b4; margin-top: 4px;" data-it="Punteggio, momentum" data-en="Score, momentum">Punteggio, momentum</div>
-                </div>
-                <div class="diagram-box input-box" id="box-input2" style="background: rgba(24, 160, 119, 0.12); border: 2px solid #18A077; border-radius: 16px; padding: 14px 22px;">
-                    <div style="font-size: 1.1rem; font-weight: bold; color: white;" data-it="Tattiche dei top guru" data-en="Top coaches' tactics">Tattiche dei top guru</div>
-                    <div style="font-size: 0.85rem; color: #7ad6b4; margin-top: 4px;" data-it="Gilbert, Gallwey, O'Shannessy, etc." data-en="Gilbert, Gallwey, O'Shannessy, etc.">Gilbert, Gallwey, O'Shannessy, etc.</div>
-                </div>
-                <div class="diagram-box input-box" id="box-input3" style="background: rgba(24, 160, 119, 0.12); border: 2px solid #18A077; border-radius: 16px; padding: 14px 22px;">
-                    <div style="font-size: 1.1rem; font-weight: bold; color: white;" data-it="Tattiche dei top player" data-en="Top players' tactics">Tattiche dei top player</div>
-                    <div style="font-size: 0.85rem; color: #7ad6b4; margin-top: 4px;" data-it="Federer, Nadal, Isner, etc." data-en="Federer, Nadal, Isner, etc.">Federer, Nadal, Isner, etc.</div>
-                </div>
-            </div>
-            <div class="column-engine" style="display: flex; justify-content: center; position: relative;">
-                <div style="position: absolute; width: 180px; height: 180px; background: rgba(240, 165, 0, 0.06); border-radius: 50%; filter: blur(20px); top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: -1;"></div>
-                <div class="diagram-box engine-box" id="box-engine" style="background: #0b131f; border: 3px solid #F0A500; border-radius: 20px; padding: 24px; text-align: center; width: 100%; max-width: 220px;">
-                    <div style="font-size: 1.3rem; font-weight: bold; color: white; margin-bottom: 8px;" data-it="Motore tattico" data-en="Tactical Engine">Motore tattico</div>
-                    <div style="font-size: 0.9rem; color: #F0A500;" data-it="Sceglie lo schema tattico giusto in questo momento" data-en="Picks the right tactic right now">Sceglie lo schema tattico giusto in questo momento</div>
-                </div>
-            </div>
-            <div class="column-outputs" style="display: flex; flex-direction: column; gap: 18px;">
-                <div class="diagram-box output-box" id="box-output0" style="background: rgba(240, 165, 0, 0.06); border: 2px solid rgba(240, 165, 0, 0.4); border-radius: 16px; padding: 14px 22px;">
-                    <div style="font-size: 1.1rem; font-weight: bold; color: white;" data-it="Consiglio al cambio campo" data-en="Changeover advice">Consiglio al cambio campo</div>
-                    <div style="font-size: 0.85rem; color: #f5d488; margin-top: 4px;" data-it="Cosa fare nei prossimi 2 game" data-en="What to do in the next 2 games">Cosa fare nei prossimi 2 game</div>
-                </div>
-                <div class="diagram-box output-box" id="box-output1" style="background: rgba(240, 165, 0, 0.06); border: 2px solid rgba(240, 165, 0, 0.4); border-radius: 16px; padding: 14px 22px;">
-                    <div style="font-size: 1.1rem; font-weight: bold; color: white;" data-it="Schema visivo" data-en="Visual diagram">Schema visivo</div>
-                    <div style="font-size: 0.85rem; color: #f5d488; margin-top: 4px;" data-it="Disegno animato" data-en="Animated pattern">Disegno animato</div>
-                </div>
-                <div class="diagram-box output-box" id="box-output2" style="background: rgba(240, 165, 0, 0.06); border: 2px solid rgba(240, 165, 0, 0.4); border-radius: 16px; padding: 14px 22px;">
-                    <div style="font-size: 1.1rem; font-weight: bold; color: white;" data-it="Lettura andamento" data-en="Match reading">Lettura andamento</div>
-                    <div style="font-size: 0.85rem; color: #f5d488; margin-top: 4px;" data-it="Dove sta andando il match" data-en="Where the match is going">Dove sta andando il match</div>
-                </div>
-            </div>
-        </div>
-        <div style="text-align: center; margin-top: 70px; color: rgba(255,255,255,0.55); font-size: 1rem; font-style: italic; position: relative;" data-it="Ogni match osservato aumenta la conoscenza tattica dell'app" data-en="Every match tracked grows the app's tactical knowledge">
-            Ogni match osservato aumenta la conoscenza tattica dell'app
-            <div id="feedback-center" style="position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 1px; height: 1px;"></div>
-        </div>
-    </div>
+    <div class="diagram-outer-scroll" style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:20px 0;scrollbar-width:none;">
+      <style>
+        .diagram-outer-scroll::-webkit-scrollbar{display:none}
+        .diagram-svg-container{min-width:960px;max-width:1150px;margin:0 auto;padding:0 20px}
+        @keyframes enginePulse{0%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(240,165,0,.4))}50%{transform:scale(1.02);filter:drop-shadow(0 0 25px rgba(240,165,0,.7))}100%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(240,165,0,.4))}}
+        .svg-engine-box{transform-origin:550px 225px;animation:enginePulse 3s infinite ease-in-out}
+      </style>
+      <div class="diagram-svg-container">
+        <svg viewBox="0 0 1100 450" width="100%" height="100%" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <circle id="dot-teal" r="5" fill="#18A077" style="filter:drop-shadow(0 0 6px #18A077)"/>
+            <circle id="dot-gold" r="5" fill="#F0A500" style="filter:drop-shadow(0 0 6px #F0A500)"/>
+            <circle id="dot-blue" r="5" fill="#3b82f6" style="filter:drop-shadow(0 0 6px #3b82f6)"/>
+          </defs>
+          <g font-family="'Bebas Neue',sans-serif" font-size="22" letter-spacing="2" font-weight="bold" text-anchor="middle">
+            <text x="175" y="30" fill="#18A077" data-it="COSA SA L'APP" data-en="WHAT THE APP KNOWS">COSA SA L'APP</text>
+            <text x="550" y="30" fill="#F0A500" data-it="IL MOTORE" data-en="THE ENGINE">IL MOTORE</text>
+            <text x="925" y="30" fill="#F0A500" data-it="COSA VEDI" data-en="WHAT YOU SEE">COSA VEDI</text>
+          </g>
+          <path d="M 320 95  C 435 95,  435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
+          <path d="M 320 180 C 435 180, 435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
+          <path d="M 320 265 C 435 265, 435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
+          <path d="M 320 350 C 435 350, 435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
+          <path d="M 650 225 C 665 225, 665 115, 780 115" fill="none" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
+          <path d="M 650 225 C 665 225, 665 225, 780 225" fill="none" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
+          <path d="M 650 225 C 665 225, 665 335, 780 335" fill="none" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
+          <path d="M 925 380 C 925 450, 175 450, 175 395" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6 6" opacity="0.4"/>
+          <use href="#dot-teal"><animateMotion dur="2.5s" repeatCount="indefinite" path="M 320 95  C 435 95,  435 225, 450 225"/></use>
+          <use href="#dot-teal"><animateMotion dur="1.8s" repeatCount="indefinite" path="M 320 180 C 435 180, 435 225, 450 225"/></use>
+          <use href="#dot-teal"><animateMotion dur="3.2s" repeatCount="indefinite" path="M 320 265 C 435 265, 435 225, 450 225"/></use>
+          <use href="#dot-teal"><animateMotion dur="2.8s" repeatCount="indefinite" path="M 320 350 C 435 350, 435 225, 450 225"/></use>
+          <use href="#dot-gold"><animateMotion dur="2.2s" repeatCount="indefinite" path="M 650 225 C 665 225, 665 115, 780 115"/></use>
+          <use href="#dot-gold"><animateMotion dur="2.0s" repeatCount="indefinite" path="M 650 225 C 665 225, 665 225, 780 225"/></use>
+          <use href="#dot-gold"><animateMotion dur="2.7s" repeatCount="indefinite" path="M 650 225 C 665 225, 665 335, 780 335"/></use>
+          <use href="#dot-blue"><animateMotion dur="4.5s" repeatCount="indefinite" path="M 925 380 C 925 450, 175 450, 175 395"/></use>
+          <g transform="translate(30,60)">
+            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Scouting avversario" data-en="Opponent Scouting">Scouting avversario</text>
+            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Punti deboli, stile, storico match" data-en="Weaknesses, style, match history">Punti deboli, stile, storico match</text>
+          </g>
+          <g transform="translate(30,145)">
+            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Contesto live" data-en="Live Context">Contesto live</text>
+            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Punteggio, momentum" data-en="Score, momentum">Punteggio, momentum</text>
+          </g>
+          <g transform="translate(30,230)">
+            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Tattiche dei top guru" data-en="Top Gurus' Tactics">Tattiche dei top guru</text>
+            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Gilbert, Gallwey, O'Shannessy, etc." data-en="Gilbert, Gallwey, O'Shannessy, etc.">Gilbert, Gallwey, O'Shannessy, etc.</text>
+          </g>
+          <g transform="translate(30,315)">
+            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Tattiche dei top player" data-en="Top Players' Tactics">Tattiche dei top player</text>
+            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Federer, Nadal, Isner, etc." data-en="Federer, Nadal, Isner, etc.">Federer, Nadal, Isner, etc.</text>
+          </g>
+          <g class="svg-engine-box">
+            <rect x="450" y="165" width="200" height="120" rx="16" fill="#0f1e2e" stroke="#F0A500" stroke-width="3"/>
+            <text x="550" y="215" font-family="'Bebas Neue',sans-serif" font-size="24" letter-spacing="1" fill="#fff" text-anchor="middle" data-it="MOTORE TATTICO" data-en="TACTICAL ENGINE">MOTORE TATTICO</text>
+            <text x="550" y="245" font-family="'DM Sans',sans-serif" font-size="12" fill="#F0A500" text-anchor="middle" data-it="Sceglie lo schema tattico giusto" data-en="Chooses the right tactical pattern">Sceglie lo schema tattico giusto</text>
+            <text x="550" y="262" font-family="'DM Sans',sans-serif" font-size="12" fill="#F0A500" text-anchor="middle" data-it="in questo momento." data-en="at this exact moment.">in questo momento.</text>
+          </g>
+          <g transform="translate(780,80)">
+            <rect width="290" height="70" rx="12" fill="#132030" stroke="rgba(240,165,0,0.5)" stroke-width="1.5"/>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Consiglio al cambio campo" data-en="Changeover Advice">Consiglio al cambio campo</text>
+            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Cosa fare nei prossimi 2 game" data-en="What to do over the next 2 games">Cosa fare nei prossimi 2 game</text>
+          </g>
+          <g transform="translate(780,190)">
+            <rect width="290" height="70" rx="12" fill="#132030" stroke="rgba(240,165,0,0.5)" stroke-width="1.5"/>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Schema visivo" data-en="Visual Diagram">Schema visivo</text>
+            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Disegno animato" data-en="Animated play pattern">Disegno animato</text>
+          </g>
+          <g transform="translate(780,300)">
+            <rect width="290" height="70" rx="12" fill="#132030" stroke="rgba(240,165,0,0.5)" stroke-width="1.5"/>
+            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Lettura andamento" data-en="Match Reading">Lettura andamento</text>
+            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Dove sta andando il match" data-en="Where the match trend is heading">Dove sta andando il match</text>
+          </g>
+        </svg>
+      </div>
     </div>
 
     <div class="engine-numbers reveal">
@@ -1271,103 +1282,7 @@ function setLang(lang){
   document.documentElement.lang=lang;
 }
 </script>
-<script>
-let diagramIntervals = [];
-function drawDiagramLines() {
-    const svg = document.getElementById('diagram-svg');
-    const section = document.querySelector('.how-it-works-inner');
-    if (!svg || !section) return;
-    svg.innerHTML = '';
-    diagramIntervals.forEach(clearInterval);
-    diagramIntervals = [];
-    if (window.innerWidth <= 768) return;
-    const sectionRect = section.getBoundingClientRect();
-    const engineEl = document.getElementById('box-engine');
-    if (!engineEl) return;
-    const engineBox = engineEl.getBoundingClientRect();
-    if (engineBox.width === 0) return;
-    const engineLeftX = engineBox.left - sectionRect.left;
-    const engineRightX = engineBox.right - sectionRect.left;
-    const engineY = engineBox.top - sectionRect.top + (engineBox.height / 2);
-    const inputs = document.querySelectorAll('.input-box');
-    const outputs = document.querySelectorAll('.output-box');
-    if (inputs.length < 4 || outputs.length < 3) return;
-    const travelSpeed = 1000;
-    const feedbackSpeed = 1800;
-    const baseFreq = 800;
-    const freq = { live: baseFreq, scout: baseFreq*4, slow: baseFreq*8, sync: baseFreq*8, reading: baseFreq*16 };
-    setupFlow(inputs[1], engineLeftX, engineY, sectionRect, svg, '#18A077', '#18A077', freq.live, travelSpeed, 'input-flash', true);
-    setupFlow(inputs[0], engineLeftX, engineY, sectionRect, svg, '#18A077', '#18A077', freq.scout, travelSpeed, 'input-flash', true);
-    setupFlow(inputs[2], engineLeftX, engineY, sectionRect, svg, '#18A077', '#18A077', freq.slow, travelSpeed, 'input-flash', true);
-    setupFlow(inputs[3], engineLeftX, engineY, sectionRect, svg, '#18A077', '#18A077', freq.slow, travelSpeed, 'input-flash', true);
-    const outY = [engineBox.top - sectionRect.top + engineBox.height*0.35, engineBox.top - sectionRect.top + engineBox.height*0.50, engineBox.top - sectionRect.top + engineBox.height*0.65];
-    setupFlow(outputs[0], engineRightX, outY[0], sectionRect, svg, 'rgba(240,165,0,0.3)', '#F0A500', freq.sync, travelSpeed, 'output-flash', false);
-    setupFlow(outputs[1], engineRightX, outY[1], sectionRect, svg, 'rgba(240,165,0,0.3)', '#F0A500', freq.sync, travelSpeed, 'output-flash', false);
-    setupFlow(outputs[2], engineRightX, outY[2], sectionRect, svg, 'rgba(240,165,0,0.3)', '#F0A500', freq.reading, travelSpeed, 'output-flash', false);
-    const inpBottom = inputs[3].getBoundingClientRect();
-    const fbCenterEl = document.getElementById('feedback-center');
-    if (!fbCenterEl) return;
-    const fbCenterRect = fbCenterEl.getBoundingClientRect();
-    const out3 = outputs[2].getBoundingClientRect();
-    const fbStartX = out3.right - sectionRect.left;
-    const fbStartY = out3.top - sectionRect.top + out3.height/2;
-    const fbEndX = inpBottom.left - sectionRect.left + inpBottom.width/2;
-    const fbEndY = inpBottom.bottom - sectionRect.top + 15;
-    const lowestY = fbCenterRect.top - sectionRect.top + 30;
-    const dFb = `M ${fbStartX} ${fbStartY} C ${fbStartX+60} ${fbStartY+100}, ${fbStartX} ${lowestY}, ${sectionRect.width/2} ${lowestY} C ${fbEndX+80} ${lowestY}, ${fbEndX} ${fbEndY+80}, ${fbEndX} ${fbEndY}`;
-    const pathFb = document.createElementNS('http://www.w3.org/2000/svg','path');
-    pathFb.setAttribute('d', dFb);
-    pathFb.setAttribute('stroke','rgba(110,140,170,0.3)');
-    pathFb.setAttribute('stroke-width','2');
-    pathFb.setAttribute('stroke-dasharray','5 5');
-    pathFb.setAttribute('fill','none');
-    svg.appendChild(pathFb);
-    const fireFb = () => { triggerFlash(outputs[2],'output-flash'); animateDotCSS(pathFb,'#6e8caa',feedbackSpeed,section); setTimeout(()=>triggerFlash(inputs[3],'input-flash'),feedbackSpeed); };
-    fireFb();
-    diagramIntervals.push(setInterval(fireFb, freq.reading));
-}
-function setupFlow(box, targetX, targetY, sectionRect, svg, strokeColor, dotColor, interval, speed, flashClass, isIn) {
-    const rect = box.getBoundingClientRect();
-    let sx,sy,ex,ey;
-    if (isIn) { sx=rect.right-sectionRect.left; sy=rect.top-sectionRect.top+rect.height/2; ex=targetX; ey=targetY; }
-    else { sx=targetX; sy=targetY; ex=rect.left-sectionRect.left; ey=rect.top-sectionRect.top+rect.height/2; }
-    const cpX = sx + (ex-sx)/2;
-    const d = `M ${sx} ${sy} C ${cpX} ${sy}, ${cpX} ${ey}, ${ex} ${ey}`;
-    const line = document.createElementNS('http://www.w3.org/2000/svg','path');
-    line.setAttribute('d',d); line.setAttribute('stroke',strokeColor); line.setAttribute('stroke-width', isIn?'2':'1.5'); line.setAttribute('fill','none');
-    svg.appendChild(line);
-    const engineEl = document.getElementById('box-engine');
-    const section = document.querySelector('.how-it-works-inner');
-    const fire = () => {
-        if (isIn) { triggerFlash(box,flashClass); animateDotCSS(line,dotColor,speed,section); setTimeout(()=>triggerFlash(engineEl,'engine-flash'),speed); }
-        else { triggerFlash(engineEl,'engine-flash'); animateDotCSS(line,dotColor,speed,section); setTimeout(()=>triggerFlash(box,flashClass),speed); }
-    };
-    fire();
-    diagramIntervals.push(setInterval(fire, interval));
-}
-function animateDotCSS(pathElement, color, duration, container) {
-    const dot = document.createElement('div');
-    dot.className = 'flow-dot';
-    dot.style.backgroundColor = color;
-    dot.style.boxShadow = `0 0 10px ${color}, 0 0 5px ${color}`;
-    container.appendChild(dot);
-    const pathLength = pathElement.getTotalLength();
-    const startTime = performance.now();
-    function step(now) {
-        const progress = Math.min((now-startTime)/duration, 1);
-        const pt = pathElement.getPointAtLength(progress*pathLength);
-        dot.style.left = pt.x+'px'; dot.style.top = pt.y+'px';
-        if (progress < 1) requestAnimationFrame(step);
-        else if (dot.parentNode) container.removeChild(dot);
-    }
-    requestAnimationFrame(step);
-}
-function triggerFlash(el, cls) { if(!el) return; el.classList.add(cls); setTimeout(()=>el.classList.remove(cls),250); }
-window.addEventListener('load', drawDiagramLines);
-window.addEventListener('resize', drawDiagramLines);
-setTimeout(drawDiagramLines, 300);
-setTimeout(drawDiagramLines, 800);
-</script>
+
 
 </body>
 </html>
