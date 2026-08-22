@@ -10,8 +10,12 @@ on:
       - '404.html'
       - 'robots.txt'
       - 'sitemap.xml'
+      - 'assets/**'
+      - 'icons/**'
+      - 'demo/**'
       - 'docs/landing-v3-decision-coverage.md'
       - 'scripts/check_landing.py'
+      - 'scripts/build_pages.py'
       - '.github/workflows/landing-quality.yml'
 
 permissions:
@@ -27,3 +31,14 @@ jobs:
           python-version: '3.12'
       - name: Validate Landing V3
         run: python scripts/check_landing.py
+      - name: Build Cloudflare Pages bundle
+        run: python scripts/build_pages.py
+      - name: Verify deploy bundle
+        run: |
+          test -f dist/index.html
+          test -f dist/404.html
+          test -f dist/robots.txt
+          test -f dist/sitemap.xml
+          test -f dist/demo/live-match/index.html
+          test -f dist/demo/tracking/index.html
+          test -f dist/demo/player/index.html
