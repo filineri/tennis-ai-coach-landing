@@ -49,10 +49,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Switch from PR merge ref to feature branch
+        run: |
+          git fetch origin feat/landing-v3-market-ready
+          git checkout -B feat/landing-v3-market-ready origin/feat/landing-v3-market-ready
       - name: Execute staged QA patch
         run: |
           python - <<'PY'
@@ -66,6 +70,7 @@ jobs:
           for line in block.splitlines():
               lines.append(line[10:] if line.startswith('          ') else line)
           code='\n'.join(lines)+'\n'
+          code=code.replace("'  setLang(initial);\\n\\n})();'", "'  setLang(initial);\\n})();'")
           exec(compile(code, 'staged_landing_qa_fix.py', 'exec'), {'__name__':'__main__'})
           PY
       - name: Generate raster derivatives
@@ -85,7 +90,52 @@ jobs:
           test -f dist/icons/icon.svg
       - name: Commit QA correction and restore workflow
         run: |
-          git show HEAD^:.github/workflows/landing-quality.yml > .github/workflows/landing-quality.yml
+          cat > .github/workflows/landing-quality.yml <<'YAML'
+          name: Landing V3 quality
+
+          on:
+            push:
+              branches:
+                - 'feat/landing-v3-*'
+            pull_request:
+              paths:
+                - 'index.html'
+                - '404.html'
+                - 'robots.txt'
+                - 'sitemap.xml'
+                - 'assets/**'
+                - 'icons/**'
+                - 'demo/**'
+                - 'docs/landing-v3-decision-coverage.md'
+                - 'scripts/check_landing.py'
+                - 'scripts/build_pages.py'
+                - '.github/workflows/landing-quality.yml'
+
+          permissions:
+            contents: read
+
+          jobs:
+            quality:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-python@v5
+                  with:
+                    python-version: '3.12'
+                - name: Validate Landing V3
+                  run: python scripts/check_landing.py
+                - name: Build Cloudflare Pages bundle
+                  run: python scripts/build_pages.py
+                - name: Verify deploy bundle
+                  run: |
+                    test -f dist/index.html
+                    test -f dist/404.html
+                    test -f dist/robots.txt
+                    test -f dist/sitemap.xml
+                    test -f dist/demo/live-match/index.html
+                    test -f dist/demo/tracking/index.html
+                    test -f dist/demo/player/index.html
+          YAML
           rm .github/workflows/landing-qa-self-fix.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
