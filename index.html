@@ -55,7 +55,8 @@
     .textlink{display:inline-flex;margin-top:15px;color:#d9e3eb;text-underline-offset:4px}
     .hero{padding:76px 0 52px;overflow:hidden;position:relative}
     .hero:before{content:"";position:absolute;right:-14vw;top:-20vw;width:58vw;height:58vw;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 17%,transparent),transparent 67%);pointer-events:none}
-    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:42px;align-items:center}
+    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;grid-template-areas:"intro visual" "copy visual";column-gap:42px;row-gap:8px;align-items:start}
+    .hero-intro{grid-area:intro}.hero-copy{grid-area:copy}.hero-visual{grid-area:visual;align-self:center}
     .eyebrow,.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:800;letter-spacing:.45px;text-transform:uppercase}
     .eyebrow{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 30%,transparent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
     h1,h2{font-family:"Bebas Neue","Arial Narrow",Impact,sans-serif;font-weight:400}
@@ -65,8 +66,6 @@
     .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.micro{font-size:13px;color:var(--muted);margin-top:13px}
     .hero-visual{margin:0;border-radius:25px;overflow:hidden;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);position:relative}
     .hero-visual img{width:100%;display:block;aspect-ratio:16/11;object-fit:cover}
-    .hero-caption{padding:13px 16px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
-    .hero-caption strong{color:var(--ink)}
     .hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.hero-pills span{font-size:12px;border:1px solid var(--line);padding:5px 9px;border-radius:999px;color:#d5dee6}
     .handoff-strip{margin-top:28px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
     .handoff-mini{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:11px;text-align:center;font-size:12px;color:var(--muted);position:relative}
@@ -104,12 +103,12 @@
     #style-dock{position:fixed;left:16px;bottom:16px;z-index:1000}.style-toggle{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:10px 13px;box-shadow:0 12px 40px rgba(0,0,0,.32);cursor:pointer}
     .style-menu{display:none;position:absolute;left:0;bottom:48px;width:205px;padding:10px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}#style-dock.open .style-menu{display:grid;gap:7px}
     .style-menu button{background:transparent;border:1px solid var(--line);color:var(--ink);padding:9px 10px;border-radius:10px;text-align:left;cursor:pointer}.style-menu button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
-    @media(max-width:1000px){.hero-grid,.feed{grid-template-columns:1fr}.grid3,.payer-grid,.premium-grid{grid-template-columns:1fr 1fr}.usage-step{grid-template-columns:48px 120px 1fr}.usage-step .move,.usage-step .agent-result{grid-column:3}.usage-step .move{display:none}.handoff-strip{grid-template-columns:repeat(5,minmax(135px,1fr));overflow-x:auto;padding-bottom:8px}}
+    @media(max-width:1000px){.hero-grid{grid-template-columns:1fr;grid-template-areas:"intro" "visual" "copy";row-gap:18px}.feed{grid-template-columns:1fr}.grid3,.payer-grid,.premium-grid{grid-template-columns:1fr 1fr}.usage-step{grid-template-columns:48px 120px 1fr}.usage-step .move,.usage-step .agent-result{grid-column:3}.usage-step .move{display:none}.handoff-strip{grid-template-columns:repeat(5,minmax(135px,1fr));overflow-x:auto;padding-bottom:8px}}
     @media(max-width:720px){.wrap{width:min(100% - 28px,var(--max))}.navlinks>a:not(.btn){display:none}.navlinks .btn{display:none}.nav-right{gap:8px}.hero{padding-top:48px}.team-grid,.grid3,.payer-grid,.premium-grid,.labs,.partner-agents{grid-template-columns:1fr}.team-divider{grid-column:auto}.usage-step{grid-template-columns:42px 1fr}.usage-step .human-input,.usage-step .agent-result{grid-column:2}.ctas .btn{width:100%}section{padding:56px 0}.appearance-card{grid-template-columns:1fr}.brand-word{font-size:22px}#style-dock{left:12px;bottom:12px}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.flow-dot{display:none}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.flow-dot{opacity:.9}}
   </style>
 </head>
-<body data-requirement="R-CUSTOMER-COPY">
+<body data-requirement="R-CUSTOMER-COPY R-COPY-NO-REDUNDANCY">
 <a class="skip" href="#main" data-it="Vai al contenuto" data-en="Skip to content">Vai al contenuto</a>
 
 <nav aria-label="Navigazione principale">
@@ -138,36 +137,35 @@
 <header class="hero" id="top" data-requirement="R-AGENT-TEAM R-CTA R-HERO-MENTORS">
   <div class="wrap">
     <div class="hero-grid">
-      <div>
+      <div class="hero-intro">
         <span class="eyebrow" data-it="Open Beta · Web/PWA" data-en="Open Beta · Web/PWA">Open Beta · Web/PWA</span>
         <h1>
-          <span data-it="Il tuo" data-en="Your">Il tuo</span>
-          <span class="accent" data-it="AI Tennis Team." data-en="AI Tennis Team.">AI Tennis Team.</span><br>
-          <span data-it="In campo con te." data-en="Courtside with you.">In campo con te.</span>
+<span data-it="Il tuo" data-en="Your">Il tuo</span>
+<span class="accent" data-it="AI Tennis Team." data-en="AI Tennis Team.">AI Tennis Team.</span><br>
+<span data-it="In campo con te." data-en="Courtside with you.">In campo con te.</span>
         </h1>
+      </div>
+      <figure class="hero-visual" data-requirement="R-MOBILE-HERO-ORDER">
+        <img src="assets/hero-mentors.jpg"
+   alt="Il Player al cambio campo con il suo team virtuale intorno"
+   data-alt-it="Il Player al cambio campo con il suo team virtuale intorno"
+   data-alt-en="The Player at the changeover with the virtual team around them"
+   loading="eager" fetchpriority="high" decoding="async">
+      </figure>
+      <div class="hero-copy">
         <p class="lead" data-it="Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione." data-en="Before the match it studies your opponent. During play it turns points and observations into tactical guidance. After the match it helps you decide what to train. Not one AI coach, but a team of specialists working together to help you make the next decision.">Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione.</p>
         <div class="ctas">
-          <a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents →" data-en="Try TennisAgents →">Prova TennisAgents →</a>
-          <a class="btn secondary" href="#premium" data-track="premium" data-it="Scopri Premium" data-en="Discover Premium">Scopri Premium</a>
+<a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents →" data-en="Try TennisAgents →">Prova TennisAgents →</a>
+<a class="btn secondary" href="#premium" data-track="premium" data-it="Scopri Premium" data-en="Discover Premium">Scopri Premium</a>
         </div>
         <a class="textlink" href="#how" data-it="Guarda come lavora il tuo team →" data-en="See how your team works →">Guarda come lavora il tuo team →</a>
         <p class="micro" data-it="La Beta è disponibile sul web. Le funzioni ancora in evoluzione sono indicate come BETA o LAB." data-en="The Beta is available on the web. Features still evolving are clearly marked BETA or LAB.">La Beta è disponibile sul web. Le funzioni ancora in evoluzione sono indicate come BETA o LAB.</p>
         <div class="hero-pills" aria-label="TennisAgents lifecycle">
-          <span data-it="Prima · Scout" data-en="Before · Scout">Prima · Scout</span>
-          <span data-it="Durante · Analyst + Strategist + Match Coach" data-en="During · Analyst + Strategist + Match Coach">Durante · Analyst + Strategist + Match Coach</span>
-          <span data-it="Dopo · Trainer + Mental" data-en="After · Trainer + Mental">Dopo · Trainer + Mental</span>
+<span data-it="Prima · Scout" data-en="Before · Scout">Prima · Scout</span>
+<span data-it="Durante · Analyst + Strategist + Match Coach" data-en="During · Analyst + Strategist + Match Coach">Durante · Analyst + Strategist + Match Coach</span>
+<span data-it="Dopo · Trainer + Mental" data-en="After · Trainer + Mental">Dopo · Trainer + Mental</span>
         </div>
       </div>
-      <figure class="hero-visual">
-        <img src="assets/hero-mentors.jpg"
-             alt="Il Player al cambio campo con il suo team virtuale intorno"
-             data-alt-it="Il Player al cambio campo con il suo team virtuale intorno"
-             data-alt-en="The Player at the changeover with the virtual team around them">
-        <figcaption class="hero-caption">
-          <strong data-it="Tu al centro." data-en="You at the centre.">Tu al centro.</strong>
-          <span data-it=" L'idea di TennisAgents in un colpo d'occhio: un Player, un momento decisivo, uno staff di specialisti pronto a lavorare insieme." data-en=" TennisAgents at a glance: one Player, one decisive moment, a specialist staff ready to work together."> L'idea di TennisAgents in un colpo d'occhio: un Player, un momento decisivo, uno staff di specialisti pronto a lavorare insieme.</span>
-        </figcaption>
-      </figure>
     </div>
 
     <div class="handoff-strip" aria-label="TennisAgents handoff">
@@ -325,30 +323,30 @@
     </div>
     <div class="flow-shell">
       <div class="flow-scroll">
-        <svg viewBox="0 0 1100 470" role="img" aria-label="TennisAgents workflow">
+        <svg id="flow-svg" viewBox="0 0 1100 470" role="img" aria-label="TennisAgents workflow">
           <defs>
             <circle id="dot-teal" r="6" fill="#4bc69a"/>
             <circle id="dot-gold" r="6" fill="#f3b51b"/>
             <circle id="dot-blue" r="6" fill="#76a9ff"/>
           </defs>
 
-          <path d="M 260 80 C 375 80, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path d="M 260 175 C 375 175, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path d="M 260 270 C 375 270, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path d="M 260 365 C 375 365, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path d="M 640 225 C 700 225, 690 115, 760 115" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
-          <path d="M 640 225 C 700 225, 690 225, 760 225" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
-          <path d="M 640 225 C 700 225, 690 335, 760 335" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
-          <path d="M 930 365 C 930 430, 140 430, 140 400" fill="none" stroke="#76a9ff" stroke-width="2" stroke-dasharray="7 7" opacity=".45"/>
+          <path id="flow-path-1" d="M 260 80 C 375 80, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-2" d="M 260 175 C 375 175, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-3" d="M 260 270 C 375 270, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-4" d="M 260 365 C 375 365, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-5" d="M 640 225 C 700 225, 690 115, 760 115" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
+          <path id="flow-path-6" d="M 640 225 C 700 225, 690 225, 760 225" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
+          <path id="flow-path-7" d="M 640 225 C 700 225, 690 335, 760 335" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
+          <path id="flow-path-8" d="M 930 365 C 930 430, 140 430, 140 400" fill="none" stroke="#76a9ff" stroke-width="2" stroke-dasharray="7 7" opacity=".45"/>
 
-          <use class="flow-dot" href="#dot-teal"><animateMotion dur="2.5s" repeatCount="indefinite" path="M 260 80 C 375 80, 375 225, 430 225"/></use>
-          <use class="flow-dot" href="#dot-teal"><animateMotion dur="1.9s" repeatCount="indefinite" path="M 260 175 C 375 175, 375 225, 430 225"/></use>
-          <use class="flow-dot" href="#dot-teal"><animateMotion dur="3.1s" repeatCount="indefinite" path="M 260 270 C 375 270, 375 225, 430 225"/></use>
-          <use class="flow-dot" href="#dot-teal"><animateMotion dur="2.8s" repeatCount="indefinite" path="M 260 365 C 375 365, 375 225, 430 225"/></use>
-          <use class="flow-dot" href="#dot-gold"><animateMotion dur="2.2s" repeatCount="indefinite" path="M 640 225 C 700 225, 690 115, 760 115"/></use>
-          <use class="flow-dot" href="#dot-gold"><animateMotion dur="2.0s" repeatCount="indefinite" path="M 640 225 C 700 225, 690 225, 760 225"/></use>
-          <use class="flow-dot" href="#dot-gold"><animateMotion dur="2.7s" repeatCount="indefinite" path="M 640 225 C 700 225, 690 335, 760 335"/></use>
-          <use class="flow-dot" href="#dot-blue"><animateMotion dur="4.5s" repeatCount="indefinite" path="M 930 365 C 930 430, 140 430, 140 400"/></use>
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="2.5s" repeatCount="indefinite"><mpath href="#flow-path-1"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="1.9s" repeatCount="indefinite"><mpath href="#flow-path-2"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="3.1s" repeatCount="indefinite"><mpath href="#flow-path-3"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#flow-path-4"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#flow-path-5"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.0s" repeatCount="indefinite"><mpath href="#flow-path-6"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.7s" repeatCount="indefinite"><mpath href="#flow-path-7"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#76a9ff"><animateMotion dur="4.5s" repeatCount="indefinite"><mpath href="#flow-path-8"/></animateMotion></circle>
 
           <g transform="translate(20,45)">
             <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
@@ -651,6 +649,17 @@
   const savedLang=localStorage.getItem('ta-lang');
   const initial=savedLang||(navigator.language&&navigator.language.toLowerCase().startsWith('it')?'it':'en');
   setLang(initial);
+
+  const flowSvg=document.getElementById('flow-svg');
+  const reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
+  const syncFlowMotion=()=>{
+    if(!flowSvg) return;
+    if(reducedMotion&&reducedMotion.matches&&flowSvg.pauseAnimations){flowSvg.pauseAnimations();}
+    else if(flowSvg.unpauseAnimations){flowSvg.unpauseAnimations();}
+  };
+  syncFlowMotion();
+  if(reducedMotion&&reducedMotion.addEventListener) reducedMotion.addEventListener('change',syncFlowMotion);
+
 })();
 </script>
 

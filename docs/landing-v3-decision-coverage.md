@@ -86,13 +86,14 @@ Requirements:
 
 Historical evidence: pre-V3 `main` commit `39ee66c92a5fd5b040ed561d801f4146ab8579a3` contained the IT/EN switch.
 
-### R-BRAND-IDENTITY — preserve the V2 TennisAgents icon and wordmark treatment
-The visible Landing brand must preserve the accepted V2 TennisAgents identity:
-- the TennisAgents icon geometry already stored in `icons/icon.svg` / favicon assets;
-- visible `TENNISAGENTS` wordmark treatment consistent with the V2 direction;
-- no silent fallback to a generic text-only `TennisAgents` treatment if that changes the approved identity.
+### R-BRAND-IDENTITY — use the approved TennisAgents master identity
+The visible Landing brand must use the approved TennisAgents identity derived from `TennisAgents_AI_MASTER_DEFINITIVO`, which explicitly supersedes earlier CAD/logo versions. The small UI derivative must preserve the locked sphere, tennis seam, data-flow and spark geometry while reducing network detail at small sizes. The legacy rectangular **T monogram is V1 and must not return**.
 
-Brand evolution is allowed only as an explicit design decision, not as an incidental refactor side effect.
+Requirements:
+- `icons/icon.svg` must identify itself as a derivative of `TennisAgents_AI_MASTER_DEFINITIVO`;
+- visible `TENNISAGENTS` wordmark remains paired with the approved icon treatment;
+- favicon / touch / maskable raster derivatives must be regenerated from the same approved SVG derivative, not from the V1 monogram;
+- brand evolution is allowed only by explicit design decision, never as an incidental refactor.
 
 ### R-CUSTOMER-COPY — public copy is for the visitor, not the project team
 Public Landing copy must explain customer value, product use, availability and limitations in visitor language. Internal governance/development wording must not leak into the page.
@@ -105,6 +106,15 @@ Examples of disallowed public-copy patterns include:
 - internal terms such as `contratto pubblico`, `source of truth`, `canonical entitlement authority`, or explanations of why an implementation metaphor is allowed.
 
 Truthfulness remains mandatory, but it should be expressed for customers, e.g. simple PROVEN/BETA/LAB explanations and clear availability statements.
+
+
+### R-MOBILE-HERO-ORDER — explain the product visually before long supporting copy
+On narrow/mobile layouts the first-screen hierarchy is: **headline → approved Player/team hero visual → supporting explanation / CTA**. Desktop may keep text and visual side by side. The hero image is an above-the-fold product explanation, must be present in initial HTML, must not be lazy-loaded, and should receive high fetch priority when it is a likely LCP image.
+
+The hero visual must not carry a caption that merely restates `Il tuo AI Tennis Team / In campo con te`.
+
+### R-COPY-NO-REDUNDANCY — every section must earn its place
+Landing copy must avoid repeating the same positioning idea in adjacent headline, image caption, paragraph, card or section. Each block should add a new customer-relevant fact, proof, use case, distinction or action. A full semantic de-duplication pass is required before production; automated checks cover known regressions but do not replace editorial review.
 
 ## Source trail
 - Notion: `Landing V3 — market-ready build with truthful value, proof and CTA`.

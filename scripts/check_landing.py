@@ -28,6 +28,8 @@ REQUIREMENT_IDS = (
     "R-I18N-IT-EN",
     "R-BRAND-IDENTITY",
     "R-CUSTOMER-COPY",
+    "R-MOBILE-HERO-ORDER",
+    "R-COPY-NO-REDUNDANCY",
 )
 BANNED_INTERNAL_COPY = (
     "niente promesse presentate come già disponibili",
@@ -127,12 +129,25 @@ def main():
     mentors = ROOT / "assets" / "hero-mentors.jpg"
     require(mentors.exists() and mentors.stat().st_size > 0, "hero mentors asset missing", errors)
     require('src="assets/hero-mentors.jpg"' in text, "hero mentors image is not rendered", errors)
-    require('/icons/icon.svg' in text, "V2 TennisAgents icon missing from visible brand", errors)
-    require('<span class="brand-word">TENNISAGENTS</span>' in text, "TENNISAGENTS V2-style wordmark missing", errors)
+    require('/icons/icon.svg' in text, "TennisAgents icon missing from visible brand", errors)
+    require('<span class="brand-word">TENNISAGENTS</span>' in text, "TENNISAGENTS wordmark missing", errors)
+    icon_svg = (ROOT / "icons" / "icon.svg").read_text(encoding="utf-8")
+    require("TennisAgents_AI_MASTER_DEFINITIVO" in icon_svg, "icon is not derived from the approved definitive master", errors)
+    require("#071426" in icon_svg and "M214 75" in icon_svg and "M333 194" in icon_svg, "definitive logo geometry/signature missing", errors)
+    require('width="276" height="58"' not in icon_svg, "legacy V1 T-monogram geometry returned", errors)
 
-    # Animated flow retained from pre-V3 landing.
+    # Animated flow retained and robust across modern desktop/mobile browsers.
     require(text.count("<animateMotion") >= 5, "animated flow must retain moving dots", errors)
-    require('id="flow"' in text and 'class="flow-dot"' in text, "animated flow structure missing", errors)
+    require(text.count('<mpath href="#flow-path-') >= 5, "animated flow should reuse visible SVG paths via mpath", errors)
+    require('id="flow-svg"' in text and 'class="flow-dot"' in text, "animated flow structure missing", errors)
+    require("pauseAnimations" in text and "prefers-reduced-motion" in text, "reduced-motion fallback missing", errors)
+
+    # Mobile hero hierarchy + known copy duplication regression.
+    require('class="hero-intro"' in text and 'class="hero-copy"' in text, "responsive hero structure missing", errors)
+    require('grid-template-areas:"intro" "visual" "copy"' in text, "mobile hero must render headline → visual → copy", errors)
+    require('loading="eager" fetchpriority="high"' in text, "above-fold hero image priority missing", errors)
+    require("hero-caption" not in text, "hero caption duplicates the core positioning", errors)
+    require("Tu al centro." not in text and "You at the centre." not in text, "known duplicate hero positioning returned", errors)
 
     # IT/EN is a durable customer feature, not optional presentation polish.
     require('id="lang-switch"' in text, "IT/EN selector missing", errors)
@@ -213,7 +228,7 @@ def main():
     print(f"- title: {title}")
     print(f"- public agents: {', '.join(parser.data_agents)}")
     print(f"- bilingual nodes: {parser.i18n_nodes}")
-    print("- V2 hero visual, animated flow, IT/EN and brand identity preserved")
+    print("- definitive logo, mobile hero order, animated flow, IT/EN and anti-duplication guards preserved")
     print("- customer-copy leak guard PASS")
     print("- agent contracts, human/agent handoff, Parent/Sponsor, visual personality/Crisp separation verified")
     print("- metadata, CTA hierarchy, claim states, proof routes, robots, sitemap and 404 verified")
