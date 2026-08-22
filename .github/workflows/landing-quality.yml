@@ -10,6 +10,7 @@ on:
       - '404.html'
       - 'robots.txt'
       - 'sitemap.xml'
+      - 'docs/landing-v3-decision-coverage.md'
       - 'scripts/check_landing.py'
       - '.github/workflows/landing-quality.yml'
 
