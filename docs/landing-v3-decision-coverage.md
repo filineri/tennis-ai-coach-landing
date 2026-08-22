@@ -6,8 +6,8 @@ This file is the implementation-side coverage contract for Landing V3. Notion re
 
 1. A newer explicit canonical decision may supersede an older one.
 2. If no newer decision explicitly supersedes a previously accepted requirement, preserve it.
-3. Historical conversations/Dropbox are evidence sources to reconcile, not automatic authority; unresolved items must be surfaced, not silently dropped.
-4. A Landing implementation is incomplete when it represents only the latest task summary but omits still-valid requirements recorded in related canonical architecture/audit sources.
+3. Historical conversations, Dropbox, Obsidian and repository history are evidence sources to reconcile, not automatic authority; unresolved items must be surfaced, not silently dropped.
+4. A Landing implementation is incomplete when it represents only the latest task summary but omits still-valid requirements recorded in related canonical architecture, audit or accepted design sources.
 
 ## Required coverage
 
@@ -41,7 +41,7 @@ The demo must read as one case, not independent screenshots or generic feature c
 Landing must speak to a Parent/Guardian who may fund TennisAgents for the Player. Youth/privacy/guardian policies remain authoritative and are not relaxed by payment.
 
 ### R-PAYER-SPONSOR — Sponsored Premium / partner-funded access
-Landing must preserve the partner-funded access concept for Brand, Retail, Club/Academy or other approved sponsor models without claiming live partners that do not exist. Sponsor/promo access must converge on the same canonical Premium entitlement authority; sponsors never control recommendations.
+Landing must preserve the partner-funded access concept for Brand, Retail, Club/Academy or other approved sponsor models without claiming live partners that do not exist. Sponsor/promo access must converge on the same Premium access model; sponsors never control recommendations.
 
 ### R-SPONSOR-AGENTS — Gear/Fuel strategic sponsor surfaces
 Gear and Fuel are strategic future specialist-agent directions for equipment/stringing and hydration/nutrition/recovery sponsor categories. Until their runtime contracts are real, present them as future/Lab direction only.
@@ -57,12 +57,64 @@ Primary CTA: `Prova TennisAgents`.
 Secondary CTA: `Scopri Premium`.
 WEB/PWA-first. Actual account/access/checkout path must be verified before production release.
 
+### R-HERO-MENTORS — preserve the instantly understandable Player/team visual
+The approved visual showing the Player seated at the changeover with the virtual tennis staff / mentors around them is a durable Landing asset and must remain visibly rendered, not merely stored in the repository.
+
+Implementation evidence:
+- `assets/hero-mentors.jpg`
+- historical Landing brief explicitly said the image **DEVE restare visibile** / **NON rimuoverla**.
+- V3 may reposition or improve the composition, but may not silently remove the visual without an explicit replacement decision.
+
+### R-FLOW-ANIMATION — preserve the animated information-flow explanation
+The animated workflow with moving dots is a durable explanation of how information travels through TennisAgents. V3 may adapt node names to the current Agent architecture, but must retain:
+- a readable static flow;
+- visible animated dots on modern browsers;
+- a reduced-motion/static fallback;
+- Player/input → analysis/evidence → tactical decision → Player loop.
+
+Historical evidence: pre-V3 `main` commit `39ee66c92a5fd5b040ed561d801f4146ab8579a3` contained the scalable SVG animation and language-aware labels.
+
+### R-I18N-IT-EN — visible Italian / English selector
+The Landing must provide a visible IT/EN selector and visitor-facing copy must be available in both languages.
+
+Requirements:
+- Italian remains a first-class default/local experience.
+- Switching language updates visible customer copy and `document.documentElement.lang`.
+- Product/role names such as Scout, Analyst, Strategist, Match Coach, Quick/Detailed/Tracked, Premium and PROVEN/BETA/LAB may remain intentional product terminology.
+- Do not leave accidental English planning/copy fragments in Italian mode.
+- The language preference should persist locally when practical.
+
+Historical evidence: pre-V3 `main` commit `39ee66c92a5fd5b040ed561d801f4146ab8579a3` contained the IT/EN switch.
+
+### R-BRAND-IDENTITY — preserve the V2 TennisAgents icon and wordmark treatment
+The visible Landing brand must preserve the accepted V2 TennisAgents identity:
+- the TennisAgents icon geometry already stored in `icons/icon.svg` / favicon assets;
+- visible `TENNISAGENTS` wordmark treatment consistent with the V2 direction;
+- no silent fallback to a generic text-only `TennisAgents` treatment if that changes the approved identity.
+
+Brand evolution is allowed only as an explicit design decision, not as an incidental refactor side effect.
+
+### R-CUSTOMER-COPY — public copy is for the visitor, not the project team
+Public Landing copy must explain customer value, product use, availability and limitations in visitor language. Internal governance/development wording must not leak into the page.
+
+Examples of disallowed public-copy patterns include:
+- `niente promesse presentate come già disponibili`;
+- `Il nome dell'Agent deve dire cosa fa`;
+- `TennisAgents deve parlare anche a chi finanzia`;
+- `Early Access a bassa frizione`;
+- internal terms such as `contratto pubblico`, `source of truth`, `canonical entitlement authority`, or explanations of why an implementation metaphor is allowed.
+
+Truthfulness remains mandatory, but it should be expressed for customers, e.g. simple PROVEN/BETA/LAB explanations and clear availability statements.
+
 ## Source trail
 - Notion: `Landing V3 — market-ready build with truthful value, proof and CTA`.
 - Notion: `Agent Architecture Cross-Conversation Audit — 2026-08-20`.
+- Notion: `Decision Preservation Gate — cross-source implementation rule`.
 - Dropbox archive: `ChatGPT-Test Plan CRISP+LANDING-20260820-2312.md`.
-- Notion: Access/Subscription lifecycle and non-card Premium entitlement work.
 - Dropbox: canonical Landing V2 package, including Sponsored Premium and appearance/Crisp integration evidence.
+- Dropbox: `BRIEF_landing_layout.md` — explicit keep-visible requirement for `assets/hero-mentors.jpg` and animated flow.
+- GitHub pre-V3 `main`: `39ee66c92a5fd5b040ed561d801f4146ab8579a3` — animated scalable SVG + IT/EN switch.
+- Notion: Access/Subscription lifecycle and non-card Premium entitlement work.
 
 ## Release rule
-A green static quality check is necessary but not sufficient. Production still requires preview/mobile/visual QA, CTA destination verification, Crisp/contact verification, legal/privacy readiness and analytics/indexability checks.
+A green static quality check is necessary but not sufficient. Production still requires preview/mobile/visual QA, customer-copy review, CTA destination verification, Crisp/contact verification, legal/privacy readiness and analytics/indexability checks.
