@@ -1,0 +1,248 @@
+name: Landing QA self-fix
+
+on:
+  push:
+    branches:
+      - feat/landing-v3-market-ready
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]' && contains(github.event.head_commit.message, 'stage Landing QA self-fix')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Apply founder QA corrections
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def must_replace(text, old, new, label):
+              if old not in text:
+                  raise SystemExit(f'missing patch anchor: {label}')
+              return text.replace(old, new, 1)
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          s = must_replace(
+              s,
+              '    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:42px;align-items:center}',
+              '    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;grid-template-areas:"intro visual" "copy visual";column-gap:42px;row-gap:8px;align-items:start}\n    .hero-intro{grid-area:intro}.hero-copy{grid-area:copy}.hero-visual{grid-area:visual;align-self:center}',
+              'hero grid',
+          )
+          s = must_replace(s, '    .hero-caption{padding:13px 16px;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}\n    .hero-caption strong{color:var(--ink)}\n', '', 'duplicate hero caption css')
+          s = must_replace(
+              s,
+              '    @media(max-width:1000px){.hero-grid,.feed{grid-template-columns:1fr}.grid3,.payer-grid,.premium-grid{grid-template-columns:1fr 1fr}.usage-step{grid-template-columns:48px 120px 1fr}.usage-step .move,.usage-step .agent-result{grid-column:3}.usage-step .move{display:none}.handoff-strip{grid-template-columns:repeat(5,minmax(135px,1fr));overflow-x:auto;padding-bottom:8px}}',
+              '    @media(max-width:1000px){.hero-grid{grid-template-columns:1fr;grid-template-areas:"intro" "visual" "copy";row-gap:18px}.feed{grid-template-columns:1fr}.grid3,.payer-grid,.premium-grid{grid-template-columns:1fr 1fr}.usage-step{grid-template-columns:48px 120px 1fr}.usage-step .move,.usage-step .agent-result{grid-column:3}.usage-step .move{display:none}.handoff-strip{grid-template-columns:repeat(5,minmax(135px,1fr));overflow-x:auto;padding-bottom:8px}}',
+              'mobile hero order',
+          )
+          s = must_replace(
+              s,
+              '    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.flow-dot{display:none}}',
+              '    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.flow-dot{opacity:.9}}',
+              'reduced motion fallback',
+          )
+          s = must_replace(s, '<body data-requirement="R-CUSTOMER-COPY">', '<body data-requirement="R-CUSTOMER-COPY R-COPY-NO-REDUNDANCY">', 'copy de-dup marker')
+
+          start = s.index('    <div class="hero-grid">')
+          end = s.index('\n\n    <div class="handoff-strip"', start)
+          hero = '''    <div class="hero-grid">
+      <div class="hero-intro">
+        <span class="eyebrow" data-it="Open Beta · Web/PWA" data-en="Open Beta · Web/PWA">Open Beta · Web/PWA</span>
+        <h1>
+          <span data-it="Il tuo" data-en="Your">Il tuo</span>
+          <span class="accent" data-it="AI Tennis Team." data-en="AI Tennis Team.">AI Tennis Team.</span><br>
+          <span data-it="In campo con te." data-en="Courtside with you.">In campo con te.</span>
+        </h1>
+      </div>
+      <figure class="hero-visual" data-requirement="R-MOBILE-HERO-ORDER">
+        <img src="assets/hero-mentors.jpg"
+             alt="Il Player al cambio campo con il suo team virtuale intorno"
+             data-alt-it="Il Player al cambio campo con il suo team virtuale intorno"
+             data-alt-en="The Player at the changeover with the virtual team around them"
+             loading="eager" fetchpriority="high" decoding="async">
+      </figure>
+      <div class="hero-copy">
+        <p class="lead" data-it="Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione." data-en="Before the match it studies your opponent. During play it turns points and observations into tactical guidance. After the match it helps you decide what to train. Not one AI coach, but a team of specialists working together to help you make the next decision.">Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione.</p>
+        <div class="ctas">
+          <a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents →" data-en="Try TennisAgents →">Prova TennisAgents →</a>
+          <a class="btn secondary" href="#premium" data-track="premium" data-it="Scopri Premium" data-en="Discover Premium">Scopri Premium</a>
+        </div>
+        <a class="textlink" href="#how" data-it="Guarda come lavora il tuo team →" data-en="See how your team works →">Guarda come lavora il tuo team →</a>
+        <p class="micro" data-it="La Beta è disponibile sul web. Le funzioni ancora in evoluzione sono indicate come BETA o LAB." data-en="The Beta is available on the web. Features still evolving are clearly marked BETA or LAB.">La Beta è disponibile sul web. Le funzioni ancora in evoluzione sono indicate come BETA o LAB.</p>
+        <div class="hero-pills" aria-label="TennisAgents lifecycle">
+          <span data-it="Prima · Scout" data-en="Before · Scout">Prima · Scout</span>
+          <span data-it="Durante · Analyst + Strategist + Match Coach" data-en="During · Analyst + Strategist + Match Coach">Durante · Analyst + Strategist + Match Coach</span>
+          <span data-it="Dopo · Trainer + Mental" data-en="After · Trainer + Mental">Dopo · Trainer + Mental</span>
+        </div>
+      </div>
+    </div>'''
+          s = s[:start] + hero + s[end:]
+
+          s = must_replace(s, '<svg viewBox="0 0 1100 470" role="img" aria-label="TennisAgents workflow">', '<svg id="flow-svg" viewBox="0 0 1100 470" role="img" aria-label="TennisAgents workflow">', 'flow svg id')
+          paths = [
+              ('M 260 80 C 375 80, 375 225, 430 225', 'flow-path-1'),
+              ('M 260 175 C 375 175, 375 225, 430 225', 'flow-path-2'),
+              ('M 260 270 C 375 270, 375 225, 430 225', 'flow-path-3'),
+              ('M 260 365 C 375 365, 375 225, 430 225', 'flow-path-4'),
+              ('M 640 225 C 700 225, 690 115, 760 115', 'flow-path-5'),
+              ('M 640 225 C 700 225, 690 225, 760 225', 'flow-path-6'),
+              ('M 640 225 C 700 225, 690 335, 760 335', 'flow-path-7'),
+              ('M 930 365 C 930 430, 140 430, 140 400', 'flow-path-8'),
+          ]
+          for d, ident in paths:
+              s = must_replace(s, f'<path d="{d}"', f'<path id="{ident}" d="{d}"', ident)
+
+          uses = [
+              ('teal','4bc69a','2.5','flow-path-1'),
+              ('teal','4bc69a','1.9','flow-path-2'),
+              ('teal','4bc69a','3.1','flow-path-3'),
+              ('teal','4bc69a','2.8','flow-path-4'),
+              ('gold','f3b51b','2.2','flow-path-5'),
+              ('gold','f3b51b','2.0','flow-path-6'),
+              ('gold','f3b51b','2.7','flow-path-7'),
+              ('blue','76a9ff','4.5','flow-path-8'),
+          ]
+          use_lines = [line for line in s.splitlines() if '<use class="flow-dot"' in line]
+          if len(use_lines) != 8:
+              raise SystemExit(f'expected 8 flow use lines, found {len(use_lines)}')
+          for old, (_, color, dur, ident) in zip(use_lines, uses):
+              new = f'          <circle class="flow-dot" r="5" fill="#{color}"><animateMotion dur="{dur}s" repeatCount="indefinite"><mpath href="#{ident}"/></animateMotion></circle>'
+              s = must_replace(s, old, new, ident + ' motion')
+
+          s = must_replace(
+              s,
+              '  setLang(initial);\n\n})();',
+              '''  setLang(initial);\n\n  const flowSvg=document.getElementById('flow-svg');\n  const reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');\n  const syncFlowMotion=()=>{\n    if(!flowSvg) return;\n    if(reducedMotion&&reducedMotion.matches&&flowSvg.pauseAnimations){flowSvg.pauseAnimations();}\n    else if(flowSvg.unpauseAnimations){flowSvg.unpauseAnimations();}\n  };\n  syncFlowMotion();\n  if(reducedMotion&&reducedMotion.addEventListener) reducedMotion.addEventListener('change',syncFlowMotion);\n\n})();''',
+              'flow reduced-motion JS',
+          )
+          p.write_text(s, encoding='utf-8')
+
+          # Canonical approved identity: reduced small-size derivative of MASTER DEFINITIVO.
+          icon = '''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 553 572" role="img" aria-label="TennisAgents">
+  <!-- Reduced production derivative of TennisAgents_AI_MASTER_DEFINITIVO for small UI sizes. -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#111A32"/><stop offset="1" stop-color="#071426"/></radialGradient>
+    <linearGradient id="seam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F9D423"/><stop offset=".52" stop-color="#FFB21A"/><stop offset="1" stop-color="#FF7A18"/></linearGradient>
+    <linearGradient id="spark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E01E5A"/><stop offset=".55" stop-color="#EC3BB6"/><stop offset="1" stop-color="#A43DD4"/></linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="553" height="572" rx="112" fill="#071426"/>
+  <circle cx="269.45" cy="273.68" r="237.05" fill="url(#bg)" stroke="#36C5F0" stroke-opacity=".16" stroke-width="2"/>
+  <g fill="none" stroke-linecap="round" stroke-width="7" opacity=".95">
+    <path d="M58 171h56" stroke="#36C5F0"/><path d="M132 171h35" stroke="#E01E5A"/><path d="M42 201h82" stroke="#2EB67D"/><path d="M143 201h53" stroke="#ECB22E"/>
+    <path d="M31 232h61" stroke="#E01E5A"/><path d="M111 232h94" stroke="#36C5F0"/><path d="M31 263h91" stroke="#36C5F0"/><path d="M143 263h67" stroke="#FF8A24"/>
+    <path d="M31 294h69" stroke="#ECB22E"/><path d="M119 294h92" stroke="#2EB67D"/><path d="M38 325h89" stroke="#E01E5A"/><path d="M147 325h64" stroke="#36C5F0"/>
+    <path d="M54 356h70" stroke="#2EB67D"/><path d="M145 356h52" stroke="#ECB22E"/><path d="M73 387h74" stroke="#36C5F0"/>
+  </g>
+  <g fill="#36C5F0" opacity=".9"><circle cx="25" cy="263" r="4"/><circle cx="47" cy="387" r="4"/></g><g fill="#E01E5A" opacity=".9"><circle cx="120" cy="171" r="4"/><circle cx="30" cy="325" r="4"/></g>
+  <g fill="none" stroke="url(#seam)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"><path d="M214 75 C145 90 145 145 230 190 C295 225 302 265 333 282"/><path d="M255 485 C150 455 150 400 235 360 C300 330 304 300 333 282"/></g>
+  <path d="M333 194 C345 242 365 267 420 282 C365 297 345 322 333 372 C321 322 300 297 258 282 C300 267 321 242 333 194 Z" fill="url(#spark)" filter="url(#glow)"/><circle cx="333" cy="282" r="10" fill="#EC3BB6"/>
+</svg>'''
+          Path('icons/icon.svg').write_text(icon, encoding='utf-8')
+
+          # Decision contract: definitive identity + mobile hierarchy + anti-redundancy.
+          cp = Path('docs/landing-v3-decision-coverage.md')
+          c = cp.read_text(encoding='utf-8')
+          old_brand = '''### R-BRAND-IDENTITY — preserve the V2 TennisAgents icon and wordmark treatment
+The visible Landing brand must preserve the accepted V2 TennisAgents identity:
+- the TennisAgents icon geometry already stored in `icons/icon.svg` / favicon assets;
+- visible `TENNISAGENTS` wordmark treatment consistent with the V2 direction;
+- no silent fallback to a generic text-only `TennisAgents` treatment if that changes the approved identity.
+
+Brand evolution is allowed only as an explicit design decision, not as an incidental refactor side effect.'''
+          new_brand = '''### R-BRAND-IDENTITY — use the approved TennisAgents master identity
+The visible Landing brand must use the approved TennisAgents identity derived from `TennisAgents_AI_MASTER_DEFINITIVO`, which explicitly supersedes earlier CAD/logo versions. The small UI derivative must preserve the locked sphere, tennis seam, data-flow and spark geometry while reducing network detail at small sizes. The legacy rectangular **T monogram is V1 and must not return**.
+
+Requirements:
+- `icons/icon.svg` must identify itself as a derivative of `TennisAgents_AI_MASTER_DEFINITIVO`;
+- visible `TENNISAGENTS` wordmark remains paired with the approved icon treatment;
+- favicon / touch / maskable raster derivatives must be regenerated from the same approved SVG derivative, not from the V1 monogram;
+- brand evolution is allowed only by explicit design decision, never as an incidental refactor.'''
+          c = must_replace(c, old_brand, new_brand, 'definitive brand contract')
+          insert = '''
+### R-MOBILE-HERO-ORDER — explain the product visually before long supporting copy
+On narrow/mobile layouts the first-screen hierarchy is: **headline → approved Player/team hero visual → supporting explanation / CTA**. Desktop may keep text and visual side by side. The hero image is an above-the-fold product explanation, must be present in initial HTML, must not be lazy-loaded, and should receive high fetch priority when it is a likely LCP image.
+
+The hero visual must not carry a caption that merely restates `Il tuo AI Tennis Team / In campo con te`.
+
+### R-COPY-NO-REDUNDANCY — every section must earn its place
+Landing copy must avoid repeating the same positioning idea in adjacent headline, image caption, paragraph, card or section. Each block should add a new customer-relevant fact, proof, use case, distinction or action. A full semantic de-duplication pass is required before production; automated checks cover known regressions but do not replace editorial review.
+'''
+          c = must_replace(c, '\n## Source trail', '\n' + insert + '\n## Source trail', 'new QA contracts')
+          cp.write_text(c, encoding='utf-8')
+
+          # Executable regression checks.
+          tp = Path('scripts/check_landing.py')
+          t = tp.read_text(encoding='utf-8')
+          t = must_replace(t, '    "R-CUSTOMER-COPY",\n)', '    "R-CUSTOMER-COPY",\n    "R-MOBILE-HERO-ORDER",\n    "R-COPY-NO-REDUNDANCY",\n)', 'requirement ids')
+          old_brand_checks = '''    require('/icons/icon.svg' in text, "V2 TennisAgents icon missing from visible brand", errors)
+    require('<span class="brand-word">TENNISAGENTS</span>' in text, "TENNISAGENTS V2-style wordmark missing", errors)
+
+    # Animated flow retained from pre-V3 landing.
+    require(text.count("<animateMotion") >= 5, "animated flow must retain moving dots", errors)
+    require('id="flow"' in text and 'class="flow-dot"' in text, "animated flow structure missing", errors)'''
+          new_brand_checks = '''    require('/icons/icon.svg' in text, "TennisAgents icon missing from visible brand", errors)
+    require('<span class="brand-word">TENNISAGENTS</span>' in text, "TENNISAGENTS wordmark missing", errors)
+    icon_svg = (ROOT / "icons" / "icon.svg").read_text(encoding="utf-8")
+    require("TennisAgents_AI_MASTER_DEFINITIVO" in icon_svg, "icon is not derived from the approved definitive master", errors)
+    require("#071426" in icon_svg and "M214 75" in icon_svg and "M333 194" in icon_svg, "definitive logo geometry/signature missing", errors)
+    require('width="276" height="58"' not in icon_svg, "legacy V1 T-monogram geometry returned", errors)
+
+    # Animated flow retained and robust across modern desktop/mobile browsers.
+    require(text.count("<animateMotion") >= 5, "animated flow must retain moving dots", errors)
+    require(text.count('<mpath href="#flow-path-') >= 5, "animated flow should reuse visible SVG paths via mpath", errors)
+    require('id="flow-svg"' in text and 'class="flow-dot"' in text, "animated flow structure missing", errors)
+    require("pauseAnimations" in text and "prefers-reduced-motion" in text, "reduced-motion fallback missing", errors)
+
+    # Mobile hero hierarchy + known copy duplication regression.
+    require('class="hero-intro"' in text and 'class="hero-copy"' in text, "responsive hero structure missing", errors)
+    require('grid-template-areas:"intro" "visual" "copy"' in text, "mobile hero must render headline → visual → copy", errors)
+    require('loading="eager" fetchpriority="high"' in text, "above-fold hero image priority missing", errors)
+    require("hero-caption" not in text, "hero caption duplicates the core positioning", errors)
+    require("Tu al centro." not in text and "You at the centre." not in text, "known duplicate hero positioning returned", errors)'''
+          t = must_replace(t, old_brand_checks, new_brand_checks, 'executable visual QA checks')
+          t = must_replace(t, '    print("- V2 hero visual, animated flow, IT/EN and brand identity preserved")', '    print("- definitive logo, mobile hero order, animated flow, IT/EN and anti-duplication guards preserved")', 'test output')
+          tp.write_text(t, encoding='utf-8')
+          PY
+      - name: Generate definitive raster icon derivatives
+        run: |
+          python -m pip install --quiet cairosvg
+          python - <<'PY'
+          from pathlib import Path
+          import cairosvg
+          src = str(Path('icons/icon.svg'))
+          for name, size in [
+              ('favicon-32.png',32),
+              ('apple-touch-icon.png',180),
+              ('icon-192.png',192),
+              ('Icon-maskable-192.png',192),
+              ('icon-512.png',512),
+              ('Icon-maskable-512.png',512),
+          ]:
+              cairosvg.svg2png(url=src, write_to=str(Path('icons')/name), output_width=size, output_height=size)
+          PY
+      - name: Validate corrected Landing
+        run: |
+          python scripts/check_landing.py
+          python scripts/build_pages.py
+          test -f dist/index.html
+          test -f dist/icons/icon.svg
+      - name: Commit atomic QA correction and remove helper workflow
+        run: |
+          rm .github/workflows/landing-qa-self-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html icons docs/landing-v3-decision-coverage.md scripts/check_landing.py .github/workflows/landing-qa-self-fix.yml
+          git commit -m "fix(landing): definitive brand, mobile hero and flow QA"
+          git push origin HEAD:feat/landing-v3-market-ready
