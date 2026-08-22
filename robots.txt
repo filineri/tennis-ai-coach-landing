@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.tennisagents.app/sitemap.xml
+Sitemap: https://tennisagents.app/sitemap.xml
