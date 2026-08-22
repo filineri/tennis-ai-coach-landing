@@ -44,7 +44,7 @@ jobs:
           test -f dist/demo/player/index.html
 
   repair:
-    if: github.actor != 'github-actions[bot]' && contains(github.event.head_commit.message, 'stage Landing QA repair runner')
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
