@@ -1,0 +1,28 @@
+name: Landing V3 quality
+
+on:
+  push:
+    branches:
+      - 'feat/landing-v3-*'
+  pull_request:
+    paths:
+      - 'index.html'
+      - '404.html'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'scripts/check_landing.py'
+      - '.github/workflows/landing-quality.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate Landing V3
+        run: python scripts/check_landing.py
