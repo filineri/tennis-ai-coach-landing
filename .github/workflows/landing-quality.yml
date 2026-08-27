@@ -14,7 +14,9 @@ on:
       - 'icons/**'
       - 'demo/**'
       - 'docs/landing-v3-decision-coverage.md'
+      - 'docs/landing-open-source-integration.md'
       - 'scripts/check_landing.py'
+      - 'scripts/check_analytics.py'
       - 'scripts/build_pages.py'
       - '.github/workflows/landing-quality.yml'
 
@@ -31,6 +33,8 @@ jobs:
           python-version: '3.12'
       - name: Validate Landing V3
         run: python scripts/check_landing.py
+      - name: Validate analytics/open-source adoption
+        run: python scripts/check_analytics.py
       - name: Build Cloudflare Pages bundle
         run: python scripts/build_pages.py
       - name: Verify deploy bundle
@@ -42,3 +46,8 @@ jobs:
           test -f dist/demo/live-match/index.html
           test -f dist/demo/tracking/index.html
           test -f dist/demo/player/index.html
+          test -f dist/assets/analytics.js
+          test -f dist/assets/analytics-config.js
+          grep -q '"enabled":false' dist/assets/analytics-config.js
+          grep -q '/assets/analytics.js' dist/index.html
+          grep -q '/assets/analytics.js' dist/demo/live-match/index.html
