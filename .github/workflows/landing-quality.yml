@@ -34,8 +34,11 @@ jobs:
       - name: Validate Landing V3
         run: python scripts/check_landing.py
       - name: Validate analytics/open-source adoption
-        run: python scripts/check_analytics.py
-      - name: Build Cloudflare Pages bundle
+        run: |
+          python scripts/check_analytics.py
+          node --check assets/analytics.js
+          python -m py_compile scripts/build_pages.py scripts/check_analytics.py
+      - name: Build Cloudflare Pages bundle — analytics disabled by default
         run: python scripts/build_pages.py
       - name: Verify deploy bundle
         run: |
@@ -49,5 +52,20 @@ jobs:
           test -f dist/assets/analytics.js
           test -f dist/assets/analytics-config.js
           grep -q '"enabled":false' dist/assets/analytics-config.js
+          grep -q '"consentRequired":true' dist/assets/analytics-config.js
           grep -q '/assets/analytics.js' dist/index.html
           grep -q '/assets/analytics.js' dist/demo/live-match/index.html
+      - name: Exercise configured PostHog build without network calls
+        env:
+          POSTHOG_KEY: phc_ci_contract_only
+          POSTHOG_HOST: https://eu.i.posthog.com
+          POSTHOG_CONSENT_REQUIRED: "true"
+          POSTHOG_RESPECT_DNT: "true"
+          CF_PAGES_BRANCH: ci-contract
+          CF_PAGES_COMMIT_SHA: ci-contract-sha
+        run: |
+          python scripts/build_pages.py
+          grep -q '"enabled":true' dist/assets/analytics-config.js
+          grep -q '"projectKey":"phc_ci_contract_only"' dist/assets/analytics-config.js
+          grep -q '"environment":"ci-contract"' dist/assets/analytics-config.js
+          grep -q '"release":"ci-contract-sha"' dist/assets/analytics-config.js
