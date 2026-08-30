@@ -1,1288 +1,677 @@
-<!DOCTYPE html>
-<html lang="it">
+<!doctype html>
+<html lang="it" data-theme="default">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Tennis AI Coach — il tuo assistente tattico in campo in tempo reale.">
-<title>Tennis AI Coach — Il match si decide al cambio campo</title>
-<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --ink:#0a1520;
-  --ink2:#0f1e2e;
-  --card:#132030;
-  --gold:#F0A500;
-  --gold2:#c4820a;
-  --cream:#F5EDD8;
-  --muted:#6b8099;
-  --border:#1a2d42;
-  --teal:#18a077;
-  --white:#f0f4f8;
-  --font-display:'Bebas Neue',sans-serif;
-  --font-body:'DM Sans',sans-serif;
-}
-html{scroll-behavior:smooth;font-size:16px}
-body{background:var(--ink);color:var(--white);font-family:var(--font-body);overflow-x:hidden;line-height:1.6}
-
-/* ─── NOISE TEXTURE ─── */
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events:none;z-index:1000;opacity:.5;
-}
-
-/* ─── NAV ─── */
-nav{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:18px 40px;position:fixed;top:0;left:0;right:0;
-  z-index:100;
-  background:linear-gradient(to bottom,rgba(10,21,32,.95) 0%,transparent 100%);
-  backdrop-filter:blur(12px);
-}
-.logo-mark{display:flex;align-items:center;gap:10px}
-.logo-icon{display:none}
-.logo-text{font-family:var(--font-display);font-size:22px;letter-spacing:2px;color:var(--white)}
-.nav-right{display:flex;align-items:center;gap:16px}
-.lang-sw{display:flex;background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:6px;overflow:hidden}
-.lang-sw button{padding:5px 11px;font-size:11px;font-weight:600;letter-spacing:.5px;border:none;background:transparent;color:var(--muted);cursor:pointer;font-family:var(--font-body)}
-.lang-sw button.on{background:rgba(240,165,0,.2);color:var(--gold)}
-.cta-nav{background:var(--gold);color:var(--ink);padding:9px 22px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none;letter-spacing:.3px;transition:background .2s}
-.cta-nav:hover{background:var(--gold2)}
-
-/* fix distanza eyebrow/nav su viewport intermedi */
-@media(max-width:900px){
-  .hero{padding-top:140px}
-}
-/* ─── HERO ─── */
-.hero{
-  min-height:100vh;display:flex;align-items:center;
-  padding:160px 40px 80px;
-  position:relative;overflow:hidden;
-}
-.hero-court{
-  position:absolute;right:-5%;top:50%;transform:translateY(-50%);
-  width:52%;max-width:700px;opacity:.13;
-}
-.hero-court svg{width:100%;height:auto}
-.hero-content{position:relative;z-index:2;max-width:620px}
-.hero-eyebrow{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);
-  border-radius:20px;padding:5px 14px;margin-bottom:28px;
-  font-size:12px;font-weight:600;letter-spacing:1.5px;
-  color:var(--gold);text-transform:uppercase;
-}
-.hero-eyebrow span{width:6px;height:6px;border-radius:50%;background:var(--gold);display:inline-block;}
-
-h1{
-  font-family:var(--font-display);
-  font-size:clamp(52px,9vw,100px);
-  line-height:.95;letter-spacing:3px;
-  color:var(--white);margin-bottom:8px;
-}
-h1 em{color:var(--gold);font-style:normal}
-.hero-sub{
-  font-size:clamp(15px,2vw,18px);color:var(--muted);
-  max-width:480px;margin:20px 0 40px;line-height:1.7;
-}
-.hero-ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-.btn-primary{
-  background:var(--gold);color:var(--ink);
-  padding:15px 32px;border-radius:10px;
-  font-weight:700;font-size:15px;text-decoration:none;
-  display:inline-flex;align-items:center;gap:8px;
-  transition:all .2s;letter-spacing:.3px;
-}
-.btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
-.btn-primary svg{width:16px;height:16px}
-.btn-ghost{
-  color:var(--muted);font-size:14px;text-decoration:none;
-  display:inline-flex;align-items:center;gap:6px;
-  transition:color .2s;letter-spacing:.2px;
-}
-.btn-ghost:hover{color:var(--white)}
-.hero-stats{
-  display:flex;gap:40px;margin-top:56px;
-  padding-top:40px;border-top:1px solid var(--border);
-}
-.hero-stat-num{
-  font-family:var(--font-display);font-size:36px;
-  letter-spacing:2px;color:var(--gold);display:block;
-}
-.hero-stat-label{font-size:12px;color:var(--muted);letter-spacing:.8px;text-transform:uppercase}
-
-/* ─── PHONE MOCKUP ─── */
-.hero-phone{
-  position:absolute;right:8%;top:50%;transform:translateY(-50%) rotate(3deg);
-  width:min(22%,220px);z-index:3;
-  filter:drop-shadow(0 40px 80px rgba(0,0,0,.6));
-}
-.phone-shell{
-  background:#0a1520;border:1px solid rgba(255,255,255,.12);
-  border-radius:44px;padding:12px;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05),
-             0 0 60px rgba(240,165,0,.08);
-}
-.phone-notch{width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin:0 auto 10px}
-.phone-screen{background:#0d1b2a;border-radius:32px;overflow:hidden;padding:14px 12px;aspect-ratio:9/19.5}
-.ps-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.ps-score{font-family:var(--font-display);font-size:20px;letter-spacing:2px;color:var(--white)}
-.ps-badge{background:rgba(240,165,0,.15);border:1px solid rgba(240,165,0,.3);border-radius:4px;padding:2px 7px;font-size:9px;font-weight:600;color:var(--gold);letter-spacing:.5px}
-.ps-tag{background:rgba(240,165,0,.12);color:var(--gold);font-size:8px;font-weight:700;letter-spacing:.8px;padding:2px 7px;border-radius:3px;display:inline-block;text-transform:uppercase;margin-bottom:8px}
-.ps-msg{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:9px;margin-bottom:7px}
-.ps-msg-main{font-size:11px;font-weight:600;color:var(--white);line-height:1.3}
-.ps-msg-sub{font-size:9px;color:var(--muted);margin-top:3px}
-.ps-warn{background:rgba(240,165,0,.06);border:1px solid rgba(240,165,0,.2);border-radius:9px;padding:8px;margin-bottom:7px}
-.ps-warn-label{font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:2px}
-.ps-warn-text{font-size:10px;color:rgba(245,237,216,.7)}
-.ps-btn{background:var(--gold);border-radius:7px;padding:8px;text-align:center;font-size:10px;font-weight:700;color:var(--ink)}
-
-/* ─── SECTIONS ─── */
-section{padding:96px 40px}
-.section-eyebrow{font-size:11px;font-weight:600;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;text-align:center}
-h2{font-family:var(--font-display);font-size:clamp(36px,6vw,64px);letter-spacing:2px;text-align:center;color:var(--white);margin-bottom:48px;line-height:1}
-h2 span{color:var(--gold)}
-
-/* ─── MODES ─── */
-.modes{background:var(--ink2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.modes-grid{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory}
-.mode-card{
-  background:var(--card);padding:40px 32px;
-  position:relative;overflow:hidden;transition:background .3s;
-}
-.mode-card:hover{background:#19304a}
-.mode-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(to right,transparent,var(--gold),transparent);
-  opacity:0;transition:opacity .3s;
-}
-.mode-card:hover::before{opacity:1}
-.mode-num{
-  font-family:var(--font-display);font-size:64px;letter-spacing:2px;
-  color:rgba(240,165,0,.08);line-height:1;margin-bottom:16px;
-}
-.mode-tag{
-  display:inline-block;font-size:10px;font-weight:600;letter-spacing:1.5px;
-  text-transform:uppercase;padding:3px 10px;border-radius:20px;
-  margin-bottom:14px;
-}
-.mode-tag.best{background:rgba(240,165,0,.12);color:var(--gold);border:1px solid rgba(240,165,0,.25)}
-.mode-tag.pro{background:rgba(24,160,119,.1);color:var(--teal);border:1px solid rgba(24,160,119,.25)}
-.mode-tag.free{background:rgba(255,255,255,.05);color:var(--muted);border:1px solid var(--border)}
-.mode-title{font-family:var(--font-display);font-size:28px;letter-spacing:1.5px;color:var(--white);margin-bottom:12px}
-.mode-desc{font-size:14px;color:var(--muted);line-height:1.7}
-
-/* ─── ENGINE ─── */
-.engine-section{
-  background:linear-gradient(135deg,var(--ink) 0%,#0d2035 50%,var(--ink) 100%);
-  position:relative;overflow:hidden;
-}
-.engine-section::before{
-  content:'';position:absolute;
-  width:600px;height:600px;border-radius:50%;
-  background:radial-gradient(circle,rgba(240,165,0,.06) 0%,transparent 70%);
-  top:50%;left:50%;transform:translate(-50%,-50%);
-}
-.engine-inner{max-width:800px;margin:0 auto;text-align:center;position:relative}
-.engine-lead{font-size:clamp(16px,2vw,20px);color:var(--muted);line-height:1.8;margin-bottom:32px}
-.flow-wrap{max-width:760px;margin:0 auto 36px}
-.flow-wrap svg{width:100%;height:auto;display:block}
-.engine-numbers{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-  background:var(--border);border:1px solid var(--border);
-  border-radius:12px;overflow:hidden;margin:40px 0;
-}
-.engine-num{background:var(--card);padding:28px 20px;text-align:center}
-.engine-num-val{font-family:var(--font-display);font-size:48px;letter-spacing:2px;color:var(--gold);display:block;line-height:1}
-.engine-num-label{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px}
-.engine-desc{font-size:14px;color:var(--muted);line-height:1.8}
-.concept-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:24px}
-.cpill{
-  background:rgba(255,255,255,.04);border:1px solid var(--border);
-  border-radius:20px;padding:5px 14px;font-size:12px;color:var(--muted);
-}
-
-/* ─── FEATURES ─── */
-.feat-grid{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory}
-.feat-card{
-  background:var(--card);border:1px solid var(--border);border-radius:16px;
-  padding:28px;transition:border-color .3s,transform .3s;
-}
-.feat-card:hover{border-color:rgba(240,165,0,.3);transform:translateY(-3px)}
-.feat-icon{
-  width:44px;height:44px;border-radius:12px;background:rgba(240,165,0,.08);
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;margin-bottom:18px;
-}
-.feat-title{font-size:16px;font-weight:600;color:var(--white);margin-bottom:8px}
-.feat-desc{font-size:13px;color:var(--muted);line-height:1.7}
-
-/* ─── HOW ─── */
-.how-inner{max-width:680px;margin:0 auto}
-.how-steps{display:flex;flex-direction:column;gap:0}
-.how-step{display:flex;gap:24px;padding:28px 0;border-bottom:1px solid var(--border);position:relative}
-.how-step:last-child{border-bottom:none}
-.step-num-wrap{flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:0}
-.step-circle{
-  width:36px;height:36px;border-radius:50%;
-  background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.3);
-  color:var(--gold);font-family:var(--font-display);font-size:18px;letter-spacing:1px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.step-content h4{font-size:16px;font-weight:600;color:var(--white);margin-bottom:6px}
-.step-content p{font-size:14px;color:var(--muted);line-height:1.7}
-
-/* ─── CTA FINAL ─── */
-.cta-final{
-  text-align:center;
-  background:linear-gradient(to bottom,var(--ink) 0%,#081218 100%);
-  border-top:1px solid var(--border);
-}
-.cta-final h2{margin-bottom:16px}
-.cta-final p{color:var(--muted);margin-bottom:36px;font-size:15px}
-.pwa-note{
-  font-size:12px;color:var(--muted);margin-top:14px;
-  display:flex;align-items:center;justify-content:center;gap:8px;
-}
-.pwa-note::before,.pwa-note::after{content:'';flex:1;max-width:60px;height:1px;background:var(--border)}
-
-/* ─── FOOTER ─── */
-footer{
-  padding:32px 40px;border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
-}
-.footer-links{display:flex;gap:24px}
-.footer-links a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
-.footer-links a:hover{color:var(--gold)}
-.footer-copy{font-size:12px;color:rgba(107,128,153,.6)}
-
-/* ─── ANIMATIONS ─── */
-.reveal{opacity:1;transform:none}
-.reveal.visible{opacity:1;transform:none}
-
-
-
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:768px){
-  nav{padding:14px 20px}
-  .hero{padding:100px 20px 60px;flex-direction:column}
-  .hero-court,.hero-phone{display:none}
-  .hero-stats{gap:24px;flex-wrap:wrap}
-  section{padding:64px 20px}
-  .engine-numbers{grid-template-columns:repeat(2,1fr)}
-  footer{flex-direction:column;align-items:flex-start;padding:24px 20px}
-  h2{text-align:left}
-  .section-eyebrow{text-align:left}
-}
-
-@media(max-width:768px){
-  /* Hero */
-  .hero{padding:90px 20px 44px;min-height:auto;flex-direction:column;align-items:flex-start}
-  .hero-court{display:none}
-  .hero-phone{display:none}
-  .hero-eyebrow{display:none}
-  h1{font-size:clamp(44px,12vw,68px)}
-  .hero-stats{gap:20px;margin-top:28px;padding-top:22px}
-  .hero-stat-num{font-size:26px}
-
-  /* Nav */
-  nav{padding:12px 16px}
-  .logo-text{font-size:15px}
-
-  /* Sections */
-  section{padding:48px 20px}
-  h2{font-size:clamp(30px,9vw,48px);text-align:left}
-  .section-eyebrow{text-align:left}
-
-  /* Modes */
-  .modes{padding:48px 0}
-  .modes h2,.modes .section-eyebrow{padding:0 20px}
-  .mode-num{font-size:48px;margin-bottom:10px}
-
-  /* Engine numbers: 2x2 */
-  .engine-numbers{grid-template-columns:repeat(2,1fr)}
-  .engine-num-val{font-size:34px}
-  .engine-inner{text-align:left}
-  .concept-pills{justify-content:flex-start}
-
-  /* Features */
-  .features-section{padding:48px 0}
-  .features-section h2,.features-section .section-eyebrow{padding:0 20px}
-
-  /* How */
-  .how-inner{max-width:100%}
-
-  /* Demo: horizontal scroll */
-  .demo-grid{
-    flex-wrap:nowrap!important;
-    overflow-x:auto;scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-    padding:0 20px 16px;gap:16px!important;
-    justify-content:flex-start!important;
-    margin:0 -20px!important;
-  }
-  .demo-grid::-webkit-scrollbar{display:none}
-  .demo-card{flex:0 0 auto!important;scroll-snap-align:center;min-width:190px}
-  .court-wrap{width:175px!important;height:298px!important}
-
-  /* CTA */
-  .cta-final h2{text-align:left}
-  .cta-final .btn-primary{display:inline-flex}
-  .pwa-note{justify-content:flex-start}
-  .pwa-note::before,.pwa-note::after{display:none}
-
-  /* Footer */
-  footer{flex-direction:column;gap:14px;padding:24px 20px}
-  .footer-links{flex-wrap:wrap;gap:12px}
-}
-
-/* ─── PRICING ─── */
-.pricing-section{background:var(--ink2);border-top:1px solid var(--border);padding:100px 40px}
-.pricing-inner{max-width:1080px;margin:0 auto;text-align:center}
-.beta-banner{display:inline-flex;align-items:center;gap:10px;background:rgba(24,160,119,.12);border:1px solid rgba(24,160,119,.35);color:#5DCAA5;border-radius:24px;padding:8px 20px;font-size:13px;font-weight:600;letter-spacing:.5px;margin:26px 0 44px}
-.price-grid{display:flex;flex-wrap:nowrap;overflow-x:auto;scroll-snap-type:x mandatory;text-align:left}
-.price-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;display:flex;flex-direction:column;position:relative;transition:transform .2s,border-color .2s}
-.price-card:hover{transform:translateY(-3px);border-color:rgba(240,165,0,.4)}
-.price-card.featured{border-color:var(--gold);background:linear-gradient(180deg,rgba(240,165,0,.07),var(--card) 45%)}
-.price-badge{position:absolute;top:-12px;left:28px;background:var(--gold);color:var(--ink);font-size:11px;font-weight:700;letter-spacing:1px;padding:4px 12px;border-radius:12px;text-transform:uppercase}
-.price-tier{font-family:var(--font-display);font-size:26px;letter-spacing:2px;color:var(--white);margin-bottom:4px}
-.price-for{font-size:12px;color:var(--muted);margin-bottom:18px;letter-spacing:.3px}
-.price-val{font-size:34px;font-weight:600;color:var(--white);margin-bottom:2px}
-.price-val small{font-size:13px;color:var(--muted);font-weight:400}
-.price-note{font-size:11px;color:var(--muted);margin-bottom:22px}
-.price-list{list-style:none;margin:0 0 26px;flex:1}
-.price-list li{font-size:13.5px;color:rgba(240,244,248,.85);padding:7px 0;border-bottom:1px solid rgba(26,45,66,.6);display:flex;gap:9px;align-items:baseline}
-.price-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0}
-.price-cta{display:block;text-align:center;padding:13px;border-radius:10px;font-weight:700;font-size:14px;text-decoration:none;letter-spacing:.3px;transition:all .2s}
-.price-cta.solid{background:var(--gold);color:var(--ink)}
-.price-cta.solid:hover{background:var(--gold2)}
-.price-cta.line{border:1px solid var(--border);color:var(--white)}
-.price-cta.line:hover{border-color:var(--gold);color:var(--gold)}
-.price-foot{font-size:12px;color:var(--muted);margin-top:28px}
-/* ─── FAQ ─── */
-.faq-section{background:var(--ink);padding:100px 40px;border-top:1px solid var(--border)}
-.faq-inner{max-width:780px;margin:0 auto}
-.faq-item{border-bottom:1px solid var(--border)}
-.faq-item summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 4px;font-size:16px;font-weight:600;color:var(--white)}
-.faq-item summary::-webkit-details-marker{display:none}
-.faq-item summary::after{content:'+';font-size:22px;color:var(--gold);transition:transform .2s;flex-shrink:0}
-.faq-item[open] summary::after{transform:rotate(45deg)}
-.faq-item p{padding:0 4px 24px;color:var(--muted);font-size:14.5px;line-height:1.75;max-width:660px}
-@media(max-width:760px){.pricing-section,.faq-section{padding:70px 22px}}
-
-/* ─── CARD RAILS: horizontal scroll on every viewport ─── */
-.scroll-hint{
-  max-width:1100px;margin:-18px auto 12px;
-  padding:0 4px;text-align:right;
-  color:var(--gold);font-size:12px;font-weight:600;
-  letter-spacing:.8px;text-transform:uppercase;
-}
-.modes-grid,.feat-grid,.price-grid{
-  display:flex;flex-wrap:nowrap;gap:16px;
-  overflow-x:auto;overflow-y:visible;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-  max-width:1100px;margin:0 auto;
-  padding:4px 4px 18px;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(240,165,0,.75) rgba(255,255,255,.06);
-}
-.modes-grid::-webkit-scrollbar,
-.feat-grid::-webkit-scrollbar,
-.price-grid::-webkit-scrollbar{height:6px;display:block}
-.modes-grid::-webkit-scrollbar-track,
-.feat-grid::-webkit-scrollbar-track,
-.price-grid::-webkit-scrollbar-track{background:rgba(255,255,255,.06);border-radius:999px}
-.modes-grid::-webkit-scrollbar-thumb,
-.feat-grid::-webkit-scrollbar-thumb,
-.price-grid::-webkit-scrollbar-thumb{background:rgba(240,165,0,.75);border-radius:999px}
-.mode-card,.feat-card,.price-card{
-  flex:0 0 290px;max-width:290px;
-  scroll-snap-align:start;
-}
-.price-grid{max-width:900px}
-@media(max-width:768px){
-  .scroll-hint{padding:0 20px;margin:-12px 0 10px}
-  .modes-grid,.feat-grid,.price-grid{
-    max-width:none;margin:0;
-    padding:4px 20px 18px;
-  }
-  .mode-card,.feat-card,.price-card{flex-basis:82vw;max-width:300px}
-}
-
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TennisAgents — Il tuo AI Tennis Team</title>
+  <meta name="description" content="TennisAgents è il tuo AI Tennis Team: Scout, Analyst, Strategist, Match Coach e staff lavorano insieme prima, durante e dopo il match.">
+  <link rel="canonical" href="https://tennisagents.app/">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="TennisAgents">
+  <meta property="og:title" content="TennisAgents — Il tuo AI Tennis Team">
+  <meta property="og:description" content="Un team virtuale di specialisti AI che trasforma contesto, punti e osservazioni in decisioni utili prima, durante e dopo il match.">
+  <meta property="og:url" content="https://tennisagents.app/">
+  <meta property="og:image" content="https://tennisagents.app/assets/hero-mentors.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="TennisAgents — Il tuo AI Tennis Team">
+  <meta name="twitter:description" content="Il Player al centro. Un team di specialisti AI intorno, dal pre-match al prossimo allenamento.">
+  <meta name="theme-color" content="#07131f">
+  <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"TennisAgents","url":"https://tennisagents.app/","applicationCategory":"SportsApplication","operatingSystem":"Web, PWA","description":"AI Tennis Team di specialisti che lavorano insieme per scouting, match coaching, debrief e training."}</script>
+  <style>
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    :root{
+      --bg:#07131f;--bg2:#091725;--panel:#0c1c2b;--panel2:#10263a;--ink:#f7f7f2;--muted:#9eb0c1;
+      --line:#1c3850;--accent:#f3b51b;--accent2:#d89700;--ok:#4bc69a;--info:#76a9ff;--warn:#f1c76b;
+      --max:1160px;--radius:22px;--shadow:0 28px 80px rgba(0,0,0,.28)
+    }
+    html[data-theme="prism"]{--bg:#11131e;--bg2:#171a28;--panel:#1c2031;--panel2:#242941;--line:#38405d;--accent:#36c5f0;--accent2:#2aa7cc;--ok:#2eb67d;--warn:#ecb22e}
+    html[data-theme="centre"]{--bg:#102418;--bg2:#143120;--panel:#193b27;--panel2:#214b32;--line:#3e6a4d;--accent:#ddd4a7;--accent2:#c7bb80;--ok:#a8d46b;--warn:#f0d36d}
+    html[data-theme="clay"]{--bg:#21130f;--bg2:#2c1912;--panel:#3a2118;--panel2:#4a291d;--line:#754631;--accent:#f0c28e;--accent2:#dfa76e;--ok:#a8d080;--warn:#f0b76c}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.58}
+    a{color:inherit}button{font:inherit}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:16px;z-index:9999;background:#fff;color:#000;padding:10px 14px;border-radius:8px}
+    .wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
+    nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 91%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
+    .nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+    .brand{display:inline-flex;align-items:center;gap:10px;text-decoration:none;min-width:max-content}
+    .brand-icon{width:34px;height:34px;display:block;border-radius:8px}
+    .brand-word{font-family:"Bebas Neue","Arial Narrow",Impact,sans-serif;font-size:25px;line-height:1;letter-spacing:2.2px;color:var(--ink)}
+    .nav-right{display:flex;align-items:center;gap:14px}
+    .navlinks{display:flex;align-items:center;gap:16px;font-size:14px}
+    .navlinks>a:not(.btn){text-decoration:none;color:var(--muted)}.navlinks>a:hover{color:var(--ink)}
+    .lang-sw{display:flex;background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+    .lang-sw button{border:0;background:transparent;color:var(--muted);font-weight:700;font-size:11px;padding:7px 10px;cursor:pointer}
+    .lang-sw button.on{background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:12px;padding:12px 18px;font-weight:700;text-decoration:none;border:1px solid transparent;transition:.18s ease;cursor:pointer}
+    .btn.primary{background:var(--accent);color:#15200d}.btn.primary:hover{background:var(--accent2);transform:translateY(-1px)}
+    .btn.secondary{border-color:var(--line);background:rgba(255,255,255,.025);color:var(--ink)}.btn.secondary:hover{border-color:var(--accent)}
+    .textlink{display:inline-flex;margin-top:15px;color:#d9e3eb;text-underline-offset:4px}
+    .hero{padding:76px 0 52px;overflow:hidden;position:relative}
+    .hero:before{content:"";position:absolute;right:-14vw;top:-20vw;width:58vw;height:58vw;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 17%,transparent),transparent 67%);pointer-events:none}
+    .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;grid-template-areas:"intro visual" "copy visual";column-gap:42px;row-gap:8px;align-items:start}
+    .hero-intro{grid-area:intro}.hero-copy{grid-area:copy}.hero-visual{grid-area:visual;align-self:center}
+    .eyebrow,.status{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:6px 11px;font-size:12px;font-weight:800;letter-spacing:.45px;text-transform:uppercase}
+    .eyebrow{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 30%,transparent);background:color-mix(in srgb,var(--accent) 7%,transparent)}
+    h1,h2{font-family:"Bebas Neue","Arial Narrow",Impact,sans-serif;font-weight:400}
+    h1{font-size:clamp(56px,7.4vw,92px);line-height:.92;letter-spacing:1px;margin:22px 0 20px;max-width:760px}
+    h1 .accent{color:var(--accent)}
+    .lead{color:var(--muted);font-size:clamp(17px,2vw,21px);max-width:720px}
+    .ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.micro{font-size:13px;color:var(--muted);margin-top:13px}
+    .hero-visual{margin:0;border-radius:25px;overflow:hidden;border:1px solid var(--line);background:var(--panel);box-shadow:var(--shadow);position:relative}
+    .hero-visual img{width:100%;display:block;aspect-ratio:16/11;object-fit:cover}
+    .hero-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.hero-pills span{font-size:12px;border:1px solid var(--line);padding:5px 9px;border-radius:999px;color:#d5dee6}
+    .handoff-strip{margin-top:28px;display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    .handoff-mini{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:11px;text-align:center;font-size:12px;color:var(--muted);position:relative}
+    .handoff-mini strong{display:block;color:var(--accent);font-size:11px;margin-bottom:4px}.handoff-mini:not(:last-child):after{content:"→";position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--accent);z-index:2}
+    section{padding:70px 0}.alt{background:var(--bg2);border-block:1px solid rgba(255,255,255,.055)}
+    .section-head{max-width:850px;margin-bottom:32px}.kicker{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase}
+    h2{font-size:clamp(40px,5.5vw,64px);line-height:.98;letter-spacing:.5px;margin:9px 0 13px}.section-head p{color:var(--muted);font-size:17px;margin:0}
+    .status.live{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 34%,transparent)}.status.beta{color:var(--info);border-color:color-mix(in srgb,var(--info) 34%,transparent)}.status.lab{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 34%,transparent)}
+    .team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.agent{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px;position:relative;overflow:hidden}
+    .agent:after{content:"";position:absolute;right:-34px;top:-34px;width:92px;height:92px;border-radius:50%;background:color-mix(in srgb,var(--accent) 7%,transparent)}
+    .agent-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.agent h3{font-size:23px;margin:4px 0 12px}.contract{display:grid;grid-template-columns:86px 1fr;gap:8px 12px;margin:0}
+    .contract dt{color:var(--accent);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.5px}.contract dd{margin:0;color:var(--muted);font-size:14px}
+    .team-divider{grid-column:1/-1;padding:13px 0 2px;color:var(--muted);font-size:13px;text-transform:uppercase;letter-spacing:1px;font-weight:850}
+    .usage{display:grid;gap:12px}.usage-step{display:grid;grid-template-columns:54px 145px 1fr 32px 1fr;gap:13px;align-items:center;border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:16px}
+    .step-no{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:900}
+    .lane{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.6px}.lane.human{color:#f3d08a}.lane.agentlane{color:var(--ok)}
+    .usage-step p{margin:0;color:var(--muted);font-size:14px}.usage-step strong{color:var(--ink)}.move{font-size:22px;text-align:center;color:var(--accent)}
+    .example{margin-top:20px;padding:18px;border-radius:18px;border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);background:color-mix(in srgb,var(--accent) 6%,transparent)}
+    .example .message{font-weight:900;font-size:18px;margin:7px 0}.evidence{display:flex;gap:8px;flex-wrap:wrap}.pill{border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:12px;color:#cbd6df}
+    .flow-shell{border:1px solid var(--line);border-radius:25px;background:linear-gradient(145deg,var(--panel2),var(--panel));padding:22px;overflow:hidden;box-shadow:var(--shadow)}
+    .flow-shell svg{width:100%;height:auto;display:block;min-width:700px}.flow-scroll{overflow-x:auto}.flow-note{color:var(--muted);font-size:13px;margin-top:12px}
+    .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px}.card h3{margin:10px 0 8px}.card p{margin:0;color:var(--muted)}
+    .prooflinks{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.prooflinks a{border:1px solid var(--line);border-radius:999px;padding:7px 11px;text-decoration:none;font-size:13px}.prooflinks a:hover{border-color:var(--accent)}
+    .labs{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.labcard .why{border-top:1px solid var(--line);margin-top:13px;padding-top:13px;font-size:13px;color:#c6d2dc}
+    .feed{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.feed-list{display:grid;gap:10px}.feed-item{border:1px solid var(--line);border-radius:16px;padding:16px;background:rgba(255,255,255,.02)}.feed-item strong{display:block}.feed-item span{font-size:13px;color:var(--muted)}
+    .payer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.payer{min-height:220px}.payer .icon{font-size:26px}.guard{border-left:3px solid var(--accent);padding:11px 13px;background:color-mix(in srgb,var(--accent) 6%,transparent);color:#e8d9b0;border-radius:0 12px 12px 0;font-size:13px;margin-top:14px}
+    .partner-agents{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.mini{border:1px dashed var(--line);padding:16px;border-radius:16px}.mini strong{color:var(--accent)}.mini p{color:var(--muted);margin:5px 0 0;font-size:13px}
+    .premium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.pricebox{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:24px;padding:24px}.pricebox.featured{border-color:color-mix(in srgb,var(--accent) 42%,transparent)}
+    .pricebox ul{padding-left:19px;color:var(--muted)}.pricebox li+li{margin-top:7px}.pricebox h3{font-size:24px;margin:10px 0}.pricebox .for{color:var(--muted);font-size:13px}
+    .appearance-card{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;border:1px solid var(--line);border-radius:22px;padding:22px;background:var(--panel)}
+    .appearance-card p{color:var(--muted);margin:5px 0 0}
+    details{border-bottom:1px solid var(--line);padding:16px 0}summary{cursor:pointer;font-weight:780}details p{color:var(--muted);max-width:850px}
+    .final{text-align:center}.final p{color:var(--muted);max-width:700px;margin:14px auto 28px}
+    footer{border-top:1px solid var(--line);padding:28px 0 86px;color:var(--muted);font-size:13px}.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}.foot a{color:var(--muted)}
+    #style-dock{position:fixed;left:16px;bottom:16px;z-index:1000}.style-toggle{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:10px 13px;box-shadow:0 12px 40px rgba(0,0,0,.32);cursor:pointer}
+    .style-menu{display:none;position:absolute;left:0;bottom:48px;width:205px;padding:10px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}#style-dock.open .style-menu{display:grid;gap:7px}
+    .style-menu button{background:transparent;border:1px solid var(--line);color:var(--ink);padding:9px 10px;border-radius:10px;text-align:left;cursor:pointer}.style-menu button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+    @media(max-width:1000px){.hero-grid{grid-template-columns:1fr;grid-template-areas:"intro" "visual" "copy";row-gap:18px}.feed{grid-template-columns:1fr}.grid3,.payer-grid,.premium-grid{grid-template-columns:1fr 1fr}.usage-step{grid-template-columns:48px 120px 1fr}.usage-step .move,.usage-step .agent-result{grid-column:3}.usage-step .move{display:none}.handoff-strip{grid-template-columns:repeat(5,minmax(135px,1fr));overflow-x:auto;padding-bottom:8px}}
+    @media(max-width:720px){.wrap{width:min(100% - 28px,var(--max))}.navlinks>a:not(.btn){display:none}.navlinks .btn{display:none}.nav-right{gap:8px}.hero{padding-top:48px}.team-grid,.grid3,.payer-grid,.premium-grid,.labs,.partner-agents{grid-template-columns:1fr}.team-divider{grid-column:auto}.usage-step{grid-template-columns:42px 1fr}.usage-step .human-input,.usage-step .agent-result{grid-column:2}.ctas .btn{width:100%}section{padding:56px 0}.appearance-card{grid-template-columns:1fr}.brand-word{font-size:22px}#style-dock{left:12px;bottom:12px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.flow-dot{opacity:.9}}
+  </style>
 </head>
-<body>
+<body data-requirement="R-CUSTOMER-COPY R-COPY-NO-REDUNDANCY">
+<a class="skip" href="#main" data-it="Vai al contenuto" data-en="Skip to content">Vai al contenuto</a>
 
-<!-- NAV -->
-<nav>
-  <div class="logo-mark">
-<svg width="34" height="34" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="512" height="512" rx="116" fill="#0A1628"/>
-      <rect x="118" y="130" width="276" height="58" fill="#F5EDD8"/>
-      <rect x="227" y="130" width="58" height="236" fill="#F5EDD8"/>
-      <circle cx="331" cy="232" r="26" fill="#F0A500"/>
-      <rect x="118" y="404" width="276" height="8" rx="4" fill="#18a077" opacity="0.30"/>
-    </svg>
-    <span class="logo-text">TENNIS AI COACH</span>
-  </div>
-  <div class="nav-right">
-    <div class="lang-sw">
-      <button class="on" onclick="setLang('it')">IT</button>
-      <button onclick="setLang('en')">EN</button>
+<nav aria-label="Navigazione principale">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="TennisAgents home" data-requirement="R-BRAND-IDENTITY">
+      <img class="brand-icon" src="/icons/icon.svg" alt="" width="34" height="34">
+      <span class="brand-word">TENNISAGENTS</span>
+    </a>
+    <div class="nav-right">
+      <div class="navlinks">
+        <a href="#team" data-it="Il Team" data-en="The Team">Il Team</a>
+        <a href="#how" data-it="Come funziona" data-en="How it works">Come funziona</a>
+        <a href="/demo/live-match/" data-it="Demo" data-en="Demo">Demo</a>
+        <a href="#premium" data-it="Premium" data-en="Premium">Premium</a>
+        <a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents" data-en="Try TennisAgents">Prova TennisAgents</a>
+      </div>
+      <div class="lang-sw" id="lang-switch" aria-label="Language" data-requirement="R-I18N-IT-EN">
+        <button class="on" type="button" data-lang="it" onclick="setLang('it')" aria-pressed="true">IT</button>
+        <button type="button" data-lang="en" onclick="setLang('en')" aria-pressed="false">EN</button>
+      </div>
     </div>
-    <a href="https://tennis-ai-coach-chi.vercel.app" class="cta-nav" target="_blank" data-it="Apri app" data-en="Open app">Apri app</a>
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="hero">
-  <!-- Court SVG background -->
-  <div class="hero-court">
-    <svg viewBox="0 0 400 680" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="10" y="10" width="380" height="660" fill="#8B4513" rx="3"/>
-      <rect x="10" y="10" width="50" height="660" fill="#6B3510" opacity=".6"/>
-      <rect x="340" y="10" width="50" height="660" fill="#6B3510" opacity=".6"/>
-      <rect x="10" y="10" width="380" height="660" fill="none" stroke="white" stroke-width="2.5"/>
-      <line x1="60" y1="10" x2="60" y2="670" stroke="white" stroke-width="1.5"/>
-      <line x1="340" y1="10" x2="340" y2="670" stroke="white" stroke-width="1.5"/>
-      <line x1="10" y1="340" x2="390" y2="340" stroke="white" stroke-width="4"/>
-      <line x1="60" y1="165" x2="340" y2="165" stroke="white" stroke-width="1.5"/>
-      <line x1="60" y1="515" x2="340" y2="515" stroke="white" stroke-width="1.5"/>
-      <line x1="200" y1="165" x2="200" y2="515" stroke="white" stroke-width="1.5"/>
-      <circle cx="200" cy="340" r="5" fill="white"/>
-      <rect x="7" y="337" width="8" height="8" fill="white" rx="1"/>
-      <rect x="385" y="337" width="8" height="8" fill="white" rx="1"/>
-    </svg>
-  </div>
-
-  <!-- Phone mockup -->
-  <div class="hero-phone reveal">
-    <div class="phone-shell">
-      <div class="phone-notch"></div>
-      <div class="phone-screen">
-        <!-- Score: break point situation -->
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-          <div>
-            <div style="font-family:var(--font-display);font-size:13px;letter-spacing:1px;color:rgba(255,255,255,.5)">SET 5·4&nbsp;&nbsp;GAME</div>
-            <div style="font-family:var(--font-display);font-size:22px;letter-spacing:2px;color:white">30·40</div>
-          </div>
-          <div style="text-align:right">
-            <div style="background:rgba(240,165,0,.2);border:1px solid rgba(240,165,0,.4);border-radius:4px;padding:2px 7px;font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.5px">PALLA BREAK</div>
-            <div style="font-size:9px;color:rgba(255,255,255,.4);margin-top:3px" data-it="Io servo" data-en="I serve">Io servo</div>
-          </div>
+<main id="main">
+<header class="hero" id="top" data-requirement="R-AGENT-TEAM R-CTA R-HERO-MENTORS">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div class="hero-intro">
+        <span class="eyebrow" data-it="Open Beta · Web/PWA" data-en="Open Beta · Web/PWA">Open Beta · Web/PWA</span>
+        <h1>
+<span data-it="Il tuo" data-en="Your">Il tuo</span>
+<span class="accent" data-it="AI Tennis Team." data-en="AI Tennis Team.">AI Tennis Team.</span><br>
+<span data-it="In campo con te." data-en="Courtside with you.">In campo con te.</span>
+        </h1>
+      </div>
+      <figure class="hero-visual" data-requirement="R-MOBILE-HERO-ORDER">
+        <img src="assets/hero-mentors.jpg"
+   alt="Il Player al cambio campo con il suo team virtuale intorno"
+   data-alt-it="Il Player al cambio campo con il suo team virtuale intorno"
+   data-alt-en="The Player at the changeover with the virtual team around them"
+   loading="eager" fetchpriority="high" decoding="async">
+      </figure>
+      <div class="hero-copy">
+        <p class="lead" data-it="Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione." data-en="Before the match it studies your opponent. During play it turns points and observations into tactical guidance. After the match it helps you decide what to train. Not one AI coach, but a team of specialists working together to help you make the next decision.">Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione.</p>
+        <div class="ctas">
+<a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents →" data-en="Try TennisAgents →">Prova TennisAgents →</a>
+<a class="btn secondary" href="#premium" data-track="premium" data-it="Scopri Premium" data-en="Discover Premium">Scopri Premium</a>
         </div>
-        <!-- Alert -->
-        <div style="background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.25);border-radius:8px;padding:8px;margin-bottom:6px">
-          <div style="font-size:8px;font-weight:700;color:var(--gold);letter-spacing:.5px;margin-bottom:3px" data-it="⚡ MOMENTO CRITICO" data-en="⚡ KEY MOMENT">⚡ MOMENTO CRITICO</div>
-          <div style="font-size:10px;font-weight:600;color:white;line-height:1.3" data-it="Serve al corpo — toglili il ritmo" data-en="Body serve — disrupt their rhythm">Serve al corpo — toglili il ritmo</div>
-        </div>
-        <!-- Tactic -->
-        <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;margin-bottom:6px">
-          <div style="font-size:8px;color:rgba(255,255,255,.4);letter-spacing:.5px;margin-bottom:3px;text-transform:uppercase" data-it="Piano A" data-en="Plan A">Piano A</div>
-          <div style="font-size:11px;font-weight:600;color:white;line-height:1.3" data-it="Diagonale profonda × 2 → attacca quando accorcia" data-en="Deep diagonal × 2 → attack on short ball">Diagonale profonda × 2 → attacca quando accorcia</div>
-        </div>
-        <!-- Mental -->
-        <div style="background:rgba(29,158,117,.07);border:1px solid rgba(29,158,117,.2);border-radius:8px;padding:7px">
-          <div style="font-size:8px;font-weight:700;color:#5DCAA5;letter-spacing:.5px;margin-bottom:2px" data-it="MENTALE" data-en="MENTAL">MENTALE</div>
-          <div style="font-size:9px;color:rgba(245,237,216,.65);line-height:1.4" data-it="Respira, scegli il target. Un punto alla volta." data-en="Breathe, pick your target. One point at a time.">Respira, scegli il target. Un punto alla volta.</div>
+        <a class="textlink" href="#how" data-it="Guarda come lavora il tuo team →" data-en="See how your team works →">Guarda come lavora il tuo team →</a>
+        <p class="micro" data-it="La Beta è disponibile sul web. Le funzioni ancora in evoluzione sono indicate come BETA o LAB." data-en="The Beta is available on the web. Features still evolving are clearly marked BETA or LAB.">La Beta è disponibile sul web. Le funzioni ancora in evoluzione sono indicate come BETA o LAB.</p>
+        <div class="hero-pills" aria-label="TennisAgents lifecycle">
+<span data-it="Prima · Scout" data-en="Before · Scout">Prima · Scout</span>
+<span data-it="Durante · Analyst + Strategist + Match Coach" data-en="During · Analyst + Strategist + Match Coach">Durante · Analyst + Strategist + Match Coach</span>
+<span data-it="Dopo · Trainer + Mental" data-en="After · Trainer + Mental">Dopo · Trainer + Mental</span>
         </div>
       </div>
+    </div>
+
+    <div class="handoff-strip" aria-label="TennisAgents handoff">
+      <div class="handoff-mini"><strong>SCOUT</strong><span data-it="Prepara il match" data-en="Prepares the match">Prepara il match</span></div>
+      <div class="handoff-mini"><strong>ANALYST</strong><span data-it="Trova cosa regge" data-en="Finds what holds up">Trova cosa regge</span></div>
+      <div class="handoff-mini"><strong>STRATEGIST</strong><span data-it="Sceglie il piano" data-en="Chooses the plan">Sceglie il piano</span></div>
+      <div class="handoff-mini"><strong>MATCH COACH</strong><span data-it="Lo rende giocabile" data-en="Makes it playable">Lo rende giocabile</span></div>
+      <div class="handoff-mini"><strong>PLAYER</strong><span data-it="Gioca. Il team misura e adatta." data-en="Plays. The team measures and adapts.">Gioca. Il team misura e adatta.</span></div>
     </div>
   </div>
+</header>
 
-  <div class="hero-content">
-    <div class="hero-eyebrow reveal">
-      <span></span>
-      <span data-it="Assistente tattico live" data-en="Live tactical assistant">Assistente tattico live</span>
+<section class="alt" id="team" data-requirement="R-AGENT-TEAM R-AGENT-CONTRACT R-CLAIM-STATE">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker" data-it="Il tuo staff virtuale" data-en="Your virtual staff">Il tuo staff virtuale</div>
+      <h2 data-it="Sette specialisti. Un solo match." data-en="Seven specialists. One match.">Sette specialisti. Un solo match.</h2>
+      <p data-it="Ogni TennisAgent ha un compito preciso e passa il lavoro al compagno giusto. Così il consiglio che arriva al Player nasce da scouting, osservazione, evidenza e strategia — non da una risposta generica." data-en="Each TennisAgent has a precise job and hands the work to the right teammate. The guidance that reaches the Player comes from scouting, observation, evidence and strategy — not a generic answer.">Ogni TennisAgent ha un compito preciso e passa il lavoro al compagno giusto. Così il consiglio che arriva al Player nasce da scouting, osservazione, evidenza e strategia — non da una risposta generica.</p>
     </div>
-    <h1 class="reveal reveal-delay-1" data-it="IL MATCH<br>SI DECIDE AL<br><em>CAMBIO CAMPO</em>" data-en="THE MATCH<br>IS WON AT THE<br><em>CHANGEOVER</em>">IL MATCH<br>SI DECIDE AL<br><em>CAMBIO CAMPO</em></h1>
-    <p class="hero-sub reveal reveal-delay-2" data-it="Hai 90 secondi per correggere la rotta — e di solito si ripete l'errore che sta facendo perdere. Tennis AI Coach legge punteggio, segnali live e avversario, e ti dà la mossa giusta. Con il perché." data-en="You get 90 seconds to change course — and most players repeat the mistake that's losing them the match. Tennis AI Coach reads the score, live signals and your opponent, and hands you the right move. With the reason why.">Hai 90 secondi per correggere la rotta — e di solito si ripete l'errore che sta facendo perdere. Tennis AI Coach legge punteggio, segnali live e avversario, e ti dà la mossa giusta. Con il perché.</p>
-    <div class="hero-ctas reveal reveal-delay-3">
-      <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary" target="_blank" data-it="Inizia ora" data-en="Start now">
-        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l7 7-7 7M1 8h14"/></svg>
-        <span data-it="Inizia ora" data-en="Start now">Inizia ora</span>
-      </a>
-      <a href="#modes" class="btn-ghost" data-it="Scopri le modalità ↓" data-en="Explore modes ↓">Scopri le modalità ↓</a>
-    </div>
-    <div class="hero-stats reveal">
-      <div>
-        <span class="hero-stat-num">337+</span>
-        <span class="hero-stat-label" data-it="Scenari tattici" data-en="Tactical scenarios">Scenari tattici</span>
-      </div>
-      <div>
-        <span class="hero-stat-num">33</span>
-        <span class="hero-stat-label" data-it="Pattern di gioco" data-en="Game patterns">Pattern di gioco</span>
-      </div>
-      <div>
-        <span class="hero-stat-num">60</span>
-        <span class="hero-stat-label" data-it="Schemi visivi" data-en="Visual diagrams">Schemi visivi</span>
-      </div>
+
+    <div class="team-grid">
+      <div class="team-divider" data-it="Team partita" data-en="Match Team">Team partita</div>
+
+      <article class="agent" data-agent="Scout">
+        <div class="agent-head"><h3>Scout</h3><span class="status live">PROVEN</span></div>
+        <dl class="contract">
+          <dt data-it="Riceve" data-en="Receives">Riceve</dt><dd data-it="Avversario, dati disponibili e note di Player, Coach o Parent." data-en="Opponent information, available data, and notes from Player, Coach or Parent.">Avversario, dati disponibili e note di Player, Coach o Parent.</dd>
+          <dt data-it="Fa" data-en="Does">Fa</dt><dd data-it="Prepara il contesto pre-match e le ipotesi da verificare in campo." data-en="Builds pre-match context and the hypotheses to test on court.">Prepara il contesto pre-match e le ipotesi da verificare in campo.</dd>
+          <dt data-it="Passa a" data-en="Hands to">Passa a</dt><dd data-it="Analyst / Strategist: profilo e punti di attenzione iniziali." data-en="Analyst / Strategist: profile and initial focus points.">Analyst / Strategist: profilo e punti di attenzione iniziali.</dd>
+        </dl>
+      </article>
+
+      <article class="agent" data-agent="Observer">
+        <div class="agent-head"><h3>Observer</h3><span class="status beta">BETA</span></div>
+        <dl class="contract">
+          <dt data-it="Riceve" data-en="Receives">Riceve</dt><dd data-it="Osservazioni live di Coach o Parent e segnali raccolti durante il match." data-en="Live observations from Coach or Parent and signals collected during the match.">Osservazioni live di Coach o Parent e segnali raccolti durante il match.</dd>
+          <dt data-it="Fa" data-en="Does">Fa</dt><dd data-it="Trasforma ciò che viene visto in segnali strutturati da confrontare con i punti." data-en="Turns what is seen into structured signals to compare with point evidence.">Trasforma ciò che viene visto in segnali strutturati da confrontare con i punti.</dd>
+          <dt data-it="Passa a" data-en="Hands to">Passa a</dt><dd data-it="Analyst: osservazioni contestualizzate." data-en="Analyst: contextualised observations.">Analyst: osservazioni contestualizzate.</dd>
+        </dl>
+      </article>
+
+      <article class="agent" data-agent="Analyst">
+        <div class="agent-head"><h3>Analyst</h3><span class="status beta">BETA</span></div>
+        <dl class="contract">
+          <dt data-it="Riceve" data-en="Receives">Riceve</dt><dd data-it="Quick, Detailed o Tracked, segnali dell'Observer, scouting e Match Memory." data-en="Quick, Detailed or Tracked data, Observer signals, scouting and Match Memory.">Quick, Detailed o Tracked, segnali dell'Observer, scouting e Match Memory.</dd>
+          <dt data-it="Fa" data-en="Does">Fa</dt><dd data-it="Cerca conclusioni sostenute dai dati, contro-evidenza e livello di confidence." data-en="Finds evidence-backed findings, counter-evidence and confidence level.">Cerca conclusioni sostenute dai dati, contro-evidenza e livello di confidence.</dd>
+          <dt data-it="Passa a" data-en="Hands to">Passa a</dt><dd data-it="Strategist durante il match; Trainer / Mental dopo il match." data-en="Strategist during the match; Trainer / Mental after the match.">Strategist durante il match; Trainer / Mental dopo il match.</dd>
+        </dl>
+      </article>
+
+      <article class="agent" data-agent="Strategist">
+        <div class="agent-head"><h3>Strategist</h3><span class="status live">PROVEN</span></div>
+        <dl class="contract">
+          <dt data-it="Riceve" data-en="Receives">Riceve</dt><dd data-it="Conclusioni, confidence, punteggio, piano corrente e pattern del match." data-en="Findings, confidence, score, current plan and match patterns.">Conclusioni, confidence, punteggio, piano corrente e pattern del match.</dd>
+          <dt data-it="Fa" data-en="Does">Fa</dt><dd data-it="Sceglie o aggiorna il piano tattico più coerente con ciò che sta succedendo." data-en="Chooses or updates the tactical plan that best fits what is happening.">Sceglie o aggiorna il piano tattico più coerente con ciò che sta succedendo.</dd>
+          <dt data-it="Passa a" data-en="Hands to">Passa a</dt><dd data-it="Match Coach: la strategia selezionata." data-en="Match Coach: the selected strategy.">Match Coach: la strategia selezionata.</dd>
+        </dl>
+      </article>
+
+      <article class="agent" data-agent="Match Coach">
+        <div class="agent-head"><h3>Match Coach</h3><span class="status live">PROVEN</span></div>
+        <dl class="contract">
+          <dt data-it="Riceve" data-en="Receives">Riceve</dt><dd data-it="Piano selezionato, evidenza essenziale e momento del match." data-en="Selected plan, essential evidence and match moment.">Piano selezionato, evidenza essenziale e momento del match.</dd>
+          <dt data-it="Fa" data-en="Does">Fa</dt><dd data-it="Riduce la strategia a una indicazione breve e giocabile." data-en="Compresses the strategy into one short, playable cue.">Riduce la strategia a una indicazione breve e giocabile.</dd>
+          <dt data-it="Passa a" data-en="Hands to">Passa a</dt><dd data-it="Player: una cosa chiara da portare nei prossimi punti." data-en="Player: one clear thing to take into the next points.">Player: una cosa chiara da portare nei prossimi punti.</dd>
+        </dl>
+      </article>
+
+      <div class="team-divider" data-it="Staff performance" data-en="Performance Staff">Staff performance</div>
+
+      <article class="agent" data-agent="Trainer">
+        <div class="agent-head"><h3>Trainer</h3><span class="status beta">BETA</span></div>
+        <dl class="contract">
+          <dt data-it="Riceve" data-en="Receives">Riceve</dt><dd data-it="Evidenze prioritarie del post-match." data-en="Prioritised post-match findings.">Evidenze prioritarie del post-match.</dd>
+          <dt data-it="Fa" data-en="Does">Fa</dt><dd data-it="Trasforma ciò che è emerso in esercizi, target e verifiche per il prossimo lavoro." data-en="Turns what emerged into drills, targets and checks for the next training block.">Trasforma ciò che è emerso in esercizi, target e verifiche per il prossimo lavoro.</dd>
+          <dt data-it="Passa a" data-en="Hands to">Passa a</dt><dd data-it="Player / Coach e Match Memory." data-en="Player / Coach and Match Memory.">Player / Coach e Match Memory.</dd>
+        </dl>
+      </article>
+
+      <article class="agent" data-agent="Mental">
+        <div class="agent-head"><h3>Mental</h3><span class="status lab">LAB</span></div>
+        <dl class="contract">
+          <dt data-it="Riceve" data-en="Receives">Riceve</dt><dd data-it="Pattern mentali o situazionali rilevanti, feedback del Player e contesto." data-en="Relevant mental or situational patterns, Player feedback and context.">Pattern mentali o situazionali rilevanti, feedback del Player e contesto.</dd>
+          <dt data-it="Fa" data-en="Does">Fa</dt><dd data-it="Esplora routine sportive di reset, attenzione e gestione del momento; non è supporto clinico." data-en="Explores sports-performance routines for reset, attention and match moments; it is not clinical support.">Esplora routine sportive di reset, attenzione e gestione del momento; non è supporto clinico.</dd>
+          <dt data-it="Passa a" data-en="Hands to">Passa a</dt><dd data-it="Player / Coach quando il percorso sarà validato." data-en="Player / Coach once the workflow is validated.">Player / Coach quando il percorso sarà validato.</dd>
+        </dl>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- MODES -->
-<!-- PERCHE' E' DIVERSA -->
-<section class="modes" id="perche-diversa" style="border-bottom:1px solid var(--border)">
-  <div class="section-eyebrow reveal" data-it="Perché è diversa" data-en="Why it's different">Perché è diversa</div>
-  <h2 class="reveal" data-it="IL PRIMO COACH<br>CHE PENSA E TI DICE<br>COSA FARE. <span>ADESSO.</span>" data-en="THE FIRST COACH<br>THAT THINKS AND TELLS<br>YOU WHAT TO DO. <span>NOW.</span>">IL PRIMO COACH<br>CHE PENSA E TI DICE<br>COSA FARE. <span>ADESSO.</span></h2>
-  <p class="reveal" style="max-width:720px;margin:0 auto 36px;color:var(--muted);text-align:center" data-it="Le altre app contano i punti o analizzano il video dopo la partita. Tennis AI Coach è l'unica che ti dice cosa fare adesso, al cambio campo — con i più grandi maestri del tennis al tuo fianco." data-en="Other apps count points or analyse video after the match. Tennis AI Coach is the only one that tells you what to do now, at the changeover — with the greatest tennis minds at your side.">Le altre app contano i punti o analizzano il video dopo la partita. Tennis AI Coach è l'unica che ti dice cosa fare adesso, al cambio campo — con i più grandi maestri del tennis al tuo fianco.</p>
+<section id="how" data-requirement="R-DEMO-HANDOFF">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker" data-it="Come lo usi davvero" data-en="How you actually use it">Come lo usi davvero</div>
+      <h2 data-it="Una partita. Un unico filo." data-en="One match. One continuous thread.">Una partita. Un unico filo.</h2>
+      <p data-it="Tu e il Coach inserite ciò che sapete e ciò che vedete. TennisAgents collega quel contesto ai dati del match, costruisce una decisione e poi controlla se ha funzionato." data-en="You and your Coach enter what you know and what you see. TennisAgents connects that context to match data, builds a decision, then checks whether it worked.">Tu e il Coach inserite ciò che sapete e ciò che vedete. TennisAgents collega quel contesto ai dati del match, costruisce una decisione e poi controlla se ha funzionato.</p>
+    </div>
 
-  <!-- SEGNAPOSTO IMMAGINE: sostituire src con l'illustrazione (giocatore in panchina + guru/campioni dietro) generata con nanobanana -->
-  <div class="reveal" style="max-width:880px;margin:0 auto 48px;border-radius:20px;overflow:hidden;border:1px solid var(--border);background:var(--ink2)">
-    <img src="assets/hero-mentors.jpg" alt="Il giocatore in panchina al cambio campo, con i grandi maestri e campioni del tennis schierati alle spalle" style="width:100%;display:block" onerror="this.parentElement.innerHTML='&lt;div style=&quot;padding:64px 24px;text-align:center;color:var(--muted)&quot;&gt;[ Immagine: il giocatore in panchina al cambio campo, i guru e i campioni del tennis schierati alle spalle ]&lt;/div&gt;'">
-  </div>
+    <div class="usage">
+      <article class="usage-step">
+        <div class="step-no">1</div><div class="lane human" data-it="Player / Coach" data-en="Player / Coach">Player / Coach</div>
+        <p class="human-input" data-it="Prima del match inserite avversario, contesto, obiettivi e note utili." data-en="Before the match, enter opponent, context, goals and useful notes.">Prima del match inserite avversario, contesto, obiettivi e note utili.</p>
+        <div class="move">→</div><p class="agent-result"><strong>Scout</strong> <span data-it="prepara il profilo e ciò che vale la pena verificare in campo." data-en="prepares the profile and what is worth testing on court.">prepara il profilo e ciò che vale la pena verificare in campo.</span></p>
+      </article>
 
-  <div class="scroll-hint reveal" data-it="Scorri →" data-en="Scroll →">Scorri →</div>
-  <div class="modes-grid">
-    <div class="mode-card reveal">
-      <div class="mode-num">01</div>
-      <div class="mode-title" data-it="COSA FARE ADESSO" data-en="WHAT TO DO NOW">COSA FARE ADESSO</div>
-      <p class="mode-desc" data-it="Coaching tattico LIVE durante il match, non analisi dopo. Hai 90 secondi al cambio campo: l'app ti dà la mossa giusta, con il perché. Nessun'altra app lo fa." data-en="LIVE tactical coaching during the match, not analysis afterwards. You have 90 seconds at the changeover: the app hands you the right move, with the reason. No other app does this.">Coaching tattico LIVE durante il match, non analisi dopo. Hai 90 secondi al cambio campo: l'app ti dà la mossa giusta, con il perché. Nessun'altra app lo fa.</p>
-    </div>
-    <div class="mode-card reveal reveal-delay-1">
-      <div class="mode-num">02</div>
-      <div class="mode-title" data-it="I TUOI MAESTRI, A SCELTA" data-en="YOUR MENTORS, YOUR CHOICE">I TUOI MAESTRI, A SCELTA</div>
-      <p class="mode-desc" data-it="Configura il tuo coach virtuale: scegli a quali fonti tattiche ispirarti (Gilbert, Gallwey, Wardlaw, O'Shannessy…) e — presto — a quali campioni (Federer, Nadal…). I consigli seguono la tua filosofia." data-en="Configure your virtual coach: choose which tactical sources to draw from (Gilbert, Gallwey, Wardlaw, O'Shannessy…) and — soon — which champions (Federer, Nadal…). The advice follows your philosophy.">Configura il tuo coach virtuale: scegli a quali fonti tattiche ispirarti (Gilbert, Gallwey, Wardlaw, O'Shannessy…) e — presto — a quali campioni (Federer, Nadal…). I consigli seguono la tua filosofia.</p>
-    </div>
-    <div class="mode-card reveal reveal-delay-2">
-      <div class="mode-num">03</div>
-      <div class="mode-title" data-it="SOLO IL TELEFONO" data-en="JUST YOUR PHONE">SOLO IL TELEFONO</div>
-      <p class="mode-desc" data-it="Niente telecamere, treppiedi o sensori. Funziona con il telefono che hai già in tasca — in qualsiasi campo, a qualsiasi livello." data-en="No cameras, tripods or sensors. It works with the phone already in your pocket — on any court, at any level.">Niente telecamere, treppiedi o sensori. Funziona con il telefono che hai già in tasca — in qualsiasi campo, a qualsiasi livello.</p>
-    </div>
-    <div class="mode-card reveal">
-      <div class="mode-num">04</div>
-      <div class="mode-title" data-it="COACH + GIOCATORE INSIEME" data-en="COACH + PLAYER TOGETHER">COACH + GIOCATORE INSIEME</div>
-      <p class="mode-desc" data-it="Il coach analizza da bordo campo, il giocatore riceve il piano sul proprio telefono in tempo reale. Un lavoro di squadra che nessun contapunti permette." data-en="The coach analyses from the sideline, the player receives the plan on their phone in real time. Teamwork no scorekeeper allows.">Il coach analizza da bordo campo, il giocatore riceve il piano sul proprio telefono in tempo reale. Un lavoro di squadra che nessun contapunti permette.</p>
-    </div>
-    <div class="mode-card reveal reveal-delay-1">
-      <div class="mode-num">05</div>
-      <div class="mode-title" data-it="LEGGE TUTTO IL CONTESTO" data-en="READS THE FULL CONTEXT">LEGGE TUTTO IL CONTESTO</div>
-      <p class="mode-desc" data-it="Profilo e match dell'avversario (anche importati da servizi come TennisTalker), punteggio live, memoria tattica del match e l'impressione del coach: tutto insieme per il consiglio giusto." data-en="Opponent profile and matches (even imported from services like TennisTalker), live score, tactical match memory and the coach's read: all combined for the right call.">Profilo e match dell'avversario (anche importati da servizi come TennisTalker), punteggio live, memoria tattica del match e l'impressione del coach: tutto insieme per il consiglio giusto.</p>
-    </div>
-    <div class="mode-card reveal reveal-delay-2">
-      <div class="mode-num">06</div>
-      <div class="mode-title" data-it="SCHEMI ANIMATI + AI" data-en="ANIMATED DIAGRAMS + AI">SCHEMI ANIMATI + AI</div>
-      <p class="mode-desc" data-it="Ogni consiglio ha il suo schema tattico animato, costruito colpo dopo colpo. E l'AI ti permette di descrivere a parole cosa vedi e ricevere il piano." data-en="Every suggestion has its animated tactical diagram, built shot by shot. And the AI lets you describe what you see in words and get the plan.">Ogni consiglio ha il suo schema tattico animato, costruito colpo dopo colpo. E l'AI ti permette di descrivere a parole cosa vedi e ricevere il piano.</p>
-    </div>
-  </div>
-</section>
+      <article class="usage-step">
+        <div class="step-no">2</div><div class="lane human" data-it="Player / Coach" data-en="Player / Coach">Player / Coach</div>
+        <p class="human-input" data-it="Durante il match registrate in Quick, Detailed o Tracked e aggiungete le osservazioni che contano." data-en="During the match, record in Quick, Detailed or Tracked and add the observations that matter.">Durante il match registrate in Quick, Detailed o Tracked e aggiungete le osservazioni che contano.</p>
+        <div class="move">→</div><p class="agent-result"><strong>Observer + Analyst</strong> <span data-it="mettono insieme ciò che vedete e ciò che mostrano i punti." data-en="combine what you see with what the points show.">mettono insieme ciò che vedete e ciò che mostrano i punti.</span></p>
+      </article>
 
-<!-- COME SI USA -->
-<section class="modes" id="modes">
-  <div class="section-eyebrow reveal" data-it="Come si usa" data-en="How to use it">Come si usa</div>
-  <h2 class="reveal" data-it="3 MODI<br>DI <span>USARE L'APP</span>" data-en="3 WAYS<br>TO <span>USE THE APP</span>">3 MODI<br>DI <span>USARE L'APP</span></h2>
-  <div class="scroll-hint" data-it="Scorri →" data-en="Scroll →">Scorri →</div>
-  <div class="modes-grid">
-    <div class="mode-card reveal">
-      <div class="mode-num">01</div>
-      <div class="mode-tag best" data-it="Consigliato" data-en="Recommended">Consigliato</div>
-      <div class="mode-title" data-it="COACH + GIOCATORE" data-en="COACH + PLAYER">COACH + GIOCATORE</div>
-      <p class="mode-desc" data-it="Il coach analizza da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale via cloud sync." data-en="The coach analyses from the sideline. The player receives tactical messages on their device during changeovers in real time via cloud sync.">Il coach analizza da bordo campo. Il giocatore riceve i messaggi tattici sul proprio dispositivo durante i cambi campo, in tempo reale via cloud sync.</p>
+      <article class="usage-step">
+        <div class="step-no">3</div><div class="lane agentlane" data-it="TennisAgents" data-en="TennisAgents">TennisAgents</div>
+        <p class="human-input"><strong>Analyst</strong> <span data-it="separa il segnale dal rumore e assegna una confidence all'evidenza." data-en="separates signal from noise and assigns confidence to the evidence.">separa il segnale dal rumore e assegna una confidence all'evidenza.</span></p>
+        <div class="move">→</div><p class="agent-result"><strong>Strategist</strong> <span data-it="sceglie il piano tattico da provare adesso." data-en="chooses the tactical plan to try now.">sceglie il piano tattico da provare adesso.</span></p>
+      </article>
+
+      <article class="usage-step">
+        <div class="step-no">4</div><div class="lane agentlane">MATCH COACH</div>
+        <p class="human-input" data-it="Riceve la strategia e il momento del match." data-en="Receives the strategy and the match moment.">Riceve la strategia e il momento del match.</p>
+        <div class="move">→</div><p class="agent-result"><strong data-it="Al Player arriva una indicazione breve, concreta e giocabile." data-en="The Player receives one short, concrete, playable cue.">Al Player arriva una indicazione breve, concreta e giocabile.</strong></p>
+      </article>
+
+      <article class="usage-step">
+        <div class="step-no">5</div><div class="lane human" data-it="Punti successivi" data-en="Next points">Punti successivi</div>
+        <p class="human-input" data-it="Continuate a registrare punti e feedback." data-en="Keep recording points and feedback.">Continuate a registrare punti e feedback.</p>
+        <div class="move">→</div><p class="agent-result"><strong>Analyst + Strategist</strong> <span data-it="misurano se il piano regge e lo adattano quando serve." data-en="measure whether the plan holds up and adapt it when needed.">misurano se il piano regge e lo adattano quando serve.</span></p>
+      </article>
+
+      <article class="usage-step">
+        <div class="step-no">6</div><div class="lane human" data-it="Dopo il match" data-en="After the match">Dopo il match</div>
+        <p class="human-input"><strong>Analyst</strong> <span data-it="separa ciò che ha funzionato da ciò che va ancora verificato." data-en="separates what worked from what still needs checking.">separa ciò che ha funzionato da ciò che va ancora verificato.</span></p>
+        <div class="move">→</div><p class="agent-result"><strong>Trainer / Mental</strong> <span data-it="trasformano le evidenze utili nel prossimo lavoro." data-en="turn useful findings into the next block of work.">trasformano le evidenze utili nel prossimo lavoro.</span></p>
+      </article>
     </div>
-    <div class="mode-card reveal reveal-delay-1">
-      <div class="mode-num">02</div>
-      <div class="mode-tag pro" data-it="Solo coach" data-en="Coach only">Solo coach</div>
-      <div class="mode-title" data-it="SOLO COACH" data-en="COACH ONLY">SOLO COACH</div>
-      <p class="mode-desc" data-it="Il coach usa l'app in autonomia per analizzare il match, consultare i suggerimenti del motore e prendere note tattiche — senza che il giocatore sia connesso." data-en="The coach uses the app independently to analyse the match, consult the engine's suggestions and take tactical notes — without the player being connected.">Il coach usa l'app in autonomia per analizzare il match, consultare i suggerimenti del motore e prendere note tattiche — senza che il giocatore sia connesso.</p>
-    </div>
-    <div class="mode-card reveal reveal-delay-2">
-      <div class="mode-num">03</div>
-      <div class="mode-tag free" data-it="Autonomo" data-en="Self-guided">Autonomo</div>
-      <div class="mode-title" data-it="GIOCATORE AUTONOMO" data-en="PLAYER ONLY">GIOCATORE AUTONOMO</div>
-      <p class="mode-desc" data-it="Senza un coach? Inserisci il tuo piano tattico e ricevi indicazioni personalizzate durante il match. Traccia i punti e analizza le statistiche." data-en="No coach? Enter your tactical plan and receive personalised guidance during the match. Track points and analyse statistics.">Senza un coach? Inserisci il tuo piano tattico e ricevi indicazioni personalizzate durante il match. Traccia i punti e analizza le statistiche.</p>
+
+    <div class="example">
+      <div class="kicker" data-it="Esempio illustrativo" data-en="Illustrative example">Esempio illustrativo</div>
+      <div class="evidence">
+        <span class="pill">6/8 short BH after deep middle</span><span class="pill">confidence HIGH</span><span class="pill">Tracked geometry</span>
+      </div>
+      <div class="message">DEEP MIDDLE → WAIT → ATTACK THE SHORT BH</div>
+      <div class="micro" data-it="Un esempio di come un finding può diventare una consegna giocabile. Non è il risultato di un cliente reale." data-en="An example of how a finding can become a playable cue. It is not a real customer result.">Un esempio di come un finding può diventare una consegna giocabile. Non è il risultato di un cliente reale.</div>
     </div>
   </div>
 </section>
 
-<!-- ENGINE -->
-<section class="engine-section">
-  <div class="engine-inner">
-    <div class="section-eyebrow reveal" data-it="Il motore tattico" data-en="The tactical engine">Il motore tattico</div>
-    <h2 class="reveal" data-it="ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span>" data-en="YEARS OF EXPERTISE<br><span>IN AN ALGORITHM</span>">ANNI DI EXPERTISE<br><span>IN UN ALGORITMO</span></h2>
-    <p class="engine-lead reveal" data-it="Il motore si ispira ai principi della letteratura tattica e mentale di riferimento — da Winning Ugly di Brad Gilbert a The Inner Game of Tennis di Timothy Gallwey — e li trasforma in un sistema deterministico che sceglie in base a contesto, evidenza e memoria. Non è un chatbot: ogni consiglio arriva con la sua motivazione. «3 errori di rovescio negli ultimi 8 punti → gioca alto sul rovescio»." data-en="The engine draws on principles from the reference literature of tennis tactics and mindset — from Brad Gilbert's Winning Ugly to Timothy Gallwey's The Inner Game of Tennis — and turns them into a deterministic system choosing on context, evidence and memory. Not a chatbot: every suggestion comes with its reason. “3 backhand errors in the last 8 points → play high to the backhand”.">Il motore si ispira ai principi della letteratura tattica e mentale di riferimento — da Winning Ugly di Brad Gilbert a The Inner Game of Tennis di Timothy Gallwey — e li trasforma in un sistema deterministico che sceglie in base a contesto, evidenza e memoria. Non è un chatbot: ogni consiglio arriva con la sua motivazione. «3 errori di rovescio negli ultimi 8 punti → gioca alto sul rovescio».</p>
-    <div class="diagram-outer-scroll" style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:20px 0;scrollbar-width:none;">
-      <style>
-        .diagram-outer-scroll::-webkit-scrollbar{display:none}
-        .diagram-svg-container{min-width:960px;max-width:1150px;margin:0 auto;padding:0 20px}
-        @keyframes enginePulse{0%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(240,165,0,.4))}50%{transform:scale(1.02);filter:drop-shadow(0 0 25px rgba(240,165,0,.7))}100%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(240,165,0,.4))}}
-        .svg-engine-box{transform-origin:550px 225px;animation:enginePulse 3s infinite ease-in-out}
-      </style>
-      <div class="diagram-svg-container">
-        <svg viewBox="0 0 1100 450" width="100%" height="100%" style="display:block;overflow:visible" xmlns="http://www.w3.org/2000/svg">
+<section class="alt" id="flow" data-requirement="R-FLOW-ANIMATION">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker" data-it="Dal dato alla decisione" data-en="From data to decision">Dal dato alla decisione</div>
+      <h2 data-it="Guarda il team mentre si passa il lavoro." data-en="Watch the team hand the work forward.">Guarda il team mentre si passa il lavoro.</h2>
+      <p data-it="I pallini seguono il percorso delle informazioni: entrano da scouting, osservazioni e match data, convergono nell'analisi, diventano strategia e ritornano al Player. I punti successivi riaprono il ciclo." data-en="The moving dots follow the information flow: scouting, observations and match data converge in analysis, become strategy and return to the Player. The next points reopen the loop.">I pallini seguono il percorso delle informazioni: entrano da scouting, osservazioni e match data, convergono nell'analisi, diventano strategia e ritornano al Player. I punti successivi riaprono il ciclo.</p>
+    </div>
+    <div class="flow-shell">
+      <div class="flow-scroll">
+        <svg id="flow-svg" viewBox="0 0 1100 470" role="img" aria-label="TennisAgents workflow">
           <defs>
-            <circle id="dot-teal" r="5" fill="#18A077" style="filter:drop-shadow(0 0 6px #18A077)"/>
-            <circle id="dot-gold" r="5" fill="#F0A500" style="filter:drop-shadow(0 0 6px #F0A500)"/>
-            <circle id="dot-blue" r="5" fill="#3b82f6" style="filter:drop-shadow(0 0 6px #3b82f6)"/>
+            <circle id="dot-teal" r="6" fill="#4bc69a"/>
+            <circle id="dot-gold" r="6" fill="#f3b51b"/>
+            <circle id="dot-blue" r="6" fill="#76a9ff"/>
           </defs>
-          <g font-family="'Bebas Neue',sans-serif" font-size="22" letter-spacing="2" font-weight="bold" text-anchor="middle">
-            <text x="175" y="30" fill="#18A077" data-it="COSA SA L'APP" data-en="WHAT THE APP KNOWS">COSA SA L'APP</text>
-            <text x="550" y="30" fill="#F0A500" data-it="IL MOTORE" data-en="THE ENGINE">IL MOTORE</text>
-            <text x="925" y="30" fill="#F0A500" data-it="COSA VEDI" data-en="WHAT YOU SEE">COSA VEDI</text>
+
+          <path id="flow-path-1" d="M 260 80 C 375 80, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-2" d="M 260 175 C 375 175, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-3" d="M 260 270 C 375 270, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-4" d="M 260 365 C 375 365, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
+          <path id="flow-path-5" d="M 640 225 C 700 225, 690 115, 760 115" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
+          <path id="flow-path-6" d="M 640 225 C 700 225, 690 225, 760 225" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
+          <path id="flow-path-7" d="M 640 225 C 700 225, 690 335, 760 335" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
+          <path id="flow-path-8" d="M 930 365 C 930 430, 140 430, 140 400" fill="none" stroke="#76a9ff" stroke-width="2" stroke-dasharray="7 7" opacity=".45"/>
+
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="2.5s" repeatCount="indefinite"><mpath href="#flow-path-1"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="1.9s" repeatCount="indefinite"><mpath href="#flow-path-2"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="3.1s" repeatCount="indefinite"><mpath href="#flow-path-3"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#flow-path-4"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#flow-path-5"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.0s" repeatCount="indefinite"><mpath href="#flow-path-6"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.7s" repeatCount="indefinite"><mpath href="#flow-path-7"/></animateMotion></circle>
+          <circle class="flow-dot" r="5" fill="#76a9ff"><animateMotion dur="4.5s" repeatCount="indefinite"><mpath href="#flow-path-8"/></animateMotion></circle>
+
+          <g transform="translate(20,45)">
+            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
+            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Scout" data-en="Scout">Scout</text>
+            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Avversario + contesto" data-en="Opponent + context">Avversario + contesto</text>
           </g>
-          <path d="M 320 95  C 435 95,  435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
-          <path d="M 320 180 C 435 180, 435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
-          <path d="M 320 265 C 435 265, 435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
-          <path d="M 320 350 C 435 350, 435 225, 450 225" fill="none" stroke="#18a077" stroke-width="2" opacity="0.25"/>
-          <path d="M 650 225 C 665 225, 665 115, 780 115" fill="none" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
-          <path d="M 650 225 C 665 225, 665 225, 780 225" fill="none" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
-          <path d="M 650 225 C 665 225, 665 335, 780 335" fill="none" stroke="rgba(240,165,0,0.4)" stroke-width="1.5"/>
-          <path d="M 925 380 C 925 450, 175 450, 175 395" fill="none" stroke="#3b82f6" stroke-width="2" stroke-dasharray="6 6" opacity="0.4"/>
-          <use href="#dot-teal"><animateMotion dur="2.5s" repeatCount="indefinite" path="M 320 95  C 435 95,  435 225, 450 225"/></use>
-          <use href="#dot-teal"><animateMotion dur="1.8s" repeatCount="indefinite" path="M 320 180 C 435 180, 435 225, 450 225"/></use>
-          <use href="#dot-teal"><animateMotion dur="3.2s" repeatCount="indefinite" path="M 320 265 C 435 265, 435 225, 450 225"/></use>
-          <use href="#dot-teal"><animateMotion dur="2.8s" repeatCount="indefinite" path="M 320 350 C 435 350, 435 225, 450 225"/></use>
-          <use href="#dot-gold"><animateMotion dur="2.2s" repeatCount="indefinite" path="M 650 225 C 665 225, 665 115, 780 115"/></use>
-          <use href="#dot-gold"><animateMotion dur="2.0s" repeatCount="indefinite" path="M 650 225 C 665 225, 665 225, 780 225"/></use>
-          <use href="#dot-gold"><animateMotion dur="2.7s" repeatCount="indefinite" path="M 650 225 C 665 225, 665 335, 780 335"/></use>
-          <use href="#dot-blue"><animateMotion dur="4.5s" repeatCount="indefinite" path="M 925 380 C 925 450, 175 450, 175 395"/></use>
-          <g transform="translate(30,60)">
-            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
-            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Scouting avversario" data-en="Opponent Scouting">Scouting avversario</text>
-            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Punti deboli, stile, storico match" data-en="Weaknesses, style, match history">Punti deboli, stile, storico match</text>
+          <g transform="translate(20,140)">
+            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
+            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Observer" data-en="Observer">Observer</text>
+            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Ciò che vedete in campo" data-en="What you see on court">Ciò che vedete in campo</text>
           </g>
-          <g transform="translate(30,145)">
-            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
-            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Contesto live" data-en="Live Context">Contesto live</text>
-            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Punteggio, momentum" data-en="Score, momentum">Punteggio, momentum</text>
+          <g transform="translate(20,235)">
+            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
+            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Match data" data-en="Match data">Match data</text>
+            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Quick · Detailed · Tracked" data-en="Quick · Detailed · Tracked">Quick · Detailed · Tracked</text>
           </g>
-          <g transform="translate(30,230)">
-            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
-            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Tattiche dei top guru" data-en="Top Gurus' Tactics">Tattiche dei top guru</text>
-            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Gilbert, Gallwey, O'Shannessy, etc." data-en="Gilbert, Gallwey, O'Shannessy, etc.">Gilbert, Gallwey, O'Shannessy, etc.</text>
+          <g transform="translate(20,330)">
+            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
+            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Player / Coach" data-en="Player / Coach">Player / Coach</text>
+            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Feedback + obiettivi" data-en="Feedback + goals">Feedback + obiettivi</text>
           </g>
-          <g transform="translate(30,315)">
-            <rect width="290" height="70" rx="12" fill="#132030" stroke="#18A077" stroke-width="1.5"/>
-            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Tattiche dei top player" data-en="Top Players' Tactics">Tattiche dei top player</text>
-            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Federer, Nadal, Isner, etc." data-en="Federer, Nadal, Isner, etc.">Federer, Nadal, Isner, etc.</text>
+
+          <g transform="translate(430,180)">
+            <rect width="210" height="90" rx="16" fill="#10263a" stroke="#76a9ff" stroke-width="2"/>
+            <text x="105" y="35" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="18" font-weight="700" fill="#fff">ANALYST</text>
+            <text x="105" y="59" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="evidenza + confidence" data-en="evidence + confidence">evidenza + confidence</text>
           </g>
-          <g class="svg-engine-box">
-            <rect x="450" y="165" width="200" height="120" rx="16" fill="#0f1e2e" stroke="#F0A500" stroke-width="3"/>
-            <text x="550" y="215" font-family="'Bebas Neue',sans-serif" font-size="24" letter-spacing="1" fill="#fff" text-anchor="middle" data-it="MOTORE TATTICO" data-en="TACTICAL ENGINE">MOTORE TATTICO</text>
-            <text x="550" y="245" font-family="'DM Sans',sans-serif" font-size="12" fill="#F0A500" text-anchor="middle" data-it="Sceglie lo schema tattico giusto" data-en="Chooses the right tactical pattern">Sceglie lo schema tattico giusto</text>
-            <text x="550" y="262" font-family="'DM Sans',sans-serif" font-size="12" fill="#F0A500" text-anchor="middle" data-it="in questo momento." data-en="at this exact moment.">in questo momento.</text>
+
+          <g transform="translate(760,80)">
+            <rect width="190" height="70" rx="13" fill="#0c1c2b" stroke="#f3b51b" stroke-width="1.5"/>
+            <text x="95" y="29" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff">STRATEGIST</text>
+            <text x="95" y="50" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="sceglie il piano" data-en="chooses the plan">sceglie il piano</text>
           </g>
-          <g transform="translate(780,80)">
-            <rect width="290" height="70" rx="12" fill="#132030" stroke="rgba(240,165,0,0.5)" stroke-width="1.5"/>
-            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Consiglio al cambio campo" data-en="Changeover Advice">Consiglio al cambio campo</text>
-            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Cosa fare nei prossimi 2 game" data-en="What to do over the next 2 games">Cosa fare nei prossimi 2 game</text>
+          <g transform="translate(760,190)">
+            <rect width="190" height="70" rx="13" fill="#0c1c2b" stroke="#f3b51b" stroke-width="1.5"/>
+            <text x="95" y="29" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff">MATCH COACH</text>
+            <text x="95" y="50" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="rende il piano giocabile" data-en="makes the plan playable">rende il piano giocabile</text>
           </g>
-          <g transform="translate(780,190)">
-            <rect width="290" height="70" rx="12" fill="#132030" stroke="rgba(240,165,0,0.5)" stroke-width="1.5"/>
-            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Schema visivo" data-en="Visual Diagram">Schema visivo</text>
-            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Disegno animato" data-en="Animated play pattern">Disegno animato</text>
+          <g transform="translate(760,300)">
+            <rect width="190" height="70" rx="13" fill="#0c1c2b" stroke="#f3b51b" stroke-width="1.5"/>
+            <text x="95" y="29" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="PLAYER" data-en="PLAYER">PLAYER</text>
+            <text x="95" y="50" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="gioca i prossimi punti" data-en="plays the next points">gioca i prossimi punti</text>
           </g>
-          <g transform="translate(780,300)">
-            <rect width="290" height="70" rx="12" fill="#132030" stroke="rgba(240,165,0,0.5)" stroke-width="1.5"/>
-            <text x="20" y="30" font-family="'DM Sans',sans-serif" font-size="16" font-weight="bold" fill="#fff" data-it="Lettura andamento" data-en="Match Reading">Lettura andamento</text>
-            <text x="20" y="50" font-family="'DM Sans',sans-serif" font-size="12" fill="#6b8099" data-it="Dove sta andando il match" data-en="Where the match trend is heading">Dove sta andando il match</text>
-          </g>
+
+          <text x="535" y="310" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#76a9ff" data-it="I punti successivi riaprono il ciclo" data-en="The next points reopen the loop">I punti successivi riaprono il ciclo</text>
         </svg>
       </div>
-    </div>
-
-    <div class="engine-numbers reveal">
-      <div class="engine-num">
-        <span class="engine-num-val">346</span>
-        <span class="engine-num-label" data-it="Scenari E2E" data-en="E2E Scenarios">Scenari E2E</span>
-      </div>
-      <div class="engine-num">
-        <span class="engine-num-val">33</span>
-        <span class="engine-num-label" data-it="Pattern tattici" data-en="Tactical patterns">Pattern tattici</span>
-      </div>
-      <div class="engine-num">
-        <span class="engine-num-val">60</span>
-        <span class="engine-num-label" data-it="Schemi animati" data-en="Animated diagrams">Schemi animati</span>
-      </div>
-      <div class="engine-num">
-        <span class="engine-num-val">32</span>
-        <span class="engine-num-label" data-it="Contesti di gioco" data-en="Game contexts">Contesti di gioco</span>
-      </div>
-    </div>
-    <p class="engine-desc reveal" data-it="Il motore analizza contesto, punteggio, segnali live, scouting avversario e memoria storica per selezionare il pattern tattico più efficace in ogni momento della partita." data-en="The engine analyses context, score, live signals, opponent scouting and match history to select the most effective tactical pattern at every moment of the match.">Il motore analizza contesto, punteggio, segnali live, scouting avversario e memoria storica per selezionare il pattern tattico più efficace in ogni momento della partita.</p>
-    <div class="concept-pills reveal">
-      <span class="cpill" data-it="Punto di recupero" data-en="Recovery base">Punto di recupero</span>
-      <span class="cpill" data-it="Il Martello" data-en="The Hammer">Il Martello</span>
-      <span class="cpill" data-it="Strappa &amp; attacca" data-en="Rip the return">Strappa &amp; attacca</span>
-      <span class="cpill" data-it="Chiusura comoda" data-en="Easy put-away">Chiusura comoda</span>
-      <span class="cpill" data-it="Gabbia sul rovescio" data-en="Backhand trap">Gabbia sul rovescio</span>
-      <span class="cpill" data-it="Anti-pusher" data-en="Anti-pusher">Anti-pusher</span>
-      <span class="cpill" data-it="Routine pre-punto" data-en="Pre-point routine">Routine pre-punto</span>
-      <span class="cpill" data-it="Linea di recupero" data-en="Recovery line">Linea di recupero</span>
+      <p class="flow-note" data-it="Animazione illustrativa del passaggio di informazioni fra i ruoli. Se il dispositivo riduce le animazioni, il diagramma resta leggibile in forma statica." data-en="Illustrative animation of information handoffs between roles. If your device reduces motion, the diagram remains readable as a static flow.">Animazione illustrativa del passaggio di informazioni fra i ruoli. Se il dispositivo riduce le animazioni, il diagramma resta leggibile in forma statica.</p>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="features-section">
-  <div class="section-eyebrow reveal" data-it="Funzionalità" data-en="Features">Funzionalità</div>
-  <h2 class="reveal" data-it="TUTTO QUELLO<br>CHE SERVE IN <span>CAMPO</span>" data-en="EVERYTHING YOU NEED<br><span>ON COURT</span>">TUTTO QUELLO<br>CHE SERVE IN <span>CAMPO</span></h2>
-  <div class="scroll-hint reveal" data-it="Scorri →" data-en="Scroll →">Scorri →</div>
-  <div class="feat-grid">
-    <div class="feat-card reveal">
-      <div class="feat-icon">⚡</div>
-      <div class="feat-title" data-it="Suggerimenti tattici live" data-en="Live tactical suggestions">Suggerimenti tattici live</div>
-      <p class="feat-desc" data-it="Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi." data-en="At changeover the engine analyses context and suggests the most suitable tactical pattern. Simple, direct, usable in 5 seconds.">Al cambio campo il motore analizza il contesto e suggerisce il pattern tattico più adatto. Semplice, diretto, utilizzabile in 5 secondi.</p>
+<section id="proof">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker" data-it="Guardalo in azione" data-en="See it in action">Guardalo in azione</div>
+      <h2 data-it="Tre demo. Tre momenti del percorso." data-en="Three demos. Three moments in the journey.">Tre demo. Tre momenti del percorso.</h2>
+      <p data-it="Apri gli esempi per vedere come TennisAgents collega il live match, il tracking e il lavoro post-match. I numeri delle demo sono illustrativi." data-en="Open the examples to see how TennisAgents connects live match, tracking and post-match work. Demo numbers are illustrative.">Apri gli esempi per vedere come TennisAgents collega il live match, il tracking e il lavoro post-match. I numeri delle demo sono illustrativi.</p>
     </div>
-    <div class="feat-card reveal reveal-delay-1">
-      <div class="feat-icon">🗺️</div>
-      <div class="feat-title" data-it="Schemi tattici animati" data-en="Animated tactical diagrams">Schemi tattici animati</div>
-      <p class="feat-desc" data-it="Ogni suggerimento include uno schema visivo animato del campo con traiettorie e zone di tiro. Immediato anche sotto stress." data-en="Every suggestion includes an animated visual court diagram with trajectories and target zones. Immediate even under stress.">Ogni suggerimento include uno schema visivo animato del campo con traiettorie e zone di tiro. Immediato anche sotto stress.</p>
-    </div>
-    <div class="feat-card reveal reveal-delay-2">
-      <div class="feat-icon">🎯</div>
-      <div class="feat-title" data-it="Scouting avversario" data-en="Opponent scouting">Scouting avversario</div>
-      <p class="feat-desc" data-it="Importa il profilo dell'avversario dai principali database del tennis con un click. Forma recente, superficie preferita, punti forti e deboli." data-en="Import the opponent's profile from major tennis databases in one click. Recent form, preferred surface, strengths and weaknesses.">Importa il profilo dell'avversario dai principali database del tennis con un click. Forma recente, superficie preferita, punti forti e deboli.</p>
-    </div>
-    <div class="feat-card reveal">
-      <div class="feat-icon">🧠</div>
-      <div class="feat-title" data-it="Memoria tattica" data-en="Tactical memory">Memoria tattica</div>
-      <p class="feat-desc" data-it="L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti migliorano nel tempo." data-en="The app remembers what worked in previous matches against the same opponent. Suggestions improve over time.">L'app ricorda cosa ha funzionato nei match precedenti contro lo stesso avversario. I suggerimenti migliorano nel tempo.</p>
-    </div>
-    <div class="feat-card reveal reveal-delay-1">
-      <div class="feat-icon">🗣️</div>
-      <div class="feat-title" data-it="AI in linguaggio naturale" data-en="Natural language AI">AI in linguaggio naturale</div>
-      <p class="feat-desc" data-it="Dì o scrivi un'osservazione. L'AI interpreta e aggiorna automaticamente l'analisi tattica senza menu o checkbox." data-en="Say or type an observation. The AI interprets and automatically updates the tactical analysis without menus or checkboxes.">Dì o scrivi un'osservazione. L'AI interpreta e aggiorna automaticamente l'analisi tattica senza menu o checkbox.</p>
-    </div>
-    <div class="feat-card reveal reveal-delay-2">
-      <div class="feat-icon">📊</div>
-      <div class="feat-title" data-it="Statistiche e storico" data-en="Statistics and history">Statistiche e storico</div>
-      <p class="feat-desc" data-it="Traccia ogni punto con tipo di colpo, effetto e direzione. Statistiche live e storico completo — giocatore vs avversario." data-en="Track every point with shot type, effect and direction. Live stats and complete history — player vs opponent.">Traccia ogni punto con tipo di colpo, effetto e direzione. Statistiche live e storico completo — giocatore vs avversario.</p>
+    <div class="grid3">
+      <article class="card"><span class="status live">PROVEN</span><h3 data-it="Live Match" data-en="Live Match">Live Match</h3><p data-it="Dal punto registrato alla lettura tattica durante la partita." data-en="From the recorded point to tactical reading during the match.">Dal punto registrato alla lettura tattica durante la partita.</p><div class="prooflinks"><a href="/demo/live-match/" data-it="Apri la demo →" data-en="Open demo →">Apri la demo →</a></div></article>
+      <article class="card"><span class="status live">PROVEN</span><h3>Tracked</h3><p data-it="Stroke-by-stroke e geometria quando serve evidenza più ricca." data-en="Stroke-by-stroke and geometry when richer evidence is needed.">Stroke-by-stroke e geometria quando serve evidenza più ricca.</p><div class="prooflinks"><a href="/demo/tracking/" data-it="Apri la demo →" data-en="Open demo →">Apri la demo →</a></div></article>
+      <article class="card"><span class="status beta">BETA</span><h3 data-it="Dopo il match" data-en="After the match">Dopo il match</h3><p data-it="Evidenze, debrief e prossimo lavoro per Player e Coach." data-en="Findings, debrief and next work for Player and Coach.">Evidenze, debrief e prossimo lavoro per Player e Coach.</p><div class="prooflinks"><a href="/demo/player/" data-it="Apri la demo →" data-en="Open demo →">Apri la demo →</a></div></article>
     </div>
   </div>
 </section>
 
-<!-- HOW -->
-<section style="background:var(--ink2);border-top:1px solid var(--border)">
-  <div class="section-eyebrow reveal" data-it="Come funziona" data-en="How it works">Come funziona</div>
-  <h2 class="reveal" data-it="PRONTO IN <span>2 MINUTI</span>" data-en="READY IN <span>2 MINUTES</span>">PRONTO IN <span>2 MINUTI</span></h2>
-  <div class="how-inner">
-    <div class="how-steps">
-      <div class="how-step reveal">
-        <div class="step-num-wrap"><div class="step-circle">1</div></div>
-        <div class="step-content">
-          <h4 data-it="Setup pre-match" data-en="Pre-match setup">Setup pre-match</h4>
-          <p data-it="Scegli il piano tattico, importa il profilo avversario, seleziona il formato di gioco. 2 minuti in tutto." data-en="Choose the tactical plan, import the opponent profile, select the match format. 2 minutes total.">Scegli il piano tattico, importa il profilo avversario, seleziona il formato di gioco. 2 minuti in tutto.</p>
-        </div>
-      </div>
-      <div class="how-step reveal reveal-delay-1">
-        <div class="step-num-wrap"><div class="step-circle">2</div></div>
-        <div class="step-content">
-          <h4 data-it="Connetti il giocatore (opzionale)" data-en="Connect the player (optional)">Connetti il giocatore (opzionale)</h4>
-          <p data-it="Il coach genera un codice. Il giocatore lo inserisce e vede i messaggi tattici in tempo reale sul suo dispositivo." data-en="The coach generates a code. The player enters it and sees tactical messages in real time on their device.">Il coach genera un codice. Il giocatore lo inserisce e vede i messaggi tattici in tempo reale sul suo dispositivo.</p>
-        </div>
-      </div>
-      <div class="how-step reveal reveal-delay-2">
-        <div class="step-num-wrap"><div class="step-circle">3</div></div>
-        <div class="step-content">
-          <h4 data-it="Aggiorna durante il match" data-en="Update during the match">Aggiorna durante il match</h4>
-          <p data-it="Aggiorna il punteggio e aggiungi segnali live. Il motore adatta i suggerimenti al contesto in tempo reale." data-en="Update the score and add live signals. The engine adapts suggestions to context in real time.">Aggiorna il punteggio e aggiungi segnali live. Il motore adatta i suggerimenti al contesto in tempo reale.</p>
-        </div>
-      </div>
-      <div class="how-step reveal">
-        <div class="step-num-wrap"><div class="step-circle">4</div></div>
-        <div class="step-content">
-          <h4 data-it="Debrief e memoria" data-en="Debrief and memory">Debrief e memoria</h4>
-          <p data-it="L'AI genera l'analisi del match e i suggerimenti di allenamento. I dati vengono memorizzati per i prossimi incontri." data-en="The AI generates the match analysis and training suggestions. Data is remembered for future matches.">L'AI genera l'analisi del match e i suggerimenti di allenamento. I dati vengono memorizzati per i prossimi incontri.</p>
-        </div>
-      </div>
+<section class="alt" id="labs">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">LABS</div>
+      <h2 data-it="Il team può crescere con il tuo tennis." data-en="The team can grow with your tennis.">Il team può crescere con il tuo tennis.</h2>
+      <p data-it="Queste esperienze sono in sperimentazione. Le mostriamo perché raccontano dove può arrivare TennisAgents, ma non sono ancora tutte parte stabile della Beta." data-en="These experiences are being explored. We show them because they explain where TennisAgents can go, but they are not all stable parts of the Beta yet.">Queste esperienze sono in sperimentazione. Le mostriamo perché raccontano dove può arrivare TennisAgents, ma non sono ancora tutte parte stabile della Beta.</p>
+    </div>
+    <div class="labs">
+      <article class="card labcard"><span class="status lab">LAB</span><h3>Tournament Copilot</h3><p data-it="Dal numero FITP ai tornei da seguire, finestre probabili, conflitti, viaggio e preparazione del match." data-en="From your FITP number to tournaments to watch, likely entry windows, conflicts, travel and match preparation.">Dal numero FITP ai tornei da seguire, finestre probabili, conflitti, viaggio e preparazione del match.</p><div class="why" data-it="Perché conta: meno tempo perso fra portali, calendari e decisioni." data-en="Why it matters: less time lost across portals, calendars and decisions.">Perché conta: meno tempo perso fra portali, calendari e decisioni.</div></article>
+      <article class="card labcard"><span class="status lab">LAB</span><h3>String Health</h3><p data-it="Racchetta, corda, tensione, ore di gioco, sensazioni e controlli nel tempo per capire quando vale la pena reincordare." data-en="Racquet, string, tension, hours played, feel and checks over time to help decide when restringing makes sense.">Racchetta, corda, tensione, ore di gioco, sensazioni e controlli nel tempo per capire quando vale la pena reincordare.</p><div class="why" data-it="Perché conta: seguire il decadimento relativo senza inventare precisione che non abbiamo." data-en="Why it matters: track relative decay without pretending to have precision we do not have.">Perché conta: seguire il decadimento relativo senza inventare precisione che non abbiamo.</div></article>
+      <article class="card labcard"><span class="status lab">LAB</span><h3>Coach Conversation</h3><p data-it="Un filo semplice fra Player, TennisAgents e Coach, con condivisione e consenso espliciti." data-en="A simple thread between Player, TennisAgents and Coach, with explicit sharing and consent.">Un filo semplice fra Player, TennisAgents e Coach, con condivisione e consenso espliciti.</p><div class="why" data-it="Perché conta: il Coach può restare dentro il percorso anche quando non è fisicamente in campo." data-en="Why it matters: the Coach can stay inside the journey even when not physically courtside.">Perché conta: il Coach può restare dentro il percorso anche quando non è fisicamente in campo.</div></article>
+      <article class="card labcard"><span class="status lab">LAB</span><h3>Tennis Passport</h3><p data-it="Un profilo progressivo che aiuta a capire quale TennisAgent ti serve adesso, senza un lungo questionario iniziale." data-en="A progressive profile that helps identify which TennisAgent you need now, without a long upfront questionnaire.">Un profilo progressivo che aiuta a capire quale TennisAgent ti serve adesso, senza un lungo questionario iniziale.</p><div class="why" data-it="Perché conta: il team si adatta al percorso del Player, non il contrario." data-en="Why it matters: the team adapts to the Player's journey, not the other way around.">Perché conta: il team si adatta al percorso del Player, non il contrario.</div></article>
     </div>
   </div>
 </section>
 
-
-
-<!-- ANIMATED DEMO -->
-<section style="background:var(--ink);padding:80px 40px;overflow:hidden">
-  <div class="section-eyebrow" data-it="Schemi tattici in tempo reale" data-en="Real-time tactical diagrams">Schemi tattici in tempo reale</div>
-  <h2 data-it="VEDI IL MOTORE<br>IN <span>AZIONE</span>" data-en="SEE THE ENGINE<br>IN <span>ACTION</span>">VEDI IL MOTORE<br>IN <span>AZIONE</span></h2>
-
-<style>
-.demo-grid{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;align-items:flex-start;max-width:1100px;margin:0 auto}
-.demo-card{text-align:center;flex:0 0 auto}
-.demo-label{font-size:11px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
-.court-wrap{position:relative;width:200px;height:340px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#0a1520;margin:0 auto}
-
-/* Court lines */
-.court-bg{position:absolute;inset:0}
-
-/* Ball animation */
-.ball{
-  position:absolute;width:10px;height:10px;
-  border-radius:50%;background:#c8e000;
-  box-shadow:0 0 8px rgba(200,224,0,.8);
-  transform:translate(-50%,-50%);
-}
-
-/* Trail effect */
-.trail{
-  position:absolute;
-  background:rgba(200,224,0,.3);
-  border-radius:50%;
-  transform:translate(-50%,-50%);
-}
-
-/* Player dot */
-.pdot{
-  position:absolute;width:28px;height:28px;border-radius:50%;
-  background:#EF9F27;border:2px solid #BA7517;
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:bold;color:white;font-family:sans-serif;
-  transform:translate(-50%,-50%);transition:left .5s ease,top .5s ease;
-}
-.odot{
-  position:absolute;width:24px;height:24px;border-radius:50%;
-  background:#D85A30;border:2px solid #993C1D;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:bold;color:white;font-family:sans-serif;
-  transform:translate(-50%,-50%);
-}
-.target-zone{
-  position:absolute;border:1.5px dashed #1D9E75;border-radius:4px;
-  background:rgba(29,158,117,.15);
-}
-
-/* SVG path overlay for drawing */
-.path-svg{position:absolute;inset:0;pointer-events:none}
-.path-line{
-  stroke:#c8e000;stroke-width:2.5;fill:none;
-  stroke-dasharray:400;stroke-dashoffset:400;
-  stroke-linecap:round;
-}
-.path-line.move-line{stroke:#1D9E75;stroke-width:2;}
-
-/* Footstep dots for player movement */
-.footsteps{position:absolute;pointer-events:none}
-.fstep{
-  position:absolute;width:5px;height:7px;border-radius:50%;
-  background:var(--teal);opacity:0;
-  transform:translate(-50%,-50%);
-}
-@keyframes stepAppear{
-  0%{opacity:0;transform:translate(-50%,-50%) scale(0)}
-  50%{opacity:.9;transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:.5;transform:translate(-50%,-50%) scale(.8)}
-}
-
-.path-line.draw{animation:drawPath 1s ease forwards}
-.path-line.draw2{animation:drawPath .8s ease .9s forwards}
-.path-line.draw-move{animation:drawPath .6s ease .5s forwards}
-
-@keyframes drawPath{to{stroke-dashoffset:0}}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-</style>
-
-<div class="demo-grid">
-
-  <!-- DIAGRAM 1: Diagonale e attacca -->
-  <div class="demo-card">
-    <div class="demo-label" data-it="Diagonale × 2 → attacca" data-en="Diagonal × 2 → attack">Diagonale × 2 → attacca</div>
-    <div class="court-wrap" id="court1">
-      <svg class="court-bg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="8" width="180" height="324" fill="#9B4F1A" opacity=".7" rx="2"/>
-        <rect x="10" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
-        <rect x="168" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
-        <rect x="10" y="8" width="180" height="324" fill="none" stroke="white" stroke-width="1.5"/>
-        <line x1="32" y1="8" x2="32" y2="332" stroke="white" stroke-width="1"/>
-        <line x1="168" y1="8" x2="168" y2="332" stroke="white" stroke-width="1"/>
-        <line x1="10" y1="170" x2="190" y2="170" stroke="white" stroke-width="2.5"/>
-        <line x1="32" y1="82" x2="168" y2="82" stroke="white" stroke-width="1"/>
-        <line x1="32" y1="258" x2="168" y2="258" stroke="white" stroke-width="1"/>
-        <line x1="100" y1="82" x2="100" y2="258" stroke="white" stroke-width="1"/>
-        <!-- target zone top-left -->
-        <rect x="34" y="12" width="44" height="38" rx="3" fill="#1D9E75" opacity=".2"/>
-        <rect x="34" y="12" width="44" height="38" rx="3" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
-        <text x="56" y="37" text-anchor="middle" fill="#5DCAA5" font-size="8" font-family="sans-serif">target</text>
-      </svg>
-
-      <!-- Animated path -->
-      <svg class="path-svg" viewBox="0 0 200 340" id="c1svg">
-        <defs>
-          <marker id="ah1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#c8e000" stroke-width="2" stroke-linecap="round"/>
-          </marker>
-          <marker id="at1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"/>
-          </marker>
-        </defs>
-        <!-- Step1: diagonal to backhand corner -->
-        <path class="path-line" id="p1a" d="M 100 318 Q 58 195 42 24" marker-end="url(#ah1)" stroke-dasharray="360" stroke-dashoffset="360"/>
-        <!-- Step2: player advances -->
-        <!-- footstep path (dashed circles) -->
-        <line class="path-line" id="m1" x1="100" y1="318" x2="75" y2="248" stroke="var(--teal)" stroke-width="0" stroke-dasharray="6 8" stroke-dashoffset="80"/>
-        <!-- Step3: attack open court after short ball -->
-        <path class="path-line draw2" id="p1b" d="M 75 245 Q 125 165 162 24" marker-end="url(#ah1)" stroke-dasharray="260" stroke-dashoffset="260"/>
-      </svg>
-
-      <!-- Player -->
-      <!-- footsteps c1 -->
-      <div id="fs1" style="position:absolute;inset:0;pointer-events:none"></div>
-      <div class="pdot" id="p1dot" style="left:100px;top:320px">P</div>
-      <!-- Opp -->
-      <div class="odot" style="left:50px;top:30px">O</div>
+<section id="feed">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">TA Feed</div>
+      <h2 data-it="Non più notizie. Informazioni che ti servono." data-en="Not more news. Information you can use.">Non più notizie. Informazioni che ti servono.</h2>
+      <p data-it="Match of the Day, idee tattiche, coaching, dati ed equipment selezionati con una domanda in mente: perché dovrebbe interessare al tuo tennis?" data-en="Match of the Day, tactical ideas, coaching, data and equipment selected with one question in mind: why should this matter to your tennis?">Match of the Day, idee tattiche, coaching, dati ed equipment selezionati con una domanda in mente: perché dovrebbe interessare al tuo tennis?</p>
+    </div>
+    <div class="feed">
+      <div class="feed-list">
+        <div class="feed-item"><strong data-it="Match of the Day" data-en="Match of the Day">Match of the Day</strong><span data-it="Scout prima, lettura finale dopo: un match reale come laboratorio." data-en="Scout before, final read after: a real match as a learning lab.">Scout prima, lettura finale dopo: un match reale come laboratorio.</span></div>
+        <div class="feed-item"><strong data-it="Tattica e coaching" data-en="Tactics and coaching">Tattica e coaching</strong><span data-it="Un'idea solo quando può cambiare il modo in cui guardi o giochi un punto." data-en="One idea only when it can change how you see or play a point.">Un'idea solo quando può cambiare il modo in cui guardi o giochi un punto.</span></div>
+        <div class="feed-item"><strong data-it="Attrezzatura e dati" data-en="Equipment and data">Attrezzatura e dati</strong><span data-it="Novità selezionate per utilità, non per riempire un feed." data-en="Updates selected for usefulness, not to fill a feed.">Novità selezionate per utilità, non per riempire un feed.</span></div>
+      </div>
+      <article class="card"><span class="status beta">BETA</span><h3 data-it="Perché ti riguarda" data-en="Why it matters to you">Perché ti riguarda</h3><p data-it="Ogni elemento del TA Feed dovrebbe chiudersi con il collegamento al Player: cosa osservare, cosa provare, cosa ricordare o cosa ignorare." data-en="Every TA Feed item should end with the link back to the Player: what to watch, what to try, what to remember, or what to ignore.">Ogni elemento del TA Feed dovrebbe chiudersi con il collegamento al Player: cosa osservare, cosa provare, cosa ricordare o cosa ignorare.</p></article>
     </div>
   </div>
+</section>
 
-  <!-- DIAGRAM 2: Serve + 1 -->
-  <div class="demo-card">
-    <div class="demo-label" data-it="Servizio wide + 1" data-en="Wide serve + 1">Servizio wide + 1</div>
-    <div class="court-wrap" id="court2">
-      <svg class="court-bg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="8" width="180" height="324" fill="#9B4F1A" opacity=".7" rx="2"/>
-        <rect x="10" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
-        <rect x="168" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
-        <rect x="10" y="8" width="180" height="324" fill="none" stroke="white" stroke-width="1.5"/>
-        <line x1="32" y1="8" x2="32" y2="332" stroke="white" stroke-width="1"/>
-        <line x1="168" y1="8" x2="168" y2="332" stroke="white" stroke-width="1"/>
-        <line x1="10" y1="170" x2="190" y2="170" stroke="white" stroke-width="2.5"/>
-        <line x1="32" y1="82" x2="168" y2="82" stroke="white" stroke-width="1"/>
-        <line x1="32" y1="258" x2="168" y2="258" stroke="white" stroke-width="1"/>
-        <line x1="100" y1="82" x2="100" y2="258" stroke="white" stroke-width="1"/>
-        <rect x="138" y="12" width="28" height="45" rx="3" fill="#1D9E75" opacity=".2"/>
-        <rect x="138" y="12" width="28" height="45" rx="3" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
-        <text x="152" y="40" text-anchor="middle" fill="#5DCAA5" font-size="7" font-family="sans-serif">target</text>
-      </svg>
-      <svg class="path-svg" viewBox="0 0 200 340" id="c2svg">
-        <defs>
-          <marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#c8e000" stroke-width="2" stroke-linecap="round"/>
-          </marker>
-          <marker id="at2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"/>
-          </marker>
-        </defs>
-        <!-- serve wide: from baseline to service box left (crosses net at y=170) -->
-        <path class="path-line" id="p2a" d="M 130 318 Q 78 210 38 118" marker-end="url(#ah2)" stroke-dasharray="290" stroke-dashoffset="290"/>
-        <!-- opponent scramble to ball -->
-        <line class="path-line" id="p2r" x1="42" y1="30" x2="38" y2="118" stroke="rgba(216,90,48,.5)" stroke-width="1.5" stroke-dasharray="3 3 100" stroke-dashoffset="100"/>
-        <!-- player move to intercept -->
-        <line class="path-line" id="m2" x1="130" y1="318" x2="95" y2="195" stroke="var(--teal)" stroke-width="0" stroke-dasharray="6 8" stroke-dashoffset="135"/>
-        <!-- +1 open court -->
-        <path class="path-line draw2" id="p2b" d="M 95 192 Q 135 145 158 24" marker-end="url(#ah2)" stroke-dasharray="220" stroke-dashoffset="220"/>
-      </svg>
-      <div id="fs2" style="position:absolute;inset:0;pointer-events:none"></div>
-      <div class="pdot" id="p2dot" style="left:130px;top:320px">P</div>
-      <div class="odot" style="left:42px;top:30px">O</div>
+<section class="alt" id="funding" data-requirement="R-PAYER-PARENT R-PAYER-SPONSOR R-SPONSOR-AGENTS">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker" data-it="Per chi gioca. Per chi lo sostiene." data-en="For the Player. And those supporting them.">Per chi gioca. Per chi lo sostiene.</div>
+      <h2 data-it="Il Player non deve essere per forza chi paga." data-en="The Player does not have to be the payer.">Il Player non deve essere per forza chi paga.</h2>
+      <p data-it="Un genitore può sostenere il percorso di un giovane Player. Un partner approvato può finanziare Premium. In entrambi i casi, dati e consigli restano protetti dalle stesse regole del prodotto." data-en="A parent can support a young Player's journey. An approved partner can fund Premium. In both cases, data and recommendations remain protected by the same product rules.">Un genitore può sostenere il percorso di un giovane Player. Un partner approvato può finanziare Premium. In entrambi i casi, dati e consigli restano protetti dalle stesse regole del prodotto.</p>
+    </div>
+    <div class="payer-grid">
+      <article class="card payer">
+        <div class="icon">👪</div><span class="status beta">BETA</span>
+        <h3>PARENT / GUARDIAN</h3>
+        <p data-it="Può pagare l'accesso del Player e, quando previsto, contribuire con osservazioni e contesto. Pagare non significa ottenere automaticamente accesso ai dati del Player." data-en="Can pay for the Player's access and, where allowed, contribute observations and context. Paying does not automatically grant access to the Player's data.">Può pagare l'accesso del Player e, quando previsto, contribuire con osservazioni e contesto. Pagare non significa ottenere automaticamente accesso ai dati del Player.</p>
+        <div class="guard" data-it="Età, consenso, guardian policy e privacy restano sempre applicabili." data-en="Age, consent, guardian policy and privacy always apply.">Età, consenso, guardian policy e privacy restano sempre applicabili.</div>
+      </article>
+      <article class="card payer">
+        <div class="icon">🎾</div><span class="status beta">BETA</span>
+        <h3>SPONSORED PREMIUM</h3>
+        <p data-it="Brand, Retail, Club, Academy o altri programmi approvati possono sostenere il Premium di un Player senza creare una versione diversa del prodotto." data-en="Brand, Retail, Club, Academy or other approved programmes can fund a Player's Premium without creating a different version of the product.">Brand, Retail, Club, Academy o altri programmi approvati possono sostenere il Premium di un Player senza creare una versione diversa del prodotto.</p>
+        <div class="guard" data-it="Nessuno sponsor controlla classifiche, tattiche, consigli di attrezzatura o conclusioni degli Agents. Le sponsorizzazioni devono essere dichiarate." data-en="No sponsor controls rankings, tactics, equipment guidance or Agent conclusions. Sponsorship must be disclosed.">Nessuno sponsor controlla classifiche, tattiche, consigli di attrezzatura o conclusioni degli Agents. Le sponsorizzazioni devono essere dichiarate.</div>
+      </article>
+      <article class="card payer">
+        <div class="icon">🤝</div><span class="status beta">BETA</span>
+        <h3 data-it="Vuoi sostenere dei Player?" data-en="Want to support Players?">Vuoi sostenere dei Player?</h3>
+        <p data-it="Stiamo preparando percorsi per partner che vogliono finanziare l'accesso senza interferire con l'indipendenza del consiglio." data-en="We are preparing paths for partners who want to fund access without interfering with the independence of guidance.">Stiamo preparando percorsi per partner che vogliono finanziare l'accesso senza interferire con l'indipendenza del consiglio.</p>
+        <a class="textlink" href="mailto:partners@tennisagents.app">partners@tennisagents.app</a>
+      </article>
+    </div>
+
+    <div class="partner-agents">
+      <div class="mini"><strong>Gear Agent · LAB</strong><p data-it="Attrezzatura, racchette, corde, incordatura e String Health. Una futura area naturale per brand e retail, con consiglio indipendente." data-en="Equipment, racquets, strings, stringing and String Health. A natural future area for brands and retail, with independent guidance.">Attrezzatura, racchette, corde, incordatura e String Health. Una futura area naturale per brand e retail, con consiglio indipendente.</p></div>
+      <div class="mini"><strong>Fuel Agent · LAB</strong><p data-it="Idratazione, nutrizione e recupero solo quando capability, knowledge base e guardrail saranno sufficientemente validati." data-en="Hydration, nutrition and recovery only when capability, knowledge base and guardrails are sufficiently validated.">Idratazione, nutrizione e recupero solo quando capability, knowledge base e guardrail saranno sufficientemente validati.</p></div>
     </div>
   </div>
+</section>
 
-  <!-- DIAGRAM 3: Palla corta + rete -->
-  <div class="demo-card">
-    <div class="demo-label" data-it="Palla corta → chiudi a rete" data-en="Drop shot → close the net">Palla corta → chiudi a rete</div>
-    <div class="court-wrap" id="court3">
-      <svg class="court-bg" viewBox="0 0 200 340" xmlns="http://www.w3.org/2000/svg">
-        <rect x="10" y="8" width="180" height="324" fill="#9B4F1A" opacity=".7" rx="2"/>
-        <rect x="10" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
-        <rect x="168" y="8" width="22" height="324" fill="#6B3510" opacity=".5"/>
-        <rect x="10" y="8" width="180" height="324" fill="none" stroke="white" stroke-width="1.5"/>
-        <line x1="32" y1="8" x2="32" y2="332" stroke="white" stroke-width="1"/>
-        <line x1="168" y1="8" x2="168" y2="332" stroke="white" stroke-width="1"/>
-        <line x1="10" y1="170" x2="190" y2="170" stroke="white" stroke-width="2.5"/>
-        <line x1="32" y1="82" x2="168" y2="82" stroke="white" stroke-width="1"/>
-        <line x1="32" y1="258" x2="168" y2="258" stroke="white" stroke-width="1"/>
-        <line x1="100" y1="82" x2="100" y2="258" stroke="white" stroke-width="1"/>
-        <rect x="130" y="12" width="36" height="42" rx="3" fill="#1D9E75" opacity=".2"/>
-        <rect x="130" y="12" width="36" height="42" rx="3" fill="none" stroke="#1D9E75" stroke-width="1" stroke-dasharray="3 2"/>
-      </svg>
-      <svg class="path-svg" viewBox="0 0 200 340" id="c3svg">
-        <defs>
-          <marker id="ah3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#c8e000" stroke-width="2" stroke-linecap="round"/>
-          </marker>
-          <marker id="at3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-            <path d="M2 1L8 5L2 9" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round"/>
-          </marker>
-        </defs>
-        <!-- drop shot: lands just past net in opp half (y=155) -->
-        <path class="path-line" id="p3a" d="M 100 310 Q 85 220 78 155" marker-end="url(#ah3)" stroke-dasharray="175" stroke-dashoffset="175"/>
-        <!-- player advance to net -->
-        <line class="path-line" id="m3" x1="100" y1="310" x2="100" y2="185" stroke="var(--teal)" stroke-width="0" stroke-dasharray="6 8" stroke-dashoffset="128"/>
-        <!-- opp runs to short ball (dashed) -->
-        <line class="path-line" id="p3r" x1="100" y1="38" x2="78" y2="148" stroke="rgba(216,90,48,.6)" stroke-width="1.5" stroke-dasharray="3 3 120" stroke-dashoffset="120"/>
-        <!-- volley winner into open court -->
-        <path class="path-line draw2" id="p3b" d="M 100 182 Q 150 145 162 24" marker-end="url(#ah3)" stroke-dasharray="200" stroke-dashoffset="200"/>
-      </svg>
-      <div id="fs3" style="position:absolute;inset:0;pointer-events:none"></div>
-      <div class="pdot" id="p3dot" style="left:100px;top:312px">P</div>
-      <div class="odot" style="left:100px;top:30px">O</div>
+<section id="premium">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker" data-it="Accesso" data-en="Access">Accesso</div>
+      <h2 data-it="Core per capire. Premium per adattare il piano mentre giochi." data-en="Core to understand. Premium to adapt the plan while you play.">Core per capire. Premium per adattare il piano mentre giochi.</h2>
+      <p data-it="Il valore di Premium non è avere più grafici. È il ciclo tattico dinamico che usa le evidenze del Player, l'avversario e lo stato del match per aggiornare la prossima indicazione." data-en="Premium is not about having more charts. Its value is the dynamic tactical loop that uses Player evidence, opponent context and match state to update the next cue.">Il valore di Premium non è avere più grafici. È il ciclo tattico dinamico che usa le evidenze del Player, l'avversario e lo stato del match per aggiornare la prossima indicazione.</p>
+    </div>
+
+    <div class="premium-grid">
+      <article class="pricebox">
+        <span class="status live">PROVEN</span><h3>BETA CORE</h3>
+        <div class="for" data-it="Per iniziare e costruire il tuo Match Memory." data-en="To get started and build your Match Memory.">Per iniziare e costruire il tuo Match Memory.</div>
+        <ul>
+          <li data-it="Quick e Detailed" data-en="Quick and Detailed">Quick e Detailed</li>
+          <li data-it="Accesso limitato a Tracked durante la Beta" data-en="Limited Tracked access during Beta">Accesso limitato a Tracked durante la Beta</li>
+          <li data-it="Scout e informazioni avversario quando disponibili" data-en="Scout and opponent information when available">Scout e informazioni avversario quando disponibili</li>
+          <li data-it="Analisi e debrief descrittivi" data-en="Descriptive analysis and debrief">Analisi e debrief descrittivi</li>
+        </ul>
+        <a class="btn secondary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" data-it="Prova TennisAgents" data-en="Try TennisAgents">Prova TennisAgents</a>
+      </article>
+
+      <article class="pricebox featured">
+        <span class="status beta">BETA</span><h3>PREMIUM</h3>
+        <div class="for" data-it="Per chi vuole il team tattico dentro il match." data-en="For Players who want the tactical team inside the match.">Per chi vuole il team tattico dentro il match.</div>
+        <ul>
+          <li data-it="Strategist + Match Coach nel ciclo tattico dinamico" data-en="Strategist + Match Coach in the dynamic tactical loop">Strategist + Match Coach nel ciclo tattico dinamico</li>
+          <li data-it="Adattamento del piano quando cambiano evidenze e stato del match" data-en="Plan adaptation as evidence and match state change">Adattamento del piano quando cambiano evidenze e stato del match</li>
+          <li data-it="Uso più ricco di Tracked quando migliora davvero il consiglio" data-en="Richer use of Tracked when it genuinely improves guidance">Uso più ricco di Tracked quando migliora davvero il consiglio</li>
+          <li data-it="Funzioni Coach più complete quando eleggibile" data-en="More complete Coach capability when eligible">Funzioni Coach più complete quando eleggibile</li>
+        </ul>
+        <a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="premium" data-it="Scopri Premium" data-en="Discover Premium">Scopri Premium</a>
+      </article>
+
+      <article class="pricebox">
+        <span class="status beta">BETA</span><h3>SPONSORED PREMIUM</h3>
+        <div class="for" data-it="Lo stesso Premium, sostenuto da qualcun altro." data-en="The same Premium, funded by someone else.">Lo stesso Premium, sostenuto da qualcun altro.</div>
+        <ul>
+          <li data-it="Parent / Guardian" data-en="Parent / Guardian">Parent / Guardian</li>
+          <li>Brand, Retail, Club, Academy</li>
+          <li data-it="Programmi partner approvati" data-en="Approved partner programmes">Programmi partner approvati</li>
+          <li data-it="Stessa indipendenza del consiglio" data-en="Same independence of guidance">Stessa indipendenza del consiglio</li>
+        </ul>
+        <a class="btn secondary" href="mailto:partners@tennisagents.app" data-it="Parliamone" data-en="Talk to us">Parliamone</a>
+      </article>
+    </div>
+    <p class="micro" data-it="Il prezzo commerciale non è ancora pubblicato durante questa fase Beta." data-en="Commercial pricing is not yet published during this Beta phase.">Il prezzo commerciale non è ancora pubblicato durante questa fase Beta.</p>
+  </div>
+</section>
+
+<section class="alt" id="appearance" data-requirement="R-VISUAL-PERSONALITY">
+  <div class="wrap">
+    <div class="appearance-card">
+      <div>
+        <div class="kicker" data-it="La tua TennisAgents" data-en="Your TennisAgents">La tua TennisAgents</div>
+        <h3 data-it="Cambia atmosfera, non il ragionamento." data-en="Change the atmosphere, not the reasoning.">Cambia atmosfera, non il ragionamento.</h3>
+        <p data-it="TennisAgents, Prism, Centre Court e Clay cambiano la personalità visiva della Landing. Il team e le sue decisioni restano gli stessi." data-en="TennisAgents, Prism, Centre Court and Clay change the visual personality of the Landing. The team and its decisions stay the same.">TennisAgents, Prism, Centre Court e Clay cambiano la personalità visiva della Landing. Il team e le sue decisioni restano gli stessi.</p>
+      </div>
+      <button class="btn secondary" type="button" onclick="document.getElementById('style-dock').classList.add('open')" data-it="Scegli aspetto" data-en="Choose appearance">Scegli aspetto</button>
     </div>
   </div>
+</section>
 
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker">FAQ</div>
+      <h2 data-it="Le domande più semplici sono spesso le più importanti." data-en="The simplest questions are often the most important.">Le domande più semplici sono spesso le più importanti.</h2>
+    </div>
+    <details>
+      <summary data-it="Serve il video durante la partita?" data-en="Do I need video during the match?">Serve il video durante la partita?</summary>
+      <p data-it="No. Il core live è costruito per funzionare con registrazione del match e osservazioni strutturate. Tracked aggiunge stroke-by-stroke e coordinate quando vuoi evidenza più ricca." data-en="No. The live core is designed to work with match recording and structured observations. Tracked adds stroke-by-stroke and coordinates when you want richer evidence.">No. Il core live è costruito per funzionare con registrazione del match e osservazioni strutturate. Tracked aggiunge stroke-by-stroke e coordinate quando vuoi evidenza più ricca.</p>
+    </details>
+    <details>
+      <summary data-it="Che differenza c'è tra PROVEN, BETA e LAB?" data-en="What do PROVEN, BETA and LAB mean?">Che differenza c'è tra PROVEN, BETA e LAB?</summary>
+      <p data-it="PROVEN indica una capability già sostenuta da implementazione ed evidenza interna; BETA è disponibile o in validazione con perimetro ancora in evoluzione; LAB indica una direzione sperimentale non ancora parte stabile del prodotto." data-en="PROVEN marks a capability backed by current implementation and internal evidence; BETA is available or being validated with an evolving scope; LAB marks an experimental direction that is not yet a stable product capability.">PROVEN indica una capability già sostenuta da implementazione ed evidenza interna; BETA è disponibile o in validazione con perimetro ancora in evoluzione; LAB indica una direzione sperimentale non ancora parte stabile del prodotto.</p>
+    </details>
+    <details>
+      <summary data-it="Un genitore può pagare per un giovane Player?" data-en="Can a parent pay for a young Player?">Un genitore può pagare per un giovane Player?</summary>
+      <p data-it="Sì, il modello prevede che payer e Player possano essere persone diverse. Accesso ai dati, consenso e guardian policy restano separati dal pagamento." data-en="Yes. The model allows payer and Player to be different people. Data access, consent and guardian policy remain separate from payment.">Sì, il modello prevede che payer e Player possano essere persone diverse. Accesso ai dati, consenso e guardian policy restano separati dal pagamento.</p>
+    </details>
+    <details>
+      <summary data-it="Uno sponsor può influenzare i consigli?" data-en="Can a sponsor influence recommendations?">Uno sponsor può influenzare i consigli?</summary>
+      <p data-it="No. Un partner può sostenere l'accesso, ma non controlla classifiche, tattiche, consigli sull'attrezzatura o conclusioni degli Agents." data-en="No. A partner can fund access, but does not control rankings, tactics, equipment advice or Agent conclusions.">No. Un partner può sostenere l'accesso, ma non controlla classifiche, tattiche, consigli sull'attrezzatura o conclusioni degli Agents.</p>
+    </details>
+  </div>
+</section>
+
+<section class="alt final" id="start" data-requirement="R-CTA">
+  <div class="wrap">
+    <div class="kicker" data-it="Il prossimo punto conta." data-en="The next point matters.">Il prossimo punto conta.</div>
+    <h2 data-it="Porta il tuo Tennis Team in campo." data-en="Bring your Tennis Team courtside.">Porta il tuo Tennis Team in campo.</h2>
+    <p data-it="Inizia dalla Beta Web/PWA. Registra il match, dai contesto al team e scopri come cambia il modo di leggere ciò che succede in campo." data-en="Start with the Web/PWA Beta. Record the match, give the team context and see how it changes the way you read what happens on court.">Inizia dalla Beta Web/PWA. Registra il match, dai contesto al team e scopri come cambia il modo di leggere ciò che succede in campo.</p>
+    <div class="ctas" style="justify-content:center">
+      <a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents →" data-en="Try TennisAgents →">Prova TennisAgents →</a>
+      <a class="btn secondary" href="#premium" data-it="Scopri Premium" data-en="Discover Premium">Scopri Premium</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <a class="brand" href="#top" aria-label="TennisAgents home">
+      <img class="brand-icon" src="/icons/icon.svg" alt="" width="28" height="28">
+      <span class="brand-word">TENNISAGENTS</span>
+    </a>
+    <div>
+      <a href="mailto:support@tennisagents.app">support@tennisagents.app</a>
+      · <a href="mailto:privacy@tennisagents.app">privacy@tennisagents.app</a>
+      · <a href="mailto:partners@tennisagents.app">partners@tennisagents.app</a>
+    </div>
+    <div data-it="Open Beta · Web/PWA" data-en="Open Beta · Web/PWA">Open Beta · Web/PWA</div>
+  </div>
+</footer>
+
+<div id="style-dock">
+  <button class="style-toggle" id="style-toggle" type="button" aria-expanded="false" aria-controls="style-menu" data-it="Aspetto" data-en="Appearance">Aspetto</button>
+  <div class="style-menu" id="style-menu">
+    <button type="button" data-theme-choice="default" aria-pressed="true">TennisAgents</button>
+    <button type="button" data-theme-choice="prism" aria-pressed="false">Prism</button>
+    <button type="button" data-theme-choice="centre" aria-pressed="false">Centre Court</button>
+    <button type="button" data-theme-choice="clay" aria-pressed="false">Clay</button>
+  </div>
 </div>
-<p style="text-align:center;font-size:11px;color:var(--muted);margin:12px 0 4px;display:none" id="swipe-hint">← scorri per vedere tutti gli schemi →</p>
-  <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:12px" data-it="60 schemi tattici animati — uno per ogni pattern del motore" data-en="60 animated tactical diagrams — one for every engine pattern">60 schemi tattici animati — uno per ogni pattern del motore</p>
 
 <script>
 (function(){
-  function makeFootsteps(containerId, x1, y1, x2, y2, delayMs){
-    var c = document.getElementById(containerId);
-    if(!c) return;
-    // clear old
-    c.innerHTML='';
-    var dx=x2-x1, dy=y2-y1, dist=Math.sqrt(dx*dx+dy*dy);
-    var steps=Math.floor(dist/14);
-    for(var i=1;i<=steps;i++){
-      var t=i/(steps+1);
-      var dot=document.createElement('div');
-      dot.style.cssText='position:absolute;width:'+(i%2===0?5:4)+'px;height:'+(i%2===0?7:5)+'px;border-radius:50%;background:#18a077;opacity:0;transform:translate(-50%,-50%);left:'+(x1+dx*t)+'px;top:'+(y1+dy*t)+'px';
-      c.appendChild(dot);
-      (function(d,idx){
-        setTimeout(function(){
-          d.style.transition='opacity .2s';
-          d.style.opacity='.75';
-          setTimeout(function(){d.style.opacity='.3';},400);
-        }, delayMs + idx*60);
-      })(dot, i);
-    }
+  const dock=document.getElementById('style-dock');
+  const toggle=document.getElementById('style-toggle');
+  const choices=[...document.querySelectorAll('[data-theme-choice]')];
+  const savedTheme=localStorage.getItem('ta-theme')||'default';
+  function setTheme(theme){
+    document.documentElement.dataset.theme=theme;
+    localStorage.setItem('ta-theme',theme);
+    choices.forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.themeChoice===theme)));
   }
+  setTheme(savedTheme);
+  toggle.addEventListener('click',()=>{
+    const open=dock.classList.toggle('open');
+    toggle.setAttribute('aria-expanded',String(open));
+  });
+  choices.forEach(btn=>btn.addEventListener('click',()=>{setTheme(btn.dataset.themeChoice);dock.classList.remove('open');toggle.setAttribute('aria-expanded','false')}));
+  document.addEventListener('click',e=>{if(!dock.contains(e.target)){dock.classList.remove('open');toggle.setAttribute('aria-expanded','false')}});
 
-  function animCourt(svgId, paths, playerDot, playerFrom, playerTo, fsId, fsDelay){
-    var svg = document.getElementById(svgId);
-    if(!svg) return;
+  window.setLang=function(lang){
+    if(!['it','en'].includes(lang)) return;
+    document.querySelectorAll('[data-it][data-en]').forEach(el=>{
+      const value=el.getAttribute('data-'+lang);
+      if(value!==null) el.textContent=value;
+    });
+    document.querySelectorAll('[data-alt-it][data-alt-en]').forEach(el=>{
+      el.setAttribute('alt',el.getAttribute('data-alt-'+lang));
+    });
+    document.querySelectorAll('#lang-switch button').forEach(btn=>{
+      const active=btn.dataset.lang===lang;
+      btn.classList.toggle('on',active);
+      btn.setAttribute('aria-pressed',String(active));
+    });
+    document.documentElement.lang=lang;
+    localStorage.setItem('ta-lang',lang);
+    const title=lang==='it'?'TennisAgents — Il tuo AI Tennis Team':'TennisAgents — Your AI Tennis Team';
+    document.title=title;
+  };
+  const savedLang=localStorage.getItem('ta-lang');
+  const initial=savedLang||(navigator.language&&navigator.language.toLowerCase().startsWith('it')?'it':'en');
+  setLang(initial);
 
-    function run(){
-      paths.forEach(function(p){
-        var el = document.getElementById(p.id);
-        if(!el) return;
-        el.style.animation = 'none';
-        var da = p.da || '400';
-        el.style.strokeDasharray = da;
-        el.style.strokeDashoffset = da;
-        void el.getBoundingClientRect();
-      });
-      if(playerDot){
-        var pd = document.getElementById(playerDot);
-        if(pd){ pd.style.transition='none'; pd.style.left=playerFrom[0]+'px'; pd.style.top=playerFrom[1]+'px'; }
-      }
-      if(fsId) document.getElementById(fsId).innerHTML='';
+  const flowSvg=document.getElementById('flow-svg');
+  const reducedMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)');
+  const syncFlowMotion=()=>{
+    if(!flowSvg) return;
+    if(reducedMotion&&reducedMotion.matches&&flowSvg.pauseAnimations){flowSvg.pauseAnimations();}
+    else if(flowSvg.unpauseAnimations){flowSvg.unpauseAnimations();}
+  };
+  syncFlowMotion();
+  if(reducedMotion&&reducedMotion.addEventListener) reducedMotion.addEventListener('change',syncFlowMotion);
 
-      paths.forEach(function(p){
-        var el = document.getElementById(p.id);
-        if(!el) return;
-        var delayMs = (p.delay||0)*1000;
-        setTimeout(function(){
-          el.style.animation = 'drawPath '+p.dur+'s ease forwards';
-          if(p.isMove){
-            if(playerDot){
-              var pd = document.getElementById(playerDot);
-              if(pd){
-                pd.style.transition = 'left '+p.dur+'s ease, top '+p.dur+'s ease';
-                pd.style.left = playerTo[0]+'px';
-                pd.style.top = playerTo[1]+'px';
-              }
-            }
-            if(fsId && p.fsCoords){
-              makeFootsteps(fsId, p.fsCoords[0], p.fsCoords[1], p.fsCoords[2], p.fsCoords[3], 0);
-            }
-          }
-        }, delayMs);
-      });
-    }
-
-    run();
-    setInterval(run, 4800);
-  }
-
-  // Court 1: diagonal
-  animCourt('c1svg',
-    [{id:'p1a',dur:.9,delay:0,da:'360'},{id:'m1',dur:.5,delay:.5,isMove:true,da:'80',fsCoords:[100,318,75,248]},{id:'p1b',dur:.8,delay:1.2,da:'260'}],
-    'p1dot',[100,320],[75,248],'fs1',500);
-
-  // Court 2: serve+1
-  animCourt('c2svg',
-    [{id:'p2a',dur:.7,delay:0,da:'290'},{id:'p2r',dur:.4,delay:.4,da:'100'},{id:'m2',dur:.5,delay:.9,isMove:true,da:'135',fsCoords:[130,318,95,195]},{id:'p2b',dur:.7,delay:1.5,da:'220'}],
-    'p2dot',[130,320],[95,195],'fs2',900);
-
-  animCourt('c3svg',
-    [{id:'p3a',dur:.6,delay:0,da:'175'},{id:'p3r',dur:.5,delay:.3,da:'120'},{id:'m3',dur:.5,delay:.5,isMove:true,da:'128',fsCoords:[100,310,100,185]},{id:'p3b',dur:.7,delay:1.2,da:'200'}],
-    'p3dot',[100,312],[100,185],'fs3',500);
-  // Show swipe hint on mobile
-  if(window.innerWidth < 768){
-    var hint = document.getElementById('swipe-hint');
-    if(hint) hint.style.display='block';
-  }
 })();
 </script>
-</section>
-
-<!-- CTA FINAL -->
-
-<!-- PRICING -->
-<section class="pricing-section" id="prezzi">
-  <div class="pricing-inner">
-    <div class="section-eyebrow reveal" data-it="Piani e accesso" data-en="Plans &amp; access">Piani e accesso</div>
-    <h2 class="reveal" data-it="UN COACH TATTICO COSTA MENO<br><span>DI UN TUBO DI PALLE</span>" data-en="A TACTICAL COACH FOR LESS<br><span>THAN A CAN OF BALLS</span>">UN COACH TATTICO COSTA MENO<br><span>DI UN TUBO DI PALLE</span></h2>
-    <div class="beta-banner reveal"><span>●</span><span data-it="Beta privata in corso — accesso gratuito su invito, prezzi di lancio bloccati per i beta tester" data-en="Private beta running — free access by invite, launch pricing locked for beta testers">Beta privata in corso — accesso gratuito su invito, prezzi di lancio bloccati per i beta tester</span></div>
-    <div class="scroll-hint reveal" data-it="Scorri →" data-en="Scroll →">Scorri →</div>
-    <div class="price-grid">
-      <div class="price-card reveal">
-        <div class="price-tier">BASE</div>
-        <div class="price-for" data-it="Per il giocatore autonomo" data-en="For the independent player">Per il giocatore autonomo</div>
-        <div class="price-val" data-it="Gratis" data-en="Free">Gratis</div>
-        <div class="price-note" data-it="Per sempre, senza carta" data-en="Forever, no card">Per sempre, senza carta</div>
-        <ul class="price-list">
-          <li data-it="Punteggio live completo (game, set, tie-break)" data-en="Full live scoring (games, sets, tie-breaks)">Punteggio live completo (game, set, tie-break)</li>
-          <li data-it="Statistiche del match" data-en="Match statistics">Statistiche del match</li>
-          <li data-it="Assaggio degli schemi tattici animati" data-en="A taste of the animated tactical diagrams">Assaggio degli schemi tattici animati</li>
-          <li data-it="Storico ultimi 3 match" data-en="Last 3 matches history">Storico ultimi 3 match</li>
-        </ul>
-        <a class="price-cta line" href="https://tennis-ai-coach-chi.vercel.app" target="_blank" data-it="Prova subito" data-en="Try it now">Prova subito</a>
-      </div>
-      <div class="price-card featured reveal reveal-delay-1">
-        <div class="price-badge" data-it="Più scelto" data-en="Most popular">Più scelto</div>
-        <div class="price-tier">PRO</div>
-        <div class="price-for" data-it="Per giocatori e agonisti" data-en="For players and competitors">Per giocatori e agonisti</div>
-        <div class="price-val">5,99€<small> /mese</small></div>
-        <div class="price-note" data-it="o 49€/anno · 14 giorni di prova" data-en="or €49/year · 14-day trial">o 49€/anno · 14 giorni di prova</div>
-        <ul class="price-list">
-          <li data-it="Tutto di BASE, più:" data-en="Everything in BASE, plus:">Tutto di BASE, più:</li>
-          <li data-it="Tutti i 60 schemi tattici animati" data-en="All 60 animated tactical diagrams">Tutti i 60 schemi tattici animati</li>
-          <li data-it="Coach tattico live: cosa fare a ogni cambio campo" data-en="Live tactical coach: what to do at every changeover">Coach tattico live: cosa fare a ogni cambio campo</li>
-          <li data-it="Scouting avversario (manuale + import 1-click)" data-en="Opponent scouting (manual + 1-click import)">Scouting avversario (manuale + import 1-click)</li>
-          <li data-it="AI: descrivi a parole, ricevi il piano" data-en="AI: describe in words, get the plan">AI: descrivi a parole, ricevi il piano</li>
-          <li data-it="Debrief AI post-match" data-en="AI post-match debrief">Debrief AI post-match</li>
-          <li data-it="Storico illimitato e backup cloud" data-en="Unlimited history and cloud backup">Storico illimitato e backup cloud</li>
-        </ul>
-        <a class="price-cta solid" href="https://tennis-ai-coach-chi.vercel.app" target="_blank" data-it="Inizia la prova gratuita" data-en="Start free trial">Inizia la prova gratuita</a>
-      </div>
-      <div class="price-card reveal reveal-delay-2">
-        <div class="price-tier">TEAM</div>
-        <div class="price-for" data-it="Per coach, accademie e genitori-coach" data-en="For coaches, academies and parent-coaches">Per coach, accademie e genitori-coach</div>
-        <div class="price-val">14,99€<small> /mese</small></div>
-        <div class="price-note" data-it="o 129€/anno · 14 giorni di prova" data-en="or €129/year · 14-day trial">o 129€/anno · 14 giorni di prova</div>
-        <ul class="price-list">
-          <li data-it="Tutto di PRO, più:" data-en="Everything in PRO, plus:">Tutto di PRO, più:</li>
-          <li data-it="Sync live coach ↔ giocatore a bordo campo" data-en="Live coach ↔ player sync courtside">Sync live coach ↔ giocatore a bordo campo</li>
-          <li data-it="Più giocatori, un solo coach" data-en="Multiple players, one coach">Più giocatori, un solo coach</li>
-          <li data-it="Report condivisibili con giocatore e genitori" data-en="Shareable reports for player and parents">Report condivisibili con giocatore e genitori</li>
-        </ul>
-        <a class="price-cta line" href="mailto:info@filipponeri.com?subject=Tennis%20AI%20Coach%20TEAM" data-it="Prova 14 giorni" data-en="14-day trial">Prova 14 giorni</a>
-      </div>
-    </div>
-    <p class="price-foot" data-it="Prova PRO e TEAM gratis per 14 giorni — nessuna carta richiesta per iniziare. Una lezione privata costa 30–60€: Tennis AI Coach lavora con te a ogni match, per una frazione del prezzo." data-en="Try PRO and TEAM free for 14 days — no card to start. A private lesson runs €30–60: Tennis AI Coach works every match with you, for a fraction of the price.">Una lezione privata costa 30–60€. Tennis AI Coach lavora con te a ogni match, per una frazione del prezzo.</p>
-  </div>
-</section>
-
-<!-- IN ARRIVO -->
-<section class="pricing-section" id="in-arrivo" style="border-top:1px solid var(--border)">
-  <div class="pricing-inner">
-    <div class="section-eyebrow reveal" data-it="In arrivo" data-en="Coming soon">In arrivo</div>
-    <h2 class="reveal" style="margin-bottom:14px" data-it="IL COACH, ANCHE<br><span>DA LONTANO</span>" data-en="THE COACH, EVEN<br><span>FROM AFAR</span>">IL COACH, ANCHE<br><span>DA LONTANO</span></h2>
-    <p class="reveal" style="max-width:680px;margin:0 auto 36px;color:var(--muted)" data-it="Stiamo costruendo gli strumenti che fanno lavorare il coach anche quando non è in campo — e lo aiutano a far crescere il suo business." data-en="We're building the tools that let the coach work even when off-court — and help grow their business.">Stiamo costruendo gli strumenti che fanno lavorare il coach anche quando non è in campo — e lo aiutano a far crescere il suo business.</p>
-    <div class="scroll-hint reveal" data-it="Scorri →" data-en="Scroll →">Scorri →</div>
-    <div class="price-grid">
-      <div class="price-card reveal">
-        <div class="price-tier" style="font-size:20px" data-it="Coaching da remoto" data-en="Remote coaching">Coaching da remoto</div>
-        <div class="price-for" data-it="PRO + TEAM" data-en="PRO + TEAM">PRO + TEAM</div>
-        <ul class="price-list" style="margin-top:14px">
-          <li data-it="Il genitore segue il match, l'allenatore guida da casa" data-en="The parent follows the match, the coach guides from home">Il genitore segue il match, l'allenatore guida da casa</li>
-          <li data-it="Due coach sulla stessa sessione, ognuno col suo colore" data-en="Two coaches on the same session, each with their colour">Due coach sulla stessa sessione, ognuno col suo colore</li>
-          <li data-it="L'indicazione converge e arriva al giocatore" data-en="The cue converges and reaches the player">L'indicazione converge e arriva al giocatore</li>
-          <li data-it="L'allenatore monetizza la sua esperienza a distanza" data-en="The coach monetises their expertise remotely">L'allenatore monetizza la sua esperienza a distanza</li>
-        </ul>
-      </div>
-      <div class="price-card reveal reveal-delay-1">
-        <div class="price-tier" style="font-size:20px" data-it="Gestione allievi" data-en="Player management">Gestione allievi</div>
-        <div class="price-for" data-it="TEAM" data-en="TEAM">TEAM</div>
-        <ul class="price-list" style="margin-top:14px">
-          <li data-it="Registro presenze rapido per ora e per coach" data-en="Quick attendance log by hour and coach">Registro presenze rapido per ora e per coach</li>
-          <li data-it="Più giocatori, un solo coach" data-en="Multiple players, one coach">Più giocatori, un solo coach</li>
-          <li data-it="Report condivisibili con giocatore e genitori" data-en="Shareable reports for player and parents">Report condivisibili con giocatore e genitori</li>
-        </ul>
-      </div>
-      <div class="price-card reveal reveal-delay-2">
-        <div class="price-tier" style="font-size:20px" data-it="Ecosistema dati" data-en="Data ecosystem">Ecosistema dati</div>
-        <div class="price-for" data-it="PRO + TEAM" data-en="PRO + TEAM">PRO + TEAM</div>
-        <ul class="price-list" style="margin-top:14px">
-          <li data-it="Import profilo avversario (già disponibile)" data-en="Opponent profile import (already available)">Import profilo avversario (già disponibile)</li>
-          <li data-it="Condivisione punteggio live via link" data-en="Live score sharing via link">Condivisione punteggio live via link</li>
-          <li data-it="Più integrazioni con gli strumenti del tuo percorso" data-en="More integrations with your journey's tools">Più integrazioni con gli strumenti del tuo percorso</li>
-        </ul>
-      </div>
-    </div>
-    <p class="price-foot reveal" data-it="Funzionalità in sviluppo, incluse progressivamente in PRO e TEAM. I beta tester le provano per primi." data-en="Features in development, rolling out progressively in PRO and TEAM. Beta testers get them first.">Funzionalità in sviluppo, incluse progressivamente in PRO e TEAM. I beta tester le provano per primi.</p>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section class="faq-section">
-  <div class="faq-inner">
-    <div class="section-eyebrow reveal" data-it="Domande frequenti" data-en="FAQ">Domande frequenti</div>
-    <h2 class="reveal" style="margin-bottom:36px" data-it="PRIMA DI SCENDERE<br><span>IN CAMPO</span>" data-en="BEFORE YOU STEP<br><span>ON COURT</span>">PRIMA DI SCENDERE<br><span>IN CAMPO</span></h2>
-    <details class="faq-item reveal"><summary data-it="Posso usarlo in torneo?" data-en="Can I use it in tournaments?">Posso usarlo in torneo?</summary>
-      <p data-it="Le regole sul coaching variano per circuito, federazione e categoria: verifica sempre il regolamento del tuo torneo. Molte competizioni oggi ammettono il coaching da bordo campo; dove non è permesso, la modalità Solo Coach consente di analizzare il match e preparare il debrief senza alcuna comunicazione col giocatore, e la modalità autonoma è perfetta per allenamenti e amichevoli." data-en="Coaching rules vary by circuit, federation and category: always check your tournament's regulations. Many competitions now allow courtside coaching; where it isn't permitted, Coach-Only mode lets you analyse the match and prepare the debrief without any communication to the player, and autonomous mode is perfect for practice and friendlies.">Le regole sul coaching variano per circuito, federazione e categoria: verifica sempre il regolamento del tuo torneo. Molte competizioni oggi ammettono il coaching da bordo campo; dove non è permesso, la modalità Solo Coach consente di analizzare il match e preparare il debrief senza alcuna comunicazione col giocatore, e la modalità autonoma è perfetta per allenamenti e amichevoli.</p>
-    </details>
-    <details class="faq-item reveal"><summary data-it="Devo installare qualcosa?" data-en="Do I need to install anything?">Devo installare qualcosa?</summary>
-      <p data-it="No. È una web app installabile (PWA): si apre dal browser e si aggiunge alla schermata Home in due tocchi, su iPhone e Android. Niente store, niente download, sempre aggiornata." data-en="No. It's an installable web app (PWA): open it in the browser and add it to your Home screen in two taps, on iPhone and Android. No store, no download, always up to date.">No. È una web app installabile (PWA): si apre dal browser e si aggiunge alla schermata Home in due tocchi, su iPhone e Android. Niente store, niente download, sempre aggiornata.</p>
-    </details>
-    <details class="faq-item reveal"><summary data-it="E se perdo la connessione a metà match?" data-en="What if I lose connection mid-match?">E se perdo la connessione a metà match?</summary>
-      <p data-it="Il match viene salvato in automatico sul dispositivo a ogni punto. Se chiudi l'app, il telefono va in standby o cade la rete, al rientro trovi la card «Match in corso trovato» e riprendi esattamente da dove eri — punteggio, piano e undo inclusi." data-en="The match is autosaved on your device at every point. If the app closes, the phone sleeps or the network drops, on return you'll find the “Match in progress” card and resume exactly where you were — score, plan and undo included.">Il match viene salvato in automatico sul dispositivo a ogni punto. Se chiudi l'app, il telefono va in standby o cade la rete, al rientro trovi la card «Match in corso trovato» e riprendi esattamente da dove eri — punteggio, piano e undo inclusi.</p>
-    </details>
-    <details class="faq-item reveal"><summary data-it="I suggerimenti sono sempre gli stessi?" data-en="Are the suggestions always the same?">I suggerimenti sono sempre gli stessi?</summary>
-      <p data-it="No: il motore sceglie tra 337 scenari e 60 schemi in base a punteggio, segnali live, scouting e memoria dei match precedenti, evitando di ripetere i piani appena proposti. Due match non producono mai lo stesso percorso tattico — e ogni consiglio mostra l'evidenza che lo ha generato." data-en="No: the engine picks from 337 scenarios and 60 diagrams based on score, live signals, scouting and memory of previous matches, avoiding plans it just proposed. No two matches produce the same tactical path — and every suggestion shows the evidence behind it.">No: il motore sceglie tra 337 scenari e 60 schemi in base a punteggio, segnali live, scouting e memoria dei match precedenti, evitando di ripetere i piani appena proposti. Due match non producono mai lo stesso percorso tattico — e ogni consiglio mostra l'evidenza che lo ha generato.</p>
-    </details>
-    <details class="faq-item reveal"><summary data-it="Che fine fanno i miei dati?" data-en="What happens to my data?">Che fine fanno i miei dati?</summary>
-      <p data-it="I dati del match vivono prima di tutto sul tuo dispositivo. Con un account, profili e storico vengono salvati nel tuo spazio cloud personale, accessibile solo a te. Puoi esportare o eliminare tutto in qualsiasi momento." data-en="Match data lives on your device first. With an account, profiles and history are saved to your personal cloud space, accessible only to you. You can export or delete everything at any time.">I dati del match vivono prima di tutto sul tuo dispositivo. Con un account, profili e storico vengono salvati nel tuo spazio cloud personale, accessibile solo a te. Puoi esportare o eliminare tutto in qualsiasi momento.</p>
-    </details>
-  </div>
-</section>
-
-<section class="cta-final">
-  <div class="section-eyebrow reveal" data-it="Inizia ora" data-en="Get started">Inizia ora</div>
-  <h2 class="reveal" data-it="PRONTO PER<br>IL <span>CAMPO?</span>" data-en="READY FOR<br>THE <span>COURT?</span>">PRONTO PER<br>IL <span>CAMPO?</span></h2>
-  <p class="reveal" data-it="Funziona come app installabile su iPhone e Android. Nessun download richiesto." data-en="Works as an installable app on iPhone and Android. No download required.">Funziona come app installabile su iPhone e Android. Nessun download richiesto.</p>
-  <a href="https://tennis-ai-coach-chi.vercel.app" class="btn-primary reveal" target="_blank" style="display:inline-flex;margin:0 auto">
-    <span data-it="Apri Tennis AI Coach" data-en="Open Tennis AI Coach">Apri Tennis AI Coach</span>
-    <svg viewBox="0 0 16 16" fill="currentColor" width="16" height="16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
-  </a>
-  <div class="pwa-note reveal" data-it="Su iPhone: Safari → Condividi → Aggiungi a schermata Home" data-en="On iPhone: Safari → Share → Add to Home Screen">Su iPhone: Safari → Condividi → Aggiungi a schermata Home</div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="logo-mark">
-<svg width="26" height="26" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="512" height="512" rx="116" fill="#0A1628"/>
-      <rect x="118" y="130" width="276" height="58" fill="#F5EDD8"/>
-      <rect x="227" y="130" width="58" height="236" fill="#F5EDD8"/>
-      <circle cx="331" cy="232" r="26" fill="#F0A500"/>
-      <rect x="118" y="404" width="276" height="8" rx="4" fill="#18a077" opacity="0.30"/>
-    </svg>
-    <span style="font-family:var(--font-display);font-size:16px;letter-spacing:2px;color:var(--muted)">TENNIS AI COACH</span>
-  </div>
-  <div class="footer-links">
-    <a href="https://tennis-ai-coach-chi.vercel.app" target="_blank" data-it="Apri app" data-en="Open app">Apri app</a>
-    <a href="https://tennis-ai-coach-chi.vercel.app" target="_blank">Privacy Policy</a>
-    <a href="mailto:info@filipponeri.com">info@filipponeri.com</a>
-  </div>
-  <span class="footer-copy" data-it="© 2026 Tennis AI Coach · I titoli e i marchi citati appartengono ai rispettivi autori, editori e titolari. Nessuna affiliazione, sponsorizzazione o endorsement è implicata." data-en="© 2026 Tennis AI Coach · Cited titles and trademarks belong to their respective authors, publishers and owners. No affiliation, sponsorship or endorsement is implied.">© 2026 Tennis AI Coach · I titoli e i marchi citati appartengono ai rispettivi autori, editori e titolari. Nessuna affiliazione, sponsorizzazione o endorsement è implicata.</span>
-</footer>
 
 <script>
-
-
-// Language
-function setLang(lang){
-  document.querySelectorAll('[data-it]').forEach(el=>{
-    const t=el.getAttribute('data-'+lang);
-    if(!t)return;
-    if(el.tagName==='A'||el.tagName==='BUTTON'){el.textContent=t;return;}
-    el.innerHTML=t;
-  });
-  document.querySelectorAll('.lang-sw button').forEach(b=>{
-    b.classList.toggle('on',b.textContent===lang.toUpperCase());
-  });
-  document.documentElement.lang=lang;
-}
+window.$crisp=[];
+window.CRISP_WEBSITE_ID="0ca6e6f8-08c0-4a56-9113-80bcbea23457";
+(function(){
+  var d=document,s=d.createElement("script");
+  s.src="https://client.crisp.chat/l.js";
+  s.async=1;
+  d.getElementsByTagName("head")[0].appendChild(s);
+})();
 </script>
-
-
 </body>
 </html>

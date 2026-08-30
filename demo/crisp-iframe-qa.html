@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>TennisAgents — Crisp QA</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07131f;--panel:#0c1c2b;--ink:#f7f7f2;--muted:#9eb0c1;--line:#1c3850;--accent:#f3b51b}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;place-items:center;padding:24px}
+    .card{max-width:640px;border:1px solid var(--line);background:var(--panel);border-radius:20px;padding:24px}
+    .card h1{margin:0 0 10px}.card p{color:var(--muted);line-height:1.5}.id{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;word-break:break-all}
+    #ta-support-launcher{position:fixed;right:18px;bottom:18px;z-index:1001;border:0;border-radius:999px;background:var(--accent);color:#17210d;font-weight:800;padding:14px 18px;box-shadow:0 14px 40px rgba(0,0,0,.35);cursor:pointer}
+    #ta-support-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:1002}
+    #ta-support-backdrop.open{display:block}
+    #ta-support-panel{position:fixed;right:18px;bottom:18px;width:min(420px,calc(100vw - 24px));height:min(720px,calc(100vh - 36px));background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 20px 70px rgba(0,0,0,.5);display:none;z-index:1003}
+    #ta-support-panel.open{display:block}
+    #ta-support-close{position:absolute;right:10px;top:10px;z-index:2;width:38px;height:38px;border:0;border-radius:999px;background:rgba(7,19,31,.88);color:white;font-size:22px;cursor:pointer}
+    #ta-support-frame{width:100%;height:100%;border:0;background:#fff}
+    @media(max-width:640px){#ta-support-panel{inset:8px;width:auto;height:auto;border-radius:16px}#ta-support-launcher{right:12px;bottom:12px}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>QA Support launcher</h1>
+    <p>Questa pagina testa il fallback TennisAgents che apre il chatbox Crisp diretto in un pannello, senza usare il widget <code>client.crisp.chat/l.js</code>.</p>
+    <p class="id">Website ID: 0b09ce9e-23e6-435a-961c-da7b56f73d4f</p>
+  </main>
+
+  <button id="ta-support-launcher" type="button" aria-haspopup="dialog" aria-controls="ta-support-panel">Supporto TennisAgents</button>
+  <div id="ta-support-backdrop" aria-hidden="true"></div>
+  <section id="ta-support-panel" role="dialog" aria-modal="true" aria-label="Supporto TennisAgents">
+    <button id="ta-support-close" type="button" aria-label="Chiudi">×</button>
+    <iframe id="ta-support-frame" title="Chat supporto TennisAgents" loading="eager" allow="clipboard-write" src="https://go.crisp.chat/chat/embed/?website_id=0b09ce9e-23e6-435a-961c-da7b56f73d4f"></iframe>
+  </section>
+
+  <script>
+    (function(){
+      const launcher=document.getElementById('ta-support-launcher');
+      const panel=document.getElementById('ta-support-panel');
+      const backdrop=document.getElementById('ta-support-backdrop');
+      const close=document.getElementById('ta-support-close');
+      function open(){panel.classList.add('open');backdrop.classList.add('open');launcher.setAttribute('aria-expanded','true');close.focus();}
+      function shut(){panel.classList.remove('open');backdrop.classList.remove('open');launcher.setAttribute('aria-expanded','false');launcher.focus();}
+      launcher.addEventListener('click',open);close.addEventListener('click',shut);backdrop.addEventListener('click',shut);
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))shut();});
+    })();
+  </script>
+</body>
+</html>
