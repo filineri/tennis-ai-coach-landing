@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'feat/landing-v3-*'
+      - 'feat/landing-wearable-*'
   pull_request:
     paths:
       - 'index.html'
@@ -13,10 +14,13 @@ on:
       - 'assets/**'
       - 'icons/**'
       - 'demo/**'
+      - 'fragments/**'
       - 'docs/landing-v3-decision-coverage.md'
       - 'docs/landing-open-source-integration.md'
+      - 'docs/wearable-beta-landing-copy.md'
       - 'scripts/check_landing.py'
       - 'scripts/check_analytics.py'
+      - 'scripts/check_wearable_landing.py'
       - 'scripts/build_pages.py'
       - '.github/workflows/landing-quality.yml'
 
@@ -33,11 +37,13 @@ jobs:
           python-version: '3.12'
       - name: Validate Landing V3
         run: python scripts/check_landing.py
+      - name: Validate wearable tactical cue BETA module
+        run: python scripts/check_wearable_landing.py
       - name: Validate analytics/open-source adoption
         run: |
           python scripts/check_analytics.py
           node --check assets/analytics.js
-          python -m py_compile scripts/build_pages.py scripts/check_analytics.py
+          python -m py_compile scripts/build_pages.py scripts/check_analytics.py scripts/check_wearable_landing.py
       - name: Build Cloudflare Pages bundle — analytics disabled by default
         run: python scripts/build_pages.py
       - name: Verify deploy bundle
@@ -55,6 +61,9 @@ jobs:
           grep -q '"consentRequired":true' dist/assets/analytics-config.js
           grep -q '/assets/analytics.js' dist/index.html
           grep -q '/assets/analytics.js' dist/demo/live-match/index.html
+          grep -q 'id="wearable-beta"' dist/index.html
+          grep -q 'Device validation in progress' dist/index.html
+          grep -q 'Player Analysis Technology' dist/index.html
       - name: Exercise configured PostHog build without network calls
         env:
           POSTHOG_KEY: phc_ci_contract_only
