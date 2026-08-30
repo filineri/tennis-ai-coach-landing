@@ -16,6 +16,8 @@ ANALYTICS_PAGES = (
 )
 ANALYTICS_TAGS = """<script src=\"/assets/analytics-config.js\" defer></script>
 <script src=\"/assets/analytics.js\" defer></script>"""
+WEARABLE_FRAGMENT = ROOT / "fragments" / "wearable-beta.html"
+WEARABLE_INSERTION_MARKER = '<section class="alt" id="flow"'
 
 
 def env_bool(name, default=True):
@@ -53,6 +55,24 @@ def write_analytics_config():
     return config
 
 
+def inject_wearable_beta():
+    if not WEARABLE_FRAGMENT.exists():
+        raise SystemExit("missing wearable beta fragment")
+    path = DIST / "index.html"
+    html = path.read_text(encoding="utf-8")
+    fragment = WEARABLE_FRAGMENT.read_text(encoding="utf-8").strip()
+    if 'id="wearable-beta"' in html:
+        raise SystemExit("wearable beta module already present before build injection")
+    if WEARABLE_INSERTION_MARKER not in html:
+        raise SystemExit("missing wearable beta insertion marker")
+    html = html.replace(
+        WEARABLE_INSERTION_MARKER,
+        f"{fragment}\n\n{WEARABLE_INSERTION_MARKER}",
+        1,
+    )
+    path.write_text(html, encoding="utf-8")
+
+
 def inject_analytics():
     for relative in ANALYTICS_PAGES:
         path = DIST / relative
@@ -84,9 +104,11 @@ def main():
         shutil.copytree(src, DIST / name)
 
     config = write_analytics_config()
+    inject_wearable_beta()
     inject_analytics()
 
     print("Cloudflare Pages bundle ready:", DIST)
+    print("Wearable tactical cue: BETA module injected")
     print(
         "Analytics:",
         "provider=posthog",
