@@ -147,3 +147,20 @@
 
   boot();
 })();
+
+// Support is operationally independent from analytics consent. The analytics
+// bundle is already injected on Landing V3, so it is used only as a tiny,
+// dependency-free loader for the support shell. Demo/proof pages keep their
+// existing behavior and do not get another customer-support launcher.
+(function(){
+  "use strict";
+  if(window.location.pathname.startsWith("/demo/")) return;
+  function load(src, done){
+    const script=document.createElement("script");
+    script.src=src;
+    script.defer=true;
+    if(done) script.addEventListener("load",done,{once:true});
+    document.head.appendChild(script);
+  }
+  load("/assets/support-config.js",function(){load("/assets/support-hub.js");});
+})();
