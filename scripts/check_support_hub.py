@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -50,8 +51,14 @@ assert 'Escape' in hub
 assert 'if(!cfg.knowledgeSearchUrl || !query) return []' in hub
 assert 'if(cfg.statusUrl)' in hub
 
-# Public config may contain addresses/endpoints but never credentials.
-for forbidden in ('token', 'secret', 'password', 'apiKey', 'authorization'):
-    assert forbidden.lower() not in config.lower()
+# Public config may mention security in comments, but it must not define common
+# credential-bearing keys or authorization headers.
+credential_patterns = (
+    r'\b(api[_-]?key|token|secret|password|authorization)\s*:',
+    r'\b(api[_-]?key|token|secret|password)\s*=',
+    r'\bbearer\s+[A-Za-z0-9._~-]{8,}',
+)
+for pattern in credential_patterns:
+    assert re.search(pattern, config, flags=re.IGNORECASE) is None
 
 print('Support Hub contract: PASS')
