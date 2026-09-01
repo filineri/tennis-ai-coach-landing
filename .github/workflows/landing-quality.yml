@@ -5,6 +5,7 @@ on:
     branches:
       - 'feat/landing-v3-*'
       - 'feat/landing-wearable-*'
+      - 'feat/crisp-*'
   pull_request:
     paths:
       - 'index.html'
@@ -20,6 +21,7 @@ on:
       - 'docs/wearable-beta-landing-copy.md'
       - 'scripts/check_landing.py'
       - 'scripts/check_analytics.py'
+      - 'scripts/check_support_hub.py'
       - 'scripts/check_wearable_landing.py'
       - 'scripts/build_pages.py'
       - '.github/workflows/landing-quality.yml'
@@ -44,6 +46,12 @@ jobs:
           python scripts/check_analytics.py
           node --check assets/analytics.js
           python -m py_compile scripts/build_pages.py scripts/check_analytics.py scripts/check_wearable_landing.py
+      - name: Validate CRISP Free support hub
+        run: |
+          python scripts/check_support_hub.py
+          node --check assets/support-hub.js
+          node --check assets/support-config.js
+          python -m py_compile scripts/check_support_hub.py
       - name: Build Cloudflare Pages bundle — analytics disabled by default
         run: python scripts/build_pages.py
       - name: Verify deploy bundle
@@ -57,10 +65,15 @@ jobs:
           test -f dist/demo/player/index.html
           test -f dist/assets/analytics.js
           test -f dist/assets/analytics-config.js
+          test -f dist/assets/support-config.js
+          test -f dist/assets/support-hub.js
+          test -f dist/assets/support-hub.css
           grep -q '"enabled":false' dist/assets/analytics-config.js
           grep -q '"consentRequired":true' dist/assets/analytics-config.js
           grep -q '/assets/analytics.js' dist/index.html
           grep -q '/assets/analytics.js' dist/demo/live-match/index.html
+          grep -q '/assets/support-config.js' dist/assets/analytics.js
+          grep -q 'provider: "crisp-free"' dist/assets/support-config.js
           grep -q 'id="wearable-beta"' dist/index.html
           grep -q 'Device validation in progress' dist/index.html
           grep -q 'Player Analysis Technology' dist/index.html
