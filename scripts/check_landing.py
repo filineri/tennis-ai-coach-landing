@@ -186,6 +186,7 @@ def main():
     require('data-theme-choice="default"' in text and 'data-theme-choice="prism"' in text and 'data-theme-choice="centre"' in text and 'data-theme-choice="clay"' in text, "visual personalities incomplete", errors)
     require("#style-dock{position:fixed;left:" in text, "appearance control must be anchored on the left, separate from Crisp", errors)
     require("client.crisp.chat/l.js" in text and "CRISP_WEBSITE_ID" in text, "Crisp support channel missing", errors)
+    require('/assets/crisp-proactive.js' in text, "Crisp Free proactive controller missing", errors)
 
     duplicates = sorted({item for item in parser.ids if parser.ids.count(item) > 1})
     require(not duplicates, f"duplicate ids: {duplicates}", errors)

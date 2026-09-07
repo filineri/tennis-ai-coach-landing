@@ -43,6 +43,8 @@ jobs:
         run: |
           python scripts/check_analytics.py
           node --check assets/analytics.js
+          node --check assets/crisp-proactive.js
+          node --test scripts/test_crisp_proactive.mjs
           python -m py_compile scripts/build_pages.py scripts/check_analytics.py scripts/check_wearable_landing.py
       - name: Build Cloudflare Pages bundle — analytics disabled by default
         run: python scripts/build_pages.py
