@@ -23,12 +23,12 @@ module.exports={
     }
   ],
   paths:{
-    bitmaps_reference:'visual-review/backstop_data/bitmaps_reference',
-    bitmaps_test:'visual-review/backstop_data/bitmaps_test',
-    engine_scripts:'visual-review/backstop_data/engine_scripts',
-    html_report:'visual-review/backstop_data/html_report',
-    json_report:'visual-review/backstop_data/json_report',
-    ci_report:'visual-review/backstop_data/ci_report'
+    bitmaps_reference:'backstop_data/bitmaps_reference',
+    bitmaps_test:'backstop_data/bitmaps_test',
+    engine_scripts:'backstop_data/engine_scripts',
+    html_report:'backstop_data/html_report',
+    json_report:'backstop_data/json_report',
+    ci_report:'backstop_data/ci_report'
   },
   report:['CI','json'],
   engine:'playwright',
