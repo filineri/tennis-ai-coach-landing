@@ -1,7 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" rx="116" fill="#0a1520"/>
-  <rect x="118.0" y="130" width="276" height="58" fill="#F5EDD8"/>
-  <rect x="227.0" y="130" width="58" height="236" fill="#F5EDD8"/>
-  <circle cx="331.0" cy="232" r="26" fill="#F0A500"/>
-  <rect x="118" y="404" width="276" height="8" rx="4" fill="#18a077" opacity="0.30"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 553 572" role="img" aria-label="TennisAgents">
+  <!-- Reduced production derivative of TennisAgents_AI_MASTER_DEFINITIVO for small UI sizes. -->
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#111A32"/><stop offset="1" stop-color="#071426"/></radialGradient>
+    <linearGradient id="seam" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F9D423"/><stop offset=".52" stop-color="#FFB21A"/><stop offset="1" stop-color="#FF7A18"/></linearGradient>
+    <linearGradient id="spark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E01E5A"/><stop offset=".55" stop-color="#EC3BB6"/><stop offset="1" stop-color="#A43DD4"/></linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="553" height="572" rx="112" fill="#071426"/>
+  <circle cx="269.45" cy="273.68" r="237.05" fill="url(#bg)" stroke="#36C5F0" stroke-opacity=".16" stroke-width="2"/>
+  <g fill="none" stroke-linecap="round" stroke-width="7" opacity=".95">
+    <path d="M58 171h56" stroke="#36C5F0"/><path d="M132 171h35" stroke="#E01E5A"/><path d="M42 201h82" stroke="#2EB67D"/><path d="M143 201h53" stroke="#ECB22E"/>
+    <path d="M31 232h61" stroke="#E01E5A"/><path d="M111 232h94" stroke="#36C5F0"/><path d="M31 263h91" stroke="#36C5F0"/><path d="M143 263h67" stroke="#FF8A24"/>
+    <path d="M31 294h69" stroke="#ECB22E"/><path d="M119 294h92" stroke="#2EB67D"/><path d="M38 325h89" stroke="#E01E5A"/><path d="M147 325h64" stroke="#36C5F0"/>
+    <path d="M54 356h70" stroke="#2EB67D"/><path d="M145 356h52" stroke="#ECB22E"/><path d="M73 387h74" stroke="#36C5F0"/>
+  </g>
+  <g fill="#36C5F0" opacity=".9"><circle cx="25" cy="263" r="4"/><circle cx="47" cy="387" r="4"/></g><g fill="#E01E5A" opacity=".9"><circle cx="120" cy="171" r="4"/><circle cx="30" cy="325" r="4"/></g>
+  <g fill="none" stroke="url(#seam)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"><path d="M214 75 C145 90 145 145 230 190 C295 225 302 265 333 282"/><path d="M255 485 C150 455 150 400 235 360 C300 330 304 300 333 282"/></g>
+  <path d="M333 194 C345 242 365 267 420 282 C365 297 345 322 333 372 C321 322 300 297 258 282 C300 267 321 242 333 194 Z" fill="url(#spark)" filter="url(#glow)"/><circle cx="333" cy="282" r="10" fill="#EC3BB6"/>
 </svg>

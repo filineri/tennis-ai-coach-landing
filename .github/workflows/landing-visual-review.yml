@@ -1,0 +1,88 @@
+name: Landing visual review
+
+on:
+  workflow_dispatch:
+    inputs:
+      current_url:
+        description: Current/reference Landing URL
+        required: true
+        default: https://tennisagents-landing.pages.dev
+        type: string
+      candidate_url:
+        description: Candidate Cloudflare Pages preview URL
+        required: true
+        type: string
+      change_id:
+        description: Founder Portal Landing change/request id
+        required: false
+        default: manual-review
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  visual-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      LANDING_CURRENT_URL: ${{ inputs.current_url }}
+      LANDING_CANDIDATE_URL: ${{ inputs.candidate_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install BackstopJS (MIT) + Playwright engine
+        working-directory: visual-review
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install --no-save backstopjs@6.3.25
+          npx playwright install --with-deps chromium
+
+      - name: Run current-vs-candidate visual comparison
+        id: visual
+        working-directory: visual-review
+        continue-on-error: true
+        run: npx backstop test --config=backstop.config.cjs
+
+      - name: Create review manifest
+        if: always()
+        env:
+          CHANGE_ID: ${{ inputs.change_id }}
+          VISUAL_OUTCOME: ${{ steps.visual.outcome }}
+        run: |
+          python - <<'PY'
+          import json, os, pathlib, datetime
+          out={
+            'contract':'TA_LANDING_VISUAL_REVIEW_V1',
+            'change_id':os.environ.get('CHANGE_ID','manual-review'),
+            'current_url':os.environ['LANDING_CURRENT_URL'],
+            'candidate_url':os.environ['LANDING_CANDIDATE_URL'],
+            'git_sha':os.environ.get('GITHUB_SHA'),
+            'workflow_run_id':os.environ.get('GITHUB_RUN_ID'),
+            'visual_step_outcome':os.environ.get('VISUAL_OUTCOME','unknown'),
+            'generated_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'viewports':['390x844','768x1024','1440x1100','1920x1080'],
+            'report':'visual-review/backstop_data/html_report/index.html',
+            'authority':'REVIEW_EVIDENCE_ONLY',
+            'production_authorized':False
+          }
+          pathlib.Path('visual-review/review-manifest.json').write_text(json.dumps(out,indent=2),encoding='utf-8')
+          PY
+
+      - name: Upload Founder review evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: landing-visual-review-${{ inputs.change_id }}
+          path: |
+            visual-review/review-manifest.json
+            visual-review/backstop_data/html_report/**
+            visual-review/backstop_data/json_report/**
+            visual-review/backstop_data/bitmaps_reference/**
+            visual-review/backstop_data/bitmaps_test/**
+          if-no-files-found: warn
+          retention-days: 14
