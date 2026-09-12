@@ -15,14 +15,17 @@ on:
       - 'icons/**'
       - 'demo/**'
       - 'fragments/**'
+      - 'visual-review/**'
       - 'docs/landing-v3-decision-coverage.md'
       - 'docs/landing-open-source-integration.md'
       - 'docs/wearable-beta-landing-copy.md'
       - 'scripts/check_landing.py'
       - 'scripts/check_analytics.py'
       - 'scripts/check_wearable_landing.py'
+      - 'scripts/check_visual_review.py'
       - 'scripts/build_pages.py'
       - '.github/workflows/landing-quality.yml'
+      - '.github/workflows/landing-visual-review.yml'
 
 permissions:
   contents: read
@@ -39,11 +42,14 @@ jobs:
         run: python scripts/check_landing.py
       - name: Validate wearable tactical cue BETA module
         run: python scripts/check_wearable_landing.py
+      - name: Validate visual review contract
+        run: python scripts/check_visual_review.py
       - name: Validate analytics/open-source adoption
         run: |
           python scripts/check_analytics.py
           node --check assets/analytics.js
-          python -m py_compile scripts/build_pages.py scripts/check_analytics.py scripts/check_wearable_landing.py
+          node --check visual-review/backstop.config.cjs
+          python -m py_compile scripts/build_pages.py scripts/check_analytics.py scripts/check_wearable_landing.py scripts/check_visual_review.py
       - name: Build Cloudflare Pages bundle — analytics disabled by default
         run: python scripts/build_pages.py
       - name: Verify deploy bundle
