@@ -108,3 +108,23 @@ test('tournament-window monitoring recomputes same-day conflict risk',()=>{
  assert.ok(replanned.proposal.metrics.dualPlayConflictProbability>=before);
  assert.equal(replanned.proposal.events.find(e=>e.id===first.id).endDate,'2026-10-18');
 });
+
+
+test('Italian DD/MM/YYYY timeframe is normalized and accepted',()=>{
+ const result=discovery.generate({...base,timeframe:{startDate:'12/09/2026',endDate:'03/11/2026'}});
+ assert.equal(result.timeframe.startDate,'2026-09-12');
+ assert.equal(result.timeframe.endDate,'2026-11-03');
+ assert.equal(result.plans.length,3);
+});
+
+test('invalid localized timeframe is rejected deterministically',()=>{
+ assert.throws(()=>discovery.generate({...base,timeframe:{startDate:'12/09/2026',endDate:'03/11/0002'}}),/Timeframe non valido/);
+ assert.throws(()=>discovery.generate({...base,timeframe:{startDate:'31/02/2026',endDate:'03/11/2026'}}),/Timeframe non valido/);
+});
+
+test('test preview uses compact hero and explicit localized date fields',()=>{
+ const html=require('node:fs').readFileSync(new URL('./tour-manager.html',import.meta.url),'utf8');
+ assert.doesNotMatch(html,/DIMMI QUANDO PUOI GIOCARE/);
+ assert.match(html,/Genera 3 Tour alternativi/);
+ assert.match(html,/placeholder="GG\/MM\/AAAA"/);
+});

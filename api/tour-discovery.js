@@ -18,7 +18,14 @@ ev('te-verona','Tennis Europe 14U Verona','TENNIS_EUROPE','TE_U14_CAT2','Verona'
 ev('te-trieste','Tennis Europe 16U Trieste','TENNIS_EUROPE','TE_U16_CAT2','Trieste','2026-10-25','2026-10-12',190,680,85,49,72,76,{hotel:official('Tournament hotel','hotel tennis Trieste',330),practice:official('Official practice','tennis club Trieste')})
 ];
 function profile(raw={}){return {ageYears:num(raw.ageYears,'ageYears',8),fitpClassification:clean(raw.fitpClassification,24),originCity:clean(raw.originCity,80)||'Bologna',pathway:clean(raw.pathway,24)||'FITP'};}
-function timeframe(raw={}){const startDate=clean(raw.startDate,10),endDate=clean(raw.endDate,10);if(!startDate||!endDate||day(endDate)<day(startDate))throw new Error('Timeframe non valido');return {startDate,endDate};}
+function normalizeDateInput(value){
+ const v=clean(value,10);let y,m,d;
+ let hit=v.match(/^(\d{4})-(\d{2})-(\d{2})$/);if(hit){[,y,m,d]=hit;}
+ else{hit=v.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);if(hit){[,d,m,y]=hit;}}
+ if(!hit)return null;const iso=`${y}-${m}-${d}`,dt=new Date(`${iso}T12:00:00Z`);
+ if(!Number.isFinite(dt.getTime())||dt.toISOString().slice(0,10)!==iso)return null;return iso;
+}
+function timeframe(raw={}){const startDate=normalizeDateInput(raw.startDate),endDate=normalizeDateInput(raw.endDate);if(!startDate||!endDate||day(endDate)<day(startDate))throw new Error('Timeframe non valido');return {startDate,endDate};}
 // scoring follows
 function score(e,s){const admission=(e.admissionProbability??100)/100,pts=e.expectedPoints*admission;if(s==='RANKING')return pts*0.6+e.sportValue*0.3-e.cost/60;if(s==='LOCAL_VOLUME')return e.pointsProbability*admission*0.5-e.travelMinutes/6-e.cost/70;return pts*0.35+e.pointsProbability*admission*0.35-e.cost/70-e.travelMinutes/10;}
 function pool(){
@@ -147,6 +154,7 @@ module.exports.generate=generate;
 module.exports.CATALOG=CATALOG;
 module.exports.PROVIDERS=PROVIDERS;
 module.exports.resourcePack=resourcePack;
+module.exports.normalizeDateInput=normalizeDateInput;
 module.exports.estimateAdmission=estimateAdmission;
 module.exports.decorateTournament=decorateTournament;
 module.exports.conflictRisk=conflictRisk;
