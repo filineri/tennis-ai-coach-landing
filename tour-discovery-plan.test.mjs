@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
-import { requestTourDiscovery,saveSelectedProposal,loadSelectedProposal } from './tour-discovery-preview.js';
+import { requestTourDiscovery,requestPersonalProposal,saveSelectedProposal,loadSelectedProposal } from './tour-discovery-preview.js';
 import { requestProposalPlan,requestTourReplan } from './tour-plan-preview.js';
 const require=createRequire(import.meta.url);
 const discovery=require('./api/tour-discovery.js');
@@ -126,10 +126,13 @@ test('invalid localized timeframe is rejected deterministically',()=>{
 test('test preview uses compact hero and explicit localized date fields',()=>{
  const html=require('node:fs').readFileSync(new URL('./tour-manager.html',import.meta.url),'utf8');
  assert.doesNotMatch(html,/DIMMI QUANDO PUOI GIOCARE/);
- assert.match(html,/Genera e confronta i tuoi Tour/);
+ assert.match(html,/Costruisci il tuo calendario agonistico/);
  assert.match(html,/placeholder="GG\/MM\/AAAA"/);
  assert.match(html,/vis-timeline@8\.5\.1/);
- assert.match(html,/Programmazione coordinata/);
+ assert.match(html,/PIANI A\/B\/C \+ D PERSONALE/);
+ assert.match(html,/detailPanel/);
+ assert.match(html,/groupTemplate:groupElement/);
+ assert.match(html,/bar-0/);
 });
 
 
@@ -168,4 +171,37 @@ test('Tour Plan keeps local commute semantics and localized date rendering hooks
  const html=require('node:fs').readFileSync(new URL('./tour-plan.html',import.meta.url),'utf8');
  assert.match(html,/fmtDate\(e\.date\)/);
  assert.match(html,/RIENTRO GIORNALIERO/);
+});
+
+
+test('personal plan is composed server-side from explicit tournament selection',()=>{
+ const input={...base,playerProfile:{...base.playerProfile,originCity:'Finale Emilia'},timeframe:{startDate:'15/09/2026',endDate:'15/03/2027'},travelPolicy:{mode:'LOCAL_UP_TO_KM',localMaxKm:80},budget:1800};
+ const generated=discovery.generate(input);
+ const ids=[generated.plans[0].events[0].id,generated.plans[1].events.at(-1).id].filter((v,i,a)=>a.indexOf(v)===i);
+ const personal=discovery.composePersonal({...input,selectedEventIds:ids});
+ assert.equal(personal.contract,'TOUR_PERSONAL_PREVIEW_V1');
+ assert.equal(personal.plan.strategy,'PERSONAL');
+ assert.equal(personal.plan.label,'Personale');
+ assert.deepEqual(personal.plan.events.map(e=>e.id).sort(),ids.sort());
+ assert.equal(personal.plan.events.every(e=>Array.isArray(e.resources)),true);
+});
+
+test('client personal composition uses governed discovery endpoint',async()=>{
+ let seen;
+ const fetchImpl=async(url,opts)=>{seen={url,opts};return {ok:true,json:async()=>({contract:'TOUR_PERSONAL_PREVIEW_V1',plan:{strategy:'PERSONAL'}})};};
+ const result=await requestPersonalProposal({selectedEventIds:['fitp-modena'],playerProfile:base.playerProfile,timeframe:base.timeframe,budget:1200},fetchImpl);
+ assert.equal(seen.url,'/api/tour-discovery');
+ const body=JSON.parse(seen.opts.body);
+ assert.equal(body.action,'COMPOSE_PERSONAL');
+ assert.deepEqual(body.selectedEventIds,['fitp-modena']);
+ assert.equal(result.plan.strategy,'PERSONAL');
+});
+
+test('single-page workspace keeps detail categories fixed and second page only as fallback',()=>{
+ const html=require('node:fs').readFileSync(new URL('./tour-manager.html',import.meta.url),'utf8');
+ for(const marker of ['A · Identità torneo','B · Accesso e rischio','C · Logistica','D · Servizi'])assert.match(html,new RegExp(marker.replace('·','\\·')));
+ assert.match(html,/D · Personale/);
+ assert.match(html,/Imposta come piano attivo/);
+ assert.match(html,/Vista operativa estesa \(fallback\)/);
+ assert.doesNotMatch(html,/location\.href=['"]\.\/tour-plan\.html/);
 });

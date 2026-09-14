@@ -8,6 +8,7 @@ async function post(body,fetchImpl=globalThis.fetch){
   return payload;
 }
 export function requestTourDiscovery(payload,fetchImpl=globalThis.fetch){return post(payload,fetchImpl);}
+export function requestPersonalProposal(payload,fetchImpl=globalThis.fetch){return post({action:'COMPOSE_PERSONAL',...payload},fetchImpl);}
 export function saveDiscovery(result,storage=globalThis.localStorage){storage?.setItem?.(DISCOVERY_KEY,JSON.stringify(result));return result;}
 export function saveSelectedProposal(proposal,context={},storage=globalThis.localStorage){const value={proposal,context};storage?.setItem?.(SELECTED_KEY,JSON.stringify(value));return value;}
 export function loadSelectedProposal(storage=globalThis.localStorage){try{return JSON.parse(storage?.getItem?.(SELECTED_KEY)||'null');}catch{return null;}}

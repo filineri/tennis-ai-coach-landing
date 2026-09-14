@@ -142,16 +142,27 @@ function survivalToDate(e,iso){if(day(iso)<day(e.date)||day(iso)>day(e.endDate))
 function conflictRisk(a,b){const start=day(a.date)>day(b.date)?a.date:b.date,end=day(a.endDate)<day(b.endDate)?a.endDate:b.endDate;if(day(start)>day(end))return null;let maxRisk=0,riskDate=start;for(let t=day(start);t<=day(end);t+=86400000){const iso=new Date(t).toISOString().slice(0,10);const risk=survivalToDate(a,iso)*survivalToDate(b,iso)*(a.admissionProbability/100)*(b.admissionProbability/100);if(risk>maxRisk){maxRisk=risk;riskDate=iso;}}return {eventA:a.id,eventB:b.id,eventAName:a.name,eventBName:b.name,date:riskDate,probability:round(maxRisk*100),cities:[a.city,b.city]};}
 function scheduleConflicts(events){const out=[];for(let i=0;i<events.length;i++)for(let j=i+1;j<events.length;j++){const r=conflictRisk(events[i],events[j]);if(r)out.push(r);}return out.sort((a,b)=>b.probability-a.probability);}
 
-function planLabel(strategy){return strategy==='RANKING'?'Opportunità ranking':strategy==='LOCAL_VOLUME'?'Volume locale':'Balanced';}
+function planLabel(strategy){return strategy==='RANKING'?'Opportunità ranking':strategy==='LOCAL_VOLUME'?'Volume locale':strategy==='PERSONAL'?'Personale':'Balanced';}
 function rationale(strategy){
  if(strategy==='RANKING')return 'Priorità a punti attesi e valore sportivo, accettando più rischio di draw.';
  if(strategy==='LOCAL_VOLUME')return 'Priorità a probabilità di fare punti, costi e viaggio contenuti.';
+ if(strategy==='PERSONAL')return 'Composto manualmente dai tornei selezionati dal giocatore.';
  return 'Compromesso fra punti attesi, probabilità, costo e carico di viaggio.';
 }
 function proposal(events,strategy,budget,index,p,policy){
  const knownCost=round(events.reduce((s,e)=>s+e.cost,0));
  const proposalId=`plan_${crypto.createHash('sha1').update(events.map(e=>e.id).join('|')+strategy).digest('hex').slice(0,10)}`;
  const conflicts=scheduleConflicts(events);return {proposalId,label:planLabel(strategy),strategy,rationale:rationale(strategy),events:events.map(e=>({...e,resources:resourcePack(e,p,policy)})),scheduleConflicts:conflicts,metrics:{knownCost,budget,remaining:round(budget-knownCost),expectedPoints:round(events.reduce((s,e)=>s+e.expectedPoints*(e.admissionProbability/100),0)),pointsProbability:avg(events.map(e=>e.pointsProbability)),admissionProbability:avg(events.map(e=>e.admissionProbability)),dualPlayConflictProbability:conflicts[0]?.probability||0,drawDifficulty:avg(events.map(e=>e.drawDifficulty)),travelMinutes:events.reduce((s,e)=>s+e.travelMinutes,0),sportValue:avg(events.map(e=>e.sportValue))},monitoring:{fieldSnapshot:'PREVIEW_STATIC',cadence:'DAILY_WHEN_LIVE',alertPolicy:'ALERT_IF_RECOMMENDATION_OR_ADMISSION_CONFLICT_CHANGES_BEFORE_DEADLINE',watches:['entrant-list','entry-cap','admission-criteria','entry-deadline','draw-progress','tournament-end-date','dual-registration-conflict','organizer-services','travel','hotel']},bookingAuthority:false,liveInventory:false,index};
+}
+function composePersonal(payload={}){
+ const p=profile(payload.playerProfile),w=timeframe(payload.timeframe),budget=num(payload.budget,'budget',100),policy=travelPolicy(payload.travelPolicy);
+ const ids=[...new Set((payload.selectedEventIds||[]).map(x=>clean(x,80)).filter(Boolean))];
+ if(!ids.length)throw new Error('Seleziona almeno un torneo per il piano personale');
+ const candidates=CATALOG.map(decorateTournament).filter(e=>between(e.date,w.startDate,w.endDate)&&eligible(e,p)).map(e=>{const distanceKm=estimateDistanceKm(p.originCity,e.city,e.travelMinutes);return {...e,distanceKm,commuteEligible:isLocalCommute(distanceKm,policy),distanceMode:'PREVIEW_ESTIMATE'};});
+ const selected=ids.map(id=>candidates.find(e=>e.id===id)).filter(Boolean).sort((a,b)=>day(a.date)-day(b.date));
+ if(selected.length!==ids.length)throw new Error('Uno o più tornei selezionati non sono più compatibili con profilo/timeframe');
+ const plan=proposal(selected,'PERSONAL',budget,3,p,policy);
+ return {contract:'TOUR_PERSONAL_PREVIEW_V1',status:'VERIFIED_PREVIEW',dataMode:'PREVIEW_CATALOG_NOT_LIVE',playerProfile:p,timeframe:w,travelPolicy:policy,objective:'PERSONAL',plan,bookingAuthority:false,liveInventory:false};
 }
 function generate(payload={}){
  const p=profile(payload.playerProfile),w=timeframe(payload.timeframe),budget=num(payload.budget,'budget',100),policy=travelPolicy(payload.travelPolicy);
@@ -169,11 +180,12 @@ function generate(payload={}){
 }
 function handler(req,res){
  if(req.method!=='POST')return res.status(405).json({error:'METHOD_NOT_ALLOWED'});
- try{return res.status(200).json(generate(req.body||{}));}
+ try{const body=req.body||{},result=body.action==='COMPOSE_PERSONAL'?composePersonal(body):generate(body);return res.status(200).json(result);}
  catch(error){return res.status(400).json({error:'INVALID_TOUR_DISCOVERY_REQUEST',message:String(error?.message||error)});}
 }
 module.exports=handler;
 module.exports.generate=generate;
+module.exports.composePersonal=composePersonal;
 module.exports.CATALOG=CATALOG;
 module.exports.PROVIDERS=PROVIDERS;
 module.exports.resourcePack=resourcePack;
