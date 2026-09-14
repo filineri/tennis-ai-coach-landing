@@ -6,36 +6,25 @@
 <title>TennisAgents Tour Manager — Preview</title>
 <meta name="description" content="Confronta tornei e trasferte sotto vincoli reali di budget, viaggio, distanza e recupero.">
 <style>
-:root{--bg:#0d111d;--panel:#161d2f;--panel2:#1a2238;--text:#eef2ff;--muted:#a7b0c5;--line:#303a55;--gold:#f5b737;--violet:#8b5cf6;--good:#50c878;--bad:#ff7b7b}
+:root{--bg:#0d111d;--panel:#161d2f;--panel2:#1a2238;--text:#eef2ff;--muted:#a7b0c5;--line:#303a55;--gold:#f5b737;--violet:#8b5cf6}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#17213a 0,var(--bg) 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5}
-a{color:inherit}.shell{max-width:1180px;margin:auto;padding:28px 18px 64px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.brand{font-weight:900;letter-spacing:.08em}.brand span{color:var(--gold)}.back{color:var(--muted);text-decoration:none}.hero{padding:64px 0 32px;max-width:850px}.eyebrow{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.12em}.hero h1{font-size:clamp(38px,7vw,76px);line-height:.98;margin:12px 0 18px}.hero h1 em{font-style:normal;color:var(--gold)}.hero p{font-size:19px;color:var(--muted);max-width:760px}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.badge{border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:12px}.badge.good{border-color:#356b4b;color:#bdf5cd}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:20px}.card h2,.card h3{margin-top:0}.constraints{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field{display:grid;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input{width:100%;background:#0e1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit}.field input:focus{outline:2px solid #5d4fb3;border-color:transparent}
-.option{display:grid;gap:12px}.option-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.option-head strong{font-size:18px}.option-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:22px 0}.primary{border:0;border-radius:12px;background:var(--gold);color:#18130a;font-weight:900;padding:14px 19px;cursor:pointer;font-size:15px}.primary:disabled{opacity:.45;cursor:not-allowed}.meter{color:var(--muted);font-size:13px}.notice{border-left:3px solid var(--violet);padding:11px 13px;background:rgba(139,92,246,.08);color:var(--muted);font-size:13px}.results{display:none;margin-top:20px}.result-list{display:grid;gap:10px}.result{border:1px solid var(--line);border-radius:14px;padding:15px}.result.recommended{border-color:#927326;background:rgba(245,183,55,.06)}.result.rejected{border-color:#643838}.score{font-size:28px;font-weight:900}.cost{font-size:18px;font-weight:800}.reason{color:var(--muted);font-size:13px}.footer-note{margin-top:36px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:18px}@media(max-width:800px){.grid{grid-template-columns:1fr}.constraints{grid-template-columns:1fr 1fr}.option-fields{grid-template-columns:1fr}.hero{padding-top:40px}}@media(max-width:480px){.constraints{grid-template-columns:1fr}}
+a{color:inherit}.shell{max-width:1180px;margin:auto;padding:28px 18px 64px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.brand{font-weight:900;letter-spacing:.08em}.brand span{color:var(--gold)}.back{color:var(--muted);text-decoration:none}.hero{padding:64px 0 32px;max-width:850px}.eyebrow{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.12em}.hero h1{font-size:clamp(38px,7vw,76px);line-height:.98;margin:12px 0 18px}.hero h1 em{font-style:normal;color:var(--gold)}.hero p{font-size:19px;color:var(--muted);max-width:760px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.badge{border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:12px}.badge.good{border-color:#356b4b;color:#bdf5cd}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:20px}.constraints{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field{display:grid;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input{width:100%;background:#0e1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit}.option{display:grid;gap:12px}.option-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:22px 0}.primary{border:0;border-radius:12px;background:var(--gold);color:#18130a;font-weight:900;padding:14px 19px;cursor:pointer;font-size:15px}.primary:disabled{opacity:.45;cursor:not-allowed}.meter{color:var(--muted);font-size:13px}.notice{border-left:3px solid var(--violet);padding:11px 13px;background:rgba(139,92,246,.08);color:var(--muted);font-size:13px}.results{display:none;margin-top:20px}.result-list{display:grid;gap:10px}.result{border:1px solid var(--line);border-radius:14px;padding:15px}.result.recommended{border-color:#927326;background:rgba(245,183,55,.06)}.result.rejected{border-color:#643838}.score{font-size:28px;font-weight:900}.cost{font-size:18px;font-weight:800}.reason{color:var(--muted);font-size:13px}.footer-note{margin-top:36px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:18px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.constraints{grid-template-columns:1fr 1fr}.option-fields{grid-template-columns:1fr}.hero{padding-top:40px}}@media(max-width:480px){.constraints{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="shell">
 <div class="top"><div class="brand">TENNIS<span>AGENTS</span></div><a class="back" href="./index.html">← Torna alla Landing</a></div>
-<section class="hero">
-<div class="eyebrow">PLAYER TOUR DESK · PREVIEW</div>
-<h1>SCEGLI IL TORNEO.<br><em>NON IL PROBLEMA.</em></h1>
-<p>Confronta alternative reali di torneo e trasferta tenendo insieme costo, tempo di viaggio, distanza dai campi, recupero e valore sportivo. Inserisci i dati che hai già: Tour Manager ti restituisce una scelta spiegabile.</p>
-<div class="badges"><span class="badge good">3 analisi gratuite</span><span class="badge">Nessuna carta</span><span class="badge">Nessuna prenotazione automatica</span><span class="badge">Poi: consumo effettivo</span></div>
-</section>
-<section class="card">
-<h2>I tuoi vincoli</h2>
-<div class="constraints">
+<section class="hero"><div class="eyebrow">PLAYER TOUR DESK · PREVIEW</div><h1>SCEGLI IL TORNEO.<br><em>NON IL PROBLEMA.</em></h1><p>Confronta alternative reali di torneo e trasferta tenendo insieme costo, tempo di viaggio, distanza dai campi, recupero e valore sportivo.</p><div class="badges"><span class="badge good">3 analisi gratuite</span><span class="badge">Nessuna carta</span><span class="badge">Nessuna prenotazione automatica</span><span class="badge">Poi: consumo effettivo</span></div></section>
+<section class="card"><h2>I tuoi vincoli</h2><div class="constraints">
 <div class="field"><label for="maxBudget">Budget massimo €</label><input id="maxBudget" type="number" min="1" value="2000"></div>
 <div class="field"><label for="maxTravel">Viaggio max / tratta (min)</label><input id="maxTravel" type="number" min="1" value="600"></div>
 <div class="field"><label for="maxDistance">Distanza max campi (km)</label><input id="maxDistance" type="number" min="0.1" step="0.1" value="15"></div>
 <div class="field"><label for="minRecovery">Recupero minimo (ore)</label><input id="minRecovery" type="number" min="0" value="16"></div>
-</div>
-</section>
-
-<div class="grid" style="margin-top:18px">
-<section class="card option" data-option="a">
-<div class="option-head"><strong>Alternativa A</strong><span class="badge">dati modificabili</span></div>
-<div class="option-fields">
+</div></section><div class="grid" style="margin-top:18px">
+<section class="card option" data-option="a"><h2>Alternativa A</h2><div class="option-fields">
 <div class="field"><label>Nome / torneo</label><input data-k="name" value="ITF Spagna"></div>
 <div class="field"><label>Valore sportivo (0–100)</label><input data-k="tournamentValue" type="number" min="0" max="100" value="94"></div>
 <div class="field"><label>Entry fee €</label><input data-k="entryFee" type="number" min="0" value="40"></div>
@@ -45,11 +34,8 @@ a{color:inherit}.shell{max-width:1180px;margin:auto;padding:28px 18px 64px}.top{
 <div class="field"><label>Distanza dai campi (km)</label><input data-k="venueDistanceKm" type="number" min="0" step="0.1" value="2.4"></div>
 <div class="field"><label>Practice / servizi €</label><input data-k="practiceCost" type="number" min="0" value="120"></div>
 <div class="field"><label>Recupero prima del torneo (ore)</label><input data-k="recoveryHours" type="number" min="0" value="28"></div>
-</div>
-</section>
-<section class="card option" data-option="b">
-<div class="option-head"><strong>Alternativa B</strong><span class="badge">dati modificabili</span></div>
-<div class="option-fields">
+</div></section>
+<section class="card option" data-option="b"><h2>Alternativa B</h2><div class="option-fields">
 <div class="field"><label>Nome / torneo</label><input data-k="name" value="ITF Croazia"></div>
 <div class="field"><label>Valore sportivo (0–100)</label><input data-k="tournamentValue" type="number" min="0" max="100" value="79"></div>
 <div class="field"><label>Entry fee €</label><input data-k="entryFee" type="number" min="0" value="35"></div>
@@ -59,20 +45,14 @@ a{color:inherit}.shell{max-width:1180px;margin:auto;padding:28px 18px 64px}.top{
 <div class="field"><label>Distanza dai campi (km)</label><input data-k="venueDistanceKm" type="number" min="0" step="0.1" value="1.1"></div>
 <div class="field"><label>Practice / servizi €</label><input data-k="practiceCost" type="number" min="0" value="80"></div>
 <div class="field"><label>Recupero prima del torneo (ore)</label><input data-k="recoveryHours" type="number" min="0" value="22"></div>
-</div>
-</section>
-</div>
-
-<div class="actions">
-<button class="primary" id="compareBtn" type="button">Confronta gratuitamente</button>
-<span class="meter" id="meter"></span>
-</div>
+</div></section>
+</div><div class="actions"><button class="primary" id="compareBtn" type="button">Confronta gratuitamente</button><span class="meter" id="meter"></span></div>
 <div class="notice"><strong>Preview trasparente.</strong> I valori precompilati sono esempi modificabili, non prezzi live verificati. In questa versione sei tu a inserire le alternative reali. Tour Manager non prenota e non impegna fornitori.</div>
 <section class="results card" id="results" aria-live="polite"><h2>La raccomandazione</h2><div id="resultList" class="result-list"></div></section>
-<p class="footer-note">La quota gratuita della Preview è memorizzata solo in questo browser e non è un sistema di pagamento sicuro. La versione commerciale userà login, entitlement e metering server-side; ogni ottimizzazione sarà una unità di consumo misurabile.</p>
+<p class="footer-note">La quota gratuita della Preview è memorizzata solo in questo browser. La versione commerciale userà login, entitlement e metering server-side; ogni ottimizzazione sarà una unità di consumo misurabile.</p>
 </div>
 <script type="module">
-import {compareCandidates,previewUsage,consumePreviewRun} from './tour-manager-preview.js';
+import {requestTourComparison,previewUsage,consumePreviewRun} from './tour-manager-preview.js';
 const $=(q,root=document)=>root.querySelector(q);
 const num=(id)=>Number($(id).value);
 const candidate=(node)=>Object.fromEntries([...node.querySelectorAll('[data-k]')].map(input=>[input.dataset.k,input.dataset.k==='name'?input.value:Number(input.value)]));
@@ -80,25 +60,19 @@ const constraints=()=>({maxBudget:num('#maxBudget'),maxTravelMinutes:num('#maxTr
 const euro=(v)=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(v);
 const meter=$('#meter'),button=$('#compareBtn'),results=$('#results'),list=$('#resultList');
 function updateMeter(){const u=previewUsage();meter.textContent=`${u.remaining} di ${u.limit} analisi gratuite rimaste`;button.disabled=u.remaining<=0;if(u.remaining<=0)button.textContent='Preview gratuita esaurita';}
-function card(plan,label,cls=''){
-  const reasons=plan.violations?.length?plan.violations.join(' · '):`Costo ${euro(plan.totalCost)} · viaggio ${plan.travelMinutes} min · recupero ${plan.recoveryHours} h`;
-  return `<article class="result ${cls}"><div class="eyebrow">${label}</div><h3>${plan.name}</h3><div class="score">${plan.score}/100</div><div class="cost">${euro(plan.totalCost)}</div><div class="reason">${reasons}</div></article>`;
-}
-button.addEventListener('click',()=>{
-  const quota=previewUsage();
-  if(quota.remaining<=0){updateMeter();return;}
-  const options=[...document.querySelectorAll('.option')].map(candidate);
-  const decision=compareCandidates(options,constraints());
-  const consumed=consumePreviewRun();
-  results.style.display='block';
-  if(decision.recommended){
-    list.innerHTML=card(decision.recommended,'CONSIGLIATA','recommended')+decision.feasible.slice(1).map(x=>card(x,'ALTERNATIVA')).join('')+decision.rejected.map(x=>card(x,'NON FATTIBILE','rejected')).join('');
-  }else{
-    list.innerHTML=`<article class="result rejected"><h3>Nessuna alternativa rispetta tutti i vincoli.</h3><p class="reason">Modifica budget, tempi o alternative: i vincoli duri non vengono ignorati dall'AI.</p></article>`+decision.rejected.map(x=>card(x,'NON FATTIBILE','rejected')).join('');
-  }
-  updateMeter();results.scrollIntoView({behavior:'smooth',block:'start'});
-});
-updateMeter();
+function card(plan,label,cls=''){const reasons=plan.violations?.length?plan.violations.join(' · '):`Costo ${euro(plan.totalCost)} · viaggio ${plan.travelMinutes} min · recupero ${plan.recoveryHours} h`;return `<article class="result ${cls}"><div class="eyebrow">${label}</div><h3>${plan.name}</h3><div class="score">${plan.score}/100</div><div class="cost">${euro(plan.totalCost)}</div><div class="reason">${reasons}</div></article>`;}
+button.addEventListener('click',async()=>{
+  const quota=previewUsage();if(quota.remaining<=0){updateMeter();return;}
+  button.disabled=true;button.textContent='Analisi in corso…';
+  try{
+    const decision=await requestTourComparison({candidates:[...document.querySelectorAll('.option')].map(candidate),constraints:constraints()});
+    consumePreviewRun();results.style.display='block';
+    if(decision.recommended){list.innerHTML=card(decision.recommended,'CONSIGLIATA','recommended')+decision.feasible.slice(1).map(x=>card(x,'ALTERNATIVA')).join('')+decision.rejected.map(x=>card(x,'NON FATTIBILE','rejected')).join('');}
+    else{list.innerHTML=`<article class="result rejected"><h3>Nessuna alternativa rispetta tutti i vincoli.</h3><p class="reason">Modifica budget, tempi o alternative: i vincoli duri non vengono ignorati.</p></article>`+decision.rejected.map(x=>card(x,'NON FATTIBILE','rejected')).join('');}
+    results.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(error){results.style.display='block';list.innerHTML=`<article class="result rejected"><h3>Analisi non disponibile</h3><p class="reason">${String(error.message||error)}</p></article>`;}
+  finally{button.textContent='Confronta gratuitamente';updateMeter();}
+});updateMeter();
 </script>
 </body>
 </html>
