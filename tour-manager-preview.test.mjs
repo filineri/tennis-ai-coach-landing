@@ -6,12 +6,12 @@ const require=createRequire(import.meta.url);
 const api=require('./api/tour-manager.js');
 
 const constraints={maxBudget:2000,maxTravelMinutes:600,maxVenueDistanceKm:15,minRecoveryHours:16};
-const spain={name:'Spagna',entryFee:40,travelCost:310,lodgingCost:820,practiceCost:120,travelMinutes:145,venueDistanceKm:2.4,recoveryHours:28,tournamentValue:94};
-const croatia={name:'Croazia',entryFee:35,travelCost:180,lodgingCost:590,practiceCost:80,travelMinutes:430,venueDistanceKm:1.1,recoveryHours:22,tournamentValue:79};
+const spain={name:'Spagna',circuit:'ITF_PRO',level:'M15',entryFee:40,travelCost:310,lodgingCost:820,practiceCost:120,travelMinutes:145,venueDistanceKm:2.4,recoveryHours:28,tournamentValue:94};
+const croatia={name:'Croazia',circuit:'ITF_PRO',level:'M15',entryFee:35,travelCost:180,lodgingCost:590,practiceCost:80,travelMinutes:430,venueDistanceKm:1.1,recoveryHours:22,tournamentValue:79};
 
 test('server compares two feasible options and recommends one',()=>{
   const result=api.compareCandidates([spain,croatia],constraints);
-  assert.equal(result.contract,'TOUR_MANAGER_PREVIEW_API_V1');
+  assert.equal(result.contract,'TOUR_MANAGER_PREVIEW_API_V2');
   assert.equal(result.status,'VERIFIED_PREVIEW');
   assert.equal(result.feasible.length,2);
   assert.equal(result.recommended.name,'Spagna');
@@ -55,10 +55,30 @@ test('HTTP handler returns the governed preview contract',()=>{
   const response={code:null,body:null,status(code){this.code=code;return this;},json(body){this.body=body;return body;}};
   api({method:'POST',body:{candidates:[spain,croatia],constraints}},response);
   assert.equal(response.code,200);
-  assert.equal(response.body.contract,'TOUR_MANAGER_PREVIEW_API_V1');
+  assert.equal(response.body.contract,'TOUR_MANAGER_PREVIEW_API_V2');
   assert.equal(response.body.usageUnits,1);
 });
 
 test('server fails closed on malformed numeric input',()=>{
   assert.throws(()=>api.compareCandidates([{...spain,travelCost:'oops'},croatia],constraints),/Valore non valido: travelCost/);
+});
+
+test('supports FITP from 4.NC-style national pathway',()=>{
+  const fitp={...spain,name:'FITP quarta categoria',circuit:'FITP',level:'FITP_CATEGORY'};
+  const result=api.compareCandidates([fitp,croatia],constraints,{ageYears:28,fitpClassification:'4.NC'});
+  assert.equal(result.supportedCircuits.includes('FITP'),true);
+  assert.equal(result.feasible.some(x=>x.circuit==='FITP'),true);
+});
+
+test('Tennis Europe age group is a hard eligibility gate',()=>{
+  const te={...croatia,name:'TE 14U',circuit:'TENNIS_EUROPE',level:'TE_U14_CAT2'};
+  const plan=api.evaluateCandidate(te,constraints,{ageYears:15});
+  assert.equal(plan.feasible,false);
+  assert.match(plan.violations.join(','),/Tennis Europe 14&U/);
+});
+
+test('ITF Juniors enforces the 2026 13-to-18 age window',()=>{
+  const junior={...croatia,name:'ITF Junior J60',circuit:'ITF_JUNIOR',level:'J60'};
+  assert.equal(api.evaluateCandidate(junior,constraints,{ageYears:12}).feasible,false);
+  assert.equal(api.evaluateCandidate(junior,constraints,{ageYears:13}).feasible,true);
 });
