@@ -8,6 +8,14 @@ const avg=(xs)=>round(xs.reduce((a,b)=>a+b,0)/Math.max(1,xs.length));
 const official=(label,query,estimatedCost=null)=>({kind:'ORGANIZER_OFFICIAL',label,query,estimatedCost,bookingAuthority:false});
 const ev=(id,name,circuit,level,city,date,deadline,travel,cost,sport,prob,points,difficulty,organizer={})=>({id,name,circuit,level,city,date,entryDeadline:deadline,travelMinutes:travel,cost,sportValue:sport,pointsProbability:prob,expectedPoints:points,drawDifficulty:difficulty,organizer});
 const PROVIDERS={hotel:['Booking.com','Skyscanner Hotels'],rail:['Trainline','Omio'],flight:['Skyscanner','Omio'],car:['DiscoverCars','Booking.com'],practice:['Playtomic','Google Maps'],stringer:['Google Maps','TA Local Partner'],physio:['Google Maps','TA Local Partner'],gym:['Google Maps','TA Local Partner'],coach:['Google Maps','TA Local Partner'],localTransport:['Google Maps']};
+const PREVIEW_DISTANCE_KM={
+ 'finale emilia':{modena:45,parma:92,milano:190,firenze:165,padova:135,verona:105,trieste:285,bolzano:220,bergamo:175,prato:155,trento:205,bologna:55,reggioemilia:65,ferrara:45,rimini:175,ravenna:125},
+ 'bologna':{modena:45,parma:100,milano:215,firenze:105,padova:120,verona:145,trieste:300,bolzano:280,bergamo:240,prato:90,trento:230,reggioemilia:75,ferrara:50,rimini:120,ravenna:80}
+};
+const cityKey=(v)=>clean(v,80).toLowerCase().replace(/[^a-zà-ÿ0-9]/g,'');
+function travelPolicy(raw={}){const mode=raw.mode==='ALWAYS_LOCAL'?'ALWAYS_LOCAL':'LOCAL_UP_TO_KM';const localMaxKm=mode==='ALWAYS_LOCAL'?null:num(raw.localMaxKm??80,'localMaxKm',0);return {mode,localMaxKm};}
+function estimateDistanceKm(originCity,destinationCity,fallbackMinutes=90){const origin=clean(originCity,80).toLowerCase(),dest=cityKey(destinationCity);const hit=PREVIEW_DISTANCE_KM[origin]?.[dest];return Number.isFinite(hit)?hit:Math.max(1,Math.round(Number(fallbackMinutes||90)*0.9));}
+function isLocalCommute(distanceKm,policy){return policy.mode==='ALWAYS_LOCAL'||distanceKm<=policy.localMaxKm;}
 const CATALOG=[
 ev('fitp-modena','Open Città di Modena','FITP','FITP_OPEN','Modena','2026-10-03','2026-09-30',45,95,64,82,48,42,{practice:official('Practice al circolo','tennis club Modena'),stringer:official('Stringer in sede','tennis stringer Modena')}),
 ev('fitp-parma','Open Emilia Cup','FITP','FITP_OPEN','Parma','2026-10-10','2026-10-07',75,230,72,74,58,55,{hotel:official('Hotel convenzionato torneo','hotel tennis Parma',150),practice:official('Practice court riservata','tennis club Parma'),stringer:official('Incordatura partner torneo','tennis stringer Parma'),physio:official('Fisioterapia partner torneo','sports physiotherapy Parma'),coach:official('Practice coach del club','tennis coach Parma'),localTransport:official('Shuttle hotel-circolo','tennis club Parma shuttle')}),
@@ -48,15 +56,16 @@ function external(type,label,providers,query){
  return {kind:'EXTERNAL_ALTERNATIVE',type,label,providers,query,affiliateReady:true,bookingAuthority:false};
 }
 function choices(found,type,label,providers,query){const alt=external(type,label,providers,query);return found?[{...found,type},alt]:[alt];}
-function resourcePack(e){const o=e.organizer||{},c=e.city;return [
- ...choices(o.hotel,'HOTEL','Hotel / alloggio',PROVIDERS.hotel,`hotel ${c}`),
- external('TRAVEL','Treno / volo / auto',[...PROVIDERS.rail,...PROVIDERS.flight,...PROVIDERS.car],`${c} travel`),
- ...choices(o.localTransport,'LOCAL_TRANSPORT','Trasporto locale',PROVIDERS.localTransport,`local transport ${c}`),
+function resourcePack(e,p={originCity:'Bologna'},policy={mode:'LOCAL_UP_TO_KM',localMaxKm:80}){const o=e.organizer||{},c=e.city,distanceKm=e.distanceKm??estimateDistanceKm(p.originCity,c,e.travelMinutes),local=isLocalCommute(distanceKm,policy);const sport=[
  ...choices(o.practice,'PRACTICE','Practice court / hitting',PROVIDERS.practice,`tennis practice ${c}`),
  ...choices(o.stringer,'STRINGER','Stringer / incordatura',PROVIDERS.stringer,`tennis stringer ${c}`),
  ...choices(o.physio,'PHYSIO','Fisioterapista / recovery',PROVIDERS.physio,`sports physiotherapy ${c}`),
  ...choices(o.gym,'GYM','Palestra / conditioning',PROVIDERS.gym,`gym ${c}`),
  ...choices(o.coach,'COACH','Practice coach',PROVIDERS.coach,`tennis coach ${c}`)
+];if(local)return [{kind:'LOCAL_SELF_TRANSFER',type:'DAILY_COMMUTE',label:'Rientro in giornata · auto / mezzi pubblici',providers:['Google Maps'],query:`${p.originCity} to ${c}`,distanceKm,distanceMode:'PREVIEW_ESTIMATE',affiliateReady:false,bookingAuthority:false},...sport];return [
+ ...choices(o.hotel,'HOTEL','Hotel / alloggio',PROVIDERS.hotel,`hotel ${c}`),
+ external('TRAVEL','Treno / volo / auto',[...PROVIDERS.rail,...PROVIDERS.flight,...PROVIDERS.car],`${p.originCity} ${c} travel`),
+ ...choices(o.localTransport,'LOCAL_TRANSPORT','Trasporto locale',PROVIDERS.localTransport,`local transport ${c}`),...sport
 ];}
 CATALOG.push(
  ev('itfj-bolzano','ITF J30 Bolzano','ITF_JUNIOR','J30','Bolzano','2026-11-02','2026-10-13',175,760,88,44,75,82,{hotel:official('Official hotel','hotel tennis Bolzano',360),practice:official('Official practice','tennis club Bolzano'),stringer:official('Official stringer','tennis stringer Bolzano')}),
@@ -93,7 +102,20 @@ CATALOG.push(
  ev('itfpro-trento','ITF M25/W35 Italia Preview','ITF_PRO','M25','Trento','2026-11-05','2026-10-22',165,1100,96,27,98,95,{practice:official('Official practice','tennis club Trento'),stringer:official('Tournament stringer','tennis stringer Trento')})
 );
 
+CATALOG.push(
+ ev('fitp-bologna-dec','Open Bologna Winter','FITP','FITP_OPEN','Bologna','2026-12-05','2026-12-02',55,120,70,76,56,52,{practice:official('Practice al circolo','tennis club Bologna'),stringer:official('Stringer del club','tennis stringer Bologna')}),
+ ev('fitp-reggio-jan','Open Reggio Emilia Indoor','FITP','FITP_OPEN','Reggio Emilia','2027-01-09','2027-01-06',80,180,74,69,62,59,{practice:official('Practice indoor','tennis club Reggio Emilia'),physio:official('Fisio partner','sports physiotherapy Reggio Emilia')}),
+ ev('fitp-ferrara-feb','Open Ferrara Indoor','FITP','FITP_OPEN','Ferrara','2027-02-06','2027-02-03',60,145,68,79,54,48,{practice:official('Practice al club','tennis club Ferrara')}),
+ ev('fitp-rimini-feb','Open Riviera Indoor','FITP','FITP_OPEN','Rimini','2027-02-20','2027-02-17',125,285,81,61,71,67,{hotel:official('Hotel convenzionato','hotel tennis Rimini',170),practice:official('Practice ufficiale','tennis club Rimini')}),
+ ev('fitp-ravenna-mar','Open Ravenna Spring','FITP','FITP_OPEN','Ravenna','2027-03-06','2027-03-03',95,220,77,68,65,61,{practice:official('Practice al circolo','tennis club Ravenna'),stringer:official('Stringer torneo','tennis stringer Ravenna')})
+);
+
 const ENTRY_META={
+ 'fitp-ravenna-mar':{endDate:'2027-03-14',maxParticipants:64,criterion:'RANKING',currentEntries:57,estimatedPosition:42},
+ 'fitp-rimini-feb':{endDate:'2027-02-28',maxParticipants:64,criterion:'RANKING',currentEntries:69,estimatedPosition:56},
+ 'fitp-ferrara-feb':{endDate:'2027-02-14',maxParticipants:64,criterion:'REGISTRATION_ORDER',currentEntries:41,estimatedPosition:28},
+ 'fitp-reggio-jan':{endDate:'2027-01-17',maxParticipants:64,criterion:'RANKING',currentEntries:54,estimatedPosition:39},
+ 'fitp-bologna-dec':{endDate:'2026-12-13',maxParticipants:64,criterion:'RANKING',currentEntries:49,estimatedPosition:32},
  'fitp-modena':{endDate:'2026-10-11',maxParticipants:64,criterion:'RANKING',currentEntries:58,estimatedPosition:44},
  'fitp-parma':{endDate:'2026-10-18',maxParticipants:64,criterion:'REGISTRATION_ORDER',currentEntries:61,estimatedPosition:38},
  'fitp-milano':{endDate:'2026-10-25',maxParticipants:96,criterion:'RANKING',currentEntries:103,estimatedPosition:82},
@@ -126,23 +148,24 @@ function rationale(strategy){
  if(strategy==='LOCAL_VOLUME')return 'Priorità a probabilità di fare punti, costi e viaggio contenuti.';
  return 'Compromesso fra punti attesi, probabilità, costo e carico di viaggio.';
 }
-function proposal(events,strategy,budget,index){
+function proposal(events,strategy,budget,index,p,policy){
  const knownCost=round(events.reduce((s,e)=>s+e.cost,0));
  const proposalId=`plan_${crypto.createHash('sha1').update(events.map(e=>e.id).join('|')+strategy).digest('hex').slice(0,10)}`;
- const conflicts=scheduleConflicts(events);return {proposalId,label:planLabel(strategy),strategy,rationale:rationale(strategy),events:events.map(e=>({...e,resources:resourcePack(e)})),scheduleConflicts:conflicts,metrics:{knownCost,budget,remaining:round(budget-knownCost),expectedPoints:round(events.reduce((s,e)=>s+e.expectedPoints*(e.admissionProbability/100),0)),pointsProbability:avg(events.map(e=>e.pointsProbability)),admissionProbability:avg(events.map(e=>e.admissionProbability)),dualPlayConflictProbability:conflicts[0]?.probability||0,drawDifficulty:avg(events.map(e=>e.drawDifficulty)),travelMinutes:events.reduce((s,e)=>s+e.travelMinutes,0),sportValue:avg(events.map(e=>e.sportValue))},monitoring:{fieldSnapshot:'PREVIEW_STATIC',cadence:'DAILY_WHEN_LIVE',alertPolicy:'ALERT_IF_RECOMMENDATION_OR_ADMISSION_CONFLICT_CHANGES_BEFORE_DEADLINE',watches:['entrant-list','entry-cap','admission-criteria','entry-deadline','draw-progress','tournament-end-date','dual-registration-conflict','organizer-services','travel','hotel']},bookingAuthority:false,liveInventory:false,index};
+ const conflicts=scheduleConflicts(events);return {proposalId,label:planLabel(strategy),strategy,rationale:rationale(strategy),events:events.map(e=>({...e,resources:resourcePack(e,p,policy)})),scheduleConflicts:conflicts,metrics:{knownCost,budget,remaining:round(budget-knownCost),expectedPoints:round(events.reduce((s,e)=>s+e.expectedPoints*(e.admissionProbability/100),0)),pointsProbability:avg(events.map(e=>e.pointsProbability)),admissionProbability:avg(events.map(e=>e.admissionProbability)),dualPlayConflictProbability:conflicts[0]?.probability||0,drawDifficulty:avg(events.map(e=>e.drawDifficulty)),travelMinutes:events.reduce((s,e)=>s+e.travelMinutes,0),sportValue:avg(events.map(e=>e.sportValue))},monitoring:{fieldSnapshot:'PREVIEW_STATIC',cadence:'DAILY_WHEN_LIVE',alertPolicy:'ALERT_IF_RECOMMENDATION_OR_ADMISSION_CONFLICT_CHANGES_BEFORE_DEADLINE',watches:['entrant-list','entry-cap','admission-criteria','entry-deadline','draw-progress','tournament-end-date','dual-registration-conflict','organizer-services','travel','hotel']},bookingAuthority:false,liveInventory:false,index};
 }
 function generate(payload={}){
- const p=profile(payload.playerProfile),w=timeframe(payload.timeframe),budget=num(payload.budget,'budget',100);
+ const p=profile(payload.playerProfile),w=timeframe(payload.timeframe),budget=num(payload.budget,'budget',100),policy=travelPolicy(payload.travelPolicy);
  if(!Number.isFinite(day(w.startDate))||!Number.isFinite(day(w.endDate)))throw new Error('Timeframe non valido');
- const candidates=CATALOG.map(decorateTournament).filter(e=>between(e.date,w.startDate,w.endDate)&&eligible(e,p));
+ const candidates=CATALOG.map(decorateTournament).filter(e=>between(e.date,w.startDate,w.endDate)&&eligible(e,p)).map(e=>{const distanceKm=estimateDistanceKm(p.originCity,e.city,e.travelMinutes);return {...e,distanceKm,commuteEligible:isLocalCommute(distanceKm,policy),distanceMode:'PREVIEW_ESTIMATE'};});
  if(candidates.length<2)throw new Error('Nel catalogo Preview non ci sono abbastanza tornei compatibili nel timeframe');
+ const horizonDays=Math.max(1,Math.round((day(w.endDate)-day(w.startDate))/86400000)),maxEvents=horizonDays>=120?6:horizonDays>=60?4:3;
  const strategies=['RANKING','BALANCED','LOCAL_VOLUME'];
- const plans=strategies.map((strategy,index)=>proposal(pickPlan(candidates,strategy,budget),strategy,budget,index));
+ const plans=strategies.map((strategy,index)=>proposal(pickPlan(candidates,strategy,budget,maxEvents),strategy,budget,index,p,policy));
  if(plans.some(x=>x.events.length<1))throw new Error('Budget insufficiente per costruire tre Tour nel catalogo Preview');
  const objective=clean(payload.objective,80)||'BALANCED';
  const wanted=objective==='RANKING'?'RANKING':objective==='LOCAL_VOLUME'?'LOCAL_VOLUME':'BALANCED';
  const recommendedProposalId=plans.find(x=>x.strategy===wanted)?.proposalId||plans[1].proposalId;
- return {contract:'TOUR_DISCOVERY_PREVIEW_V1',status:'VERIFIED_PREVIEW',dataMode:'PREVIEW_CATALOG_NOT_LIVE',playerProfile:p,timeframe:w,objective,plans,recommendedProposalId,manualModeUrl:'./tour-manager-manual.html',providerAdapters:PROVIDERS,usageUnits:1,bookingAuthority:false,liveInventory:false};
+ return {contract:'TOUR_DISCOVERY_PREVIEW_V1',status:'VERIFIED_PREVIEW',dataMode:'PREVIEW_CATALOG_NOT_LIVE',playerProfile:p,timeframe:w,travelPolicy:policy,objective,plans,recommendedProposalId,manualModeUrl:'./tour-manager-manual.html',providerAdapters:PROVIDERS,usageUnits:1,bookingAuthority:false,liveInventory:false};
 }
 function handler(req,res){
  if(req.method!=='POST')return res.status(405).json({error:'METHOD_NOT_ALLOWED'});
@@ -159,3 +182,6 @@ module.exports.estimateAdmission=estimateAdmission;
 module.exports.decorateTournament=decorateTournament;
 module.exports.conflictRisk=conflictRisk;
 module.exports.scheduleConflicts=scheduleConflicts;
+module.exports.travelPolicy=travelPolicy;
+module.exports.estimateDistanceKm=estimateDistanceKm;
+module.exports.isLocalCommute=isLocalCommute;

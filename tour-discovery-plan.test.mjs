@@ -53,7 +53,8 @@ test('entrant-field deterioration raises actionable reconsider-plan alert before
 test('hotel failure selectively replans only hotel resource for that tournament',()=>{
  const result=discovery.generate(base),proposal=result.plans[1];
  const plan=tourPlan.createProposalPlan({proposal,context:{playerProfile:result.playerProfile,timeframe:result.timeframe}});
- const eventId=proposal.events[0].id;
+ const eventId=proposal.events.find(e=>e.resources.some(r=>r.type==='HOTEL'))?.id;
+ assert.ok(eventId,'expected at least one non-local event with hotel resources');
  const replanned=tourPlan.replan(plan,{type:'HOTEL_UNAVAILABLE',eventId});
  assert.equal(replanned.lastReplan.selective,true);
  assert.ok(replanned.lastReplan.affectedResourceIds.length>=1);
@@ -125,6 +126,46 @@ test('invalid localized timeframe is rejected deterministically',()=>{
 test('test preview uses compact hero and explicit localized date fields',()=>{
  const html=require('node:fs').readFileSync(new URL('./tour-manager.html',import.meta.url),'utf8');
  assert.doesNotMatch(html,/DIMMI QUANDO PUOI GIOCARE/);
- assert.match(html,/Genera 3 Tour alternativi/);
+ assert.match(html,/Genera e confronta i tuoi Tour/);
  assert.match(html,/placeholder="GG\/MM\/AAAA"/);
+ assert.match(html,/vis-timeline@8\.5\.1/);
+ assert.match(html,/Programmazione coordinata/);
+});
+
+
+test('local commute policy suppresses hotel and long-haul travel for Finale Emilia to Modena',()=>{
+ const e=discovery.decorateTournament(discovery.CATALOG.find(x=>x.id==='fitp-modena'));
+ const distanceKm=discovery.estimateDistanceKm('Finale Emilia',e.city,e.travelMinutes);
+ const resources=discovery.resourcePack({...e,distanceKm},{originCity:'Finale Emilia'},{mode:'LOCAL_UP_TO_KM',localMaxKm:80});
+ assert.ok(distanceKm<=80);
+ assert.equal(resources.some(r=>r.type==='HOTEL'),false);
+ assert.equal(resources.some(r=>r.type==='TRAVEL'),false);
+ assert.equal(resources.some(r=>r.type==='DAILY_COMMUTE'&&r.kind==='LOCAL_SELF_TRANSFER'),true);
+});
+
+test('always-local mode suppresses lodging even beyond the km threshold',()=>{
+ const e=discovery.decorateTournament(discovery.CATALOG.find(x=>x.id==='fitp-milano'));
+ const distanceKm=discovery.estimateDistanceKm('Finale Emilia',e.city,e.travelMinutes);
+ const resources=discovery.resourcePack({...e,distanceKm},{originCity:'Finale Emilia'},{mode:'ALWAYS_LOCAL',localMaxKm:0});
+ assert.ok(distanceKm>80);
+ assert.equal(resources.some(r=>r.type==='HOTEL'||r.type==='TRAVEL'),false);
+ assert.equal(resources.some(r=>r.type==='DAILY_COMMUTE'),true);
+});
+
+test('six-month horizon can build a distributed FITP plan with 2027 events',()=>{
+ const result=discovery.generate({...base,playerProfile:{...base.playerProfile,originCity:'Finale Emilia'},timeframe:{startDate:'15/09/2026',endDate:'15/03/2027'},travelPolicy:{mode:'LOCAL_UP_TO_KM',localMaxKm:80},budget:1800});
+ assert.equal(result.plans.length,3);
+ assert.ok(result.plans.some(p=>p.events.length>=4));
+ assert.ok(result.plans.flatMap(p=>p.events).some(e=>e.date>='2027-01-01'));
+ assert.equal(result.travelPolicy.localMaxKm,80);
+});
+
+test('Tour Plan keeps local commute semantics and localized date rendering hooks',()=>{
+ const result=discovery.generate({...base,playerProfile:{...base.playerProfile,originCity:'Finale Emilia'},travelPolicy:{mode:'LOCAL_UP_TO_KM',localMaxKm:80}});
+ const proposal=result.plans.find(p=>p.events.some(e=>e.id==='fitp-modena'))||result.plans[0];
+ const plan=tourPlan.createProposalPlan({proposal,context:{playerProfile:result.playerProfile,timeframe:result.timeframe,travelPolicy:result.travelPolicy}});
+ if(proposal.events.some(e=>e.commuteEligible))assert.ok(plan.resources.some(r=>r.sourceKind==='LOCAL_SELF_TRANSFER'));
+ const html=require('node:fs').readFileSync(new URL('./tour-plan.html',import.meta.url),'utf8');
+ assert.match(html,/fmtDate\(e\.date\)/);
+ assert.match(html,/RIENTRO GIORNALIERO/);
 });
