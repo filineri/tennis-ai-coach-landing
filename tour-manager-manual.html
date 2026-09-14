@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TennisAgents Tour Manager — Preview</title>
+<meta name="description" content="Confronta tornei e trasferte sotto vincoli reali di budget, viaggio, distanza e recupero.">
+<style>
+:root{--bg:#0d111d;--panel:#161d2f;--panel2:#1a2238;--text:#eef2ff;--muted:#a7b0c5;--line:#303a55;--gold:#f5b737;--violet:#8b5cf6}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#17213a 0,var(--bg) 45%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.5}
+a{color:inherit}.shell{max-width:1180px;margin:auto;padding:28px 18px 64px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center}.brand{font-weight:900;letter-spacing:.08em}.brand span{color:var(--gold)}.back{color:var(--muted);text-decoration:none}.hero{padding:64px 0 32px;max-width:850px}.eyebrow{color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.12em}.hero h1{font-size:clamp(38px,7vw,76px);line-height:.98;margin:12px 0 18px}.hero h1 em{font-style:normal;color:var(--gold)}.hero p{font-size:19px;color:var(--muted);max-width:760px}
+.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}.badge{border:1px solid var(--line);border-radius:999px;padding:7px 11px;font-size:12px}.badge.good{border-color:#356b4b;color:#bdf5cd}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:18px;padding:20px}.constraints{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.profile{display:grid;grid-template-columns:1fr 1fr;gap:10px}.source-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.source-link{border:1px solid var(--line);border-radius:12px;padding:12px;text-decoration:none;color:var(--muted)}.source-link strong{color:var(--text);display:block}.field{display:grid;gap:6px}.field label{font-size:12px;color:var(--muted);font-weight:700}.field input,.field select{width:100%;background:#0e1424;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:11px 12px;font:inherit}.option{display:grid;gap:12px}.option-fields{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:22px 0}.primary{border:0;border-radius:12px;background:var(--gold);color:#18130a;font-weight:900;padding:14px 19px;cursor:pointer;font-size:15px}.primary:disabled{opacity:.45;cursor:not-allowed}.meter{color:var(--muted);font-size:13px}.notice{border-left:3px solid var(--violet);padding:11px 13px;background:rgba(139,92,246,.08);color:var(--muted);font-size:13px}.results{display:none;margin-top:20px}.result-list{display:grid;gap:10px}.result{border:1px solid var(--line);border-radius:14px;padding:15px}.result.recommended{border-color:#927326;background:rgba(245,183,55,.06)}.result.rejected{border-color:#643838}.score{font-size:28px;font-weight:900}.cost{font-size:18px;font-weight:800}.reason{color:var(--muted);font-size:13px}.footer-note{margin-top:36px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:18px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.constraints{grid-template-columns:1fr 1fr}.option-fields{grid-template-columns:1fr}.source-grid{grid-template-columns:1fr 1fr}.hero{padding-top:40px}}@media(max-width:480px){.constraints,.profile,.source-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<div class="top"><div class="brand">TENNIS<span>AGENTS</span></div><a class="back" href="./index.html">← Torna alla Landing</a></div>
+<section class="hero"><div class="eyebrow">PLAYER TOUR DESK · MULTI-CIRCUITO</div><h1>DAL 4.NC<br><em>FINO ALL'ITF.</em></h1><p>Tour Manager confronta tornei e trasferte lungo tutto il percorso agonistico: FITP in Italia, Tennis Europe Junior, ITF Juniors e ITF World Tennis Tour.</p><div class="badges"><span class="badge good">3 analisi gratuite</span><span class="badge">FITP</span><span class="badge">Tennis Europe 12U/14U/16U</span><span class="badge">ITF Juniors</span><span class="badge">ITF Pro</span></div></section>
+<section class="card"><h2>Profilo giocatore</h2><div class="profile"><div class="field"><label for="playerAge">Età</label><input id="playerAge" type="number" min="5" max="100" value="16"></div><div class="field"><label for="fitpClass">Classifica FITP (se presente)</label><input id="fitpClass" value="3.1" placeholder="es. 4.NC, 4.1, 3.3, 2.8"></div></div><p class="reason">L'età è un hard-gate per i circuiti junior. La classifica FITP è già nel contratto; l'accesso automatico al tabellone arriverà con i dati live.</p></section>
+<section class="card" style="margin-top:18px"><h2>I tuoi vincoli</h2><div class="constraints">
+<div class="field"><label for="maxBudget">Budget massimo €</label><input id="maxBudget" type="number" min="1" value="2000"></div>
+<div class="field"><label for="maxTravel">Viaggio max / tratta (min)</label><input id="maxTravel" type="number" min="1" value="600"></div>
+<div class="field"><label for="maxDistance">Distanza max campi (km)</label><input id="maxDistance" type="number" min="0.1" step="0.1" value="15"></div>
+<div class="field"><label for="minRecovery">Recupero minimo (ore)</label><input id="minRecovery" type="number" min="0" value="16"></div>
+</div></section><section class="card" style="margin-top:18px"><h2>Dove trovare i tornei</h2><div class="source-grid"><a class="source-link" target="_blank" rel="noopener" href="https://www.fitp.it/tornei/Ricerca-tornei"><strong>FITP · PUC</strong>Open, categoria, giovanili, veterani</a><a class="source-link" target="_blank" rel="noopener" href="https://www.tenniseurope.org/tournaments/"><strong>Tennis Europe</strong>12U, 14U, 16U</a><a class="source-link" target="_blank" rel="noopener" href="https://www.itftennis.com/en/tournament-calendar/world-tennis-tour-juniors-calendar/"><strong>ITF Juniors</strong>J30 → J500 / JGS</a><a class="source-link" target="_blank" rel="noopener" href="https://www.itftennis.com/en/tournament-calendar/womens-world-tennis-tour-calendar/"><strong>ITF Pro</strong>M15/M25 · W15/W35/W50/W75/W100</a></div></section><div class="grid" style="margin-top:18px">
+<section class="card option" data-option="a"><h2>Alternativa A</h2><div class="option-fields">
+<div class="field"><label>Nome / torneo</label><input data-k="name" value="FITP Open Italia"></div><div class="field"><label>Circuito</label><select data-k="circuit" class="circuit"><option value="FITP" selected>FITP Italia</option><option value="TENNIS_EUROPE">Tennis Europe Junior</option><option value="ITF_JUNIOR">ITF Juniors</option><option value="ITF_PRO">ITF Pro</option></select></div><div class="field"><label>Livello</label><select data-k="level" class="level"></select></div>
+<div class="field"><label>Valore sportivo (0–100)</label><input data-k="tournamentValue" type="number" min="0" max="100" value="94"></div>
+<div class="field"><label>Entry fee €</label><input data-k="entryFee" type="number" min="0" value="40"></div>
+<div class="field"><label>Trasporto €</label><input data-k="travelCost" type="number" min="0" value="310"></div>
+<div class="field"><label>Viaggio (min)</label><input data-k="travelMinutes" type="number" min="0" value="145"></div>
+<div class="field"><label>Alloggio €</label><input data-k="lodgingCost" type="number" min="0" value="820"></div>
+<div class="field"><label>Distanza dai campi (km)</label><input data-k="venueDistanceKm" type="number" min="0" step="0.1" value="2.4"></div>
+<div class="field"><label>Practice / servizi €</label><input data-k="practiceCost" type="number" min="0" value="120"></div>
+<div class="field"><label>Recupero prima del torneo (ore)</label><input data-k="recoveryHours" type="number" min="0" value="28"></div>
+</div></section>
+<section class="card option" data-option="b"><h2>Alternativa B</h2><div class="option-fields">
+<div class="field"><label>Nome / torneo</label><input data-k="name" value="Tennis Europe 16U Italia"></div><div class="field"><label>Circuito</label><select data-k="circuit" class="circuit"><option value="FITP">FITP Italia</option><option value="TENNIS_EUROPE" selected>Tennis Europe Junior</option><option value="ITF_JUNIOR">ITF Juniors</option><option value="ITF_PRO">ITF Pro</option></select></div><div class="field"><label>Livello</label><select data-k="level" class="level"></select></div>
+<div class="field"><label>Valore sportivo (0–100)</label><input data-k="tournamentValue" type="number" min="0" max="100" value="79"></div>
+<div class="field"><label>Entry fee €</label><input data-k="entryFee" type="number" min="0" value="35"></div>
+<div class="field"><label>Trasporto €</label><input data-k="travelCost" type="number" min="0" value="180"></div>
+<div class="field"><label>Viaggio (min)</label><input data-k="travelMinutes" type="number" min="0" value="430"></div>
+<div class="field"><label>Alloggio €</label><input data-k="lodgingCost" type="number" min="0" value="590"></div>
+<div class="field"><label>Distanza dai campi (km)</label><input data-k="venueDistanceKm" type="number" min="0" step="0.1" value="1.1"></div>
+<div class="field"><label>Practice / servizi €</label><input data-k="practiceCost" type="number" min="0" value="80"></div>
+<div class="field"><label>Recupero prima del torneo (ore)</label><input data-k="recoveryHours" type="number" min="0" value="22"></div>
+</div></section>
+</div><div class="actions"><button class="primary" id="compareBtn" type="button">Confronta gratuitamente</button><span class="meter" id="meter"></span></div>
+<div class="notice"><strong>Preview trasparente.</strong> I valori precompilati sono esempi modificabili, non prezzi live verificati. In questa versione sei tu a inserire le alternative reali. Tour Manager non prenota e non impegna fornitori.</div>
+<section class="results card" id="results" aria-live="polite"><h2>La raccomandazione</h2><div id="resultList" class="result-list"></div></section>
+<p class="footer-note">La quota gratuita della Preview è memorizzata solo in questo browser. La versione commerciale userà login, entitlement e metering server-side; ogni ottimizzazione sarà una unità di consumo misurabile.</p>
+</div>
+<script type="module">
+import {requestTourComparison,previewUsage,consumePreviewRun} from './tour-manager-preview.js';
+const $=(q,root=document)=>root.querySelector(q);
+const num=(id)=>Number($(id).value);
+const textKeys=new Set(['name','circuit','level']);
+const levelOptions={FITP:[['FITP_OPEN','Open'],['FITP_CATEGORY','Categoria'],['FITP_JUNIOR','Giovanile'],['FITP_TPRA','TPRA'],['FITP_TEAM','Squadre']],TENNIS_EUROPE:[['TE_U12_CAT1','12U Cat.1'],['TE_U12_CAT2','12U Cat.2'],['TE_U14_CAT3','14U Cat.3'],['TE_U14_CAT2','14U Cat.2'],['TE_U14_CAT1','14U Cat.1'],['TE_U14_SUPER','14U Super'],['TE_U16_CAT3','16U Cat.3'],['TE_U16_CAT2','16U Cat.2'],['TE_U16_CAT1','16U Cat.1'],['TE_U16_SUPER','16U Super']],ITF_JUNIOR:[['J30','J30'],['J60','J60'],['J100','J100'],['J200','J200'],['J300','J300'],['J500','J500'],['JGS','Junior Grand Slam']],ITF_PRO:[['M15','M15'],['M25','M25'],['W15','W15'],['W35','W35'],['W50','W50'],['W75','W75'],['W100','W100']]};
+function syncLevel(option,preferred){const circuit=option.querySelector('.circuit').value,level=option.querySelector('.level');level.innerHTML=levelOptions[circuit].map(([v,l])=>`<option value="${v}">${l}</option>`).join('');if(preferred&&[...level.options].some(x=>x.value===preferred))level.value=preferred;}
+document.querySelectorAll('.option').forEach((option,index)=>{syncLevel(option,index===1?'TE_U16_CAT1':'FITP_OPEN');option.querySelector('.circuit').addEventListener('change',()=>syncLevel(option));});
+const candidate=(node)=>Object.fromEntries([...node.querySelectorAll('[data-k]')].map(input=>[input.dataset.k,textKeys.has(input.dataset.k)?input.value:Number(input.value)]));
+const playerProfile=()=>({ageYears:num('#playerAge'),fitpClassification:$('#fitpClass').value.trim()});
+const constraints=()=>({maxBudget:num('#maxBudget'),maxTravelMinutes:num('#maxTravel'),maxVenueDistanceKm:num('#maxDistance'),minRecoveryHours:num('#minRecovery')});
+const euro=(v)=>new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR'}).format(v);const esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const meter=$('#meter'),button=$('#compareBtn'),results=$('#results'),list=$('#resultList');
+function updateMeter(){const u=previewUsage();meter.textContent=`${u.remaining} di ${u.limit} analisi gratuite rimaste`;button.disabled=u.remaining<=0;if(u.remaining<=0)button.textContent='Preview gratuita esaurita';}
+function card(plan,label,cls=''){const reasons=plan.violations?.length?plan.violations.map(esc).join(' · '):`Costo ${euro(plan.totalCost)} · viaggio ${plan.travelMinutes} min · recupero ${plan.recoveryHours} h`;return `<article class="result ${cls}"><div class="eyebrow">${esc(label)}</div><div class="reason">${esc(plan.circuit)} · ${esc(plan.level)}</div><h3>${esc(plan.name)}</h3><div class="score">${plan.score}/100</div><div class="cost">${euro(plan.totalCost)}</div><div class="reason">${reasons}</div></article>`;}
+button.addEventListener('click',async()=>{
+  const quota=previewUsage();if(quota.remaining<=0){updateMeter();return;}
+  button.disabled=true;button.textContent='Analisi in corso…';
+  try{
+    const decision=await requestTourComparison({candidates:[...document.querySelectorAll('.option')].map(candidate),constraints:constraints(),playerProfile:playerProfile()});
+    consumePreviewRun();results.style.display='block';
+    if(decision.recommended){list.innerHTML=card(decision.recommended,'CONSIGLIATA','recommended')+decision.feasible.slice(1).map(x=>card(x,'ALTERNATIVA')).join('')+decision.rejected.map(x=>card(x,'NON FATTIBILE','rejected')).join('');}
+    else{list.innerHTML=`<article class="result rejected"><h3>Nessuna alternativa rispetta tutti i vincoli.</h3><p class="reason">Modifica budget, tempi o alternative: i vincoli duri non vengono ignorati.</p></article>`+decision.rejected.map(x=>card(x,'NON FATTIBILE','rejected')).join('');}
+    results.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(error){results.style.display='block';list.innerHTML=`<article class="result rejected"><h3>Analisi non disponibile</h3><p class="reason">${esc(error.message||error)}</p></article>`;}
+  finally{button.textContent='Confronta gratuitamente';updateMeter();}
+});updateMeter();
+</script>
+</body>
+</html>
