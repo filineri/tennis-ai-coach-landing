@@ -65,14 +65,15 @@ Implementation evidence:
 - historical Landing brief explicitly said the image **DEVE restare visibile** / **NON rimuoverla**.
 - V3 may reposition or improve the composition, but may not silently remove the visual without an explicit replacement decision.
 
-### R-FLOW-ANIMATION — preserve the animated information-flow explanation
-The animated workflow with moving dots is a durable explanation of how information travels through TennisAgents. V3 may adapt node names to the current Agent architecture, but must retain:
-- a readable static flow;
-- visible animated dots on modern browsers;
-- a reduced-motion/static fallback;
-- Player/input → analysis/evidence → tactical decision → Player loop.
+### R-LIVE-SYSTEM-GRAPH — living TennisAgents intelligence graph
+The Founder explicitly superseded the older linear moving-dot SVG on 2026-09-16. The Landing must now explain TennisAgents as a living graph of people, data, capabilities, specialist Agents and decision engines. It must retain:
+- a readable static network and animated/live visual treatment;
+- explicit EXPLORER vs STRATEGIST distinction (Explorer discovers / Strategist decides);
+- Player/Coach/Parent and lifecycle feedback loops rather than a one-way pipeline;
+- Tour Manager and Player & Club Intelligence as governed capabilities, not invented generic Agents;
+- reduced-motion/static fallback and mobile readability.
 
-Historical evidence: pre-V3 `main` commit `39ee66c92a5fd5b040ed561d801f4146ab8579a3` contained the scalable SVG animation and language-aware labels.
+Historical evidence from the older flow remains useful as lineage, but the living graph is the current replacement decision.
 
 ### R-I18N-IT-EN — visible Italian / English selector
 The Landing must provide a visible IT/EN selector and visitor-facing copy must be available in both languages.

@@ -1,0 +1,26 @@
+---
+description: Preserve TennisAgents product truth while visually refining the Landing with Cursor Design Mode and Browser.
+globs: index.html, assets/**, demo/**, scripts/check_*.py
+alwaysApply: false
+---
+
+# Landing visual refinement guardrails
+
+- Treat the Landing as a **tennis intelligence system**, not a generic AI chatbot.
+- Preserve the five canonical ideas: tennis lifecycle, multiple engines, multiple depths of use, evidence, real-match proof.
+- Keep STRATEGIST and EXPLORER visibly distinct: `what we know -> plan` vs `what we do not know -> test -> learn`.
+- Preserve Tour Manager and Player & Club Intelligence as separate capabilities; do not rename them into generic Agents.
+- Preserve Quick / Detailed / Tracked as three distinct interaction depths.
+- Tracked must retain a visible gesture/hand affordance slot.
+- Preserve the living system graph and its data-driven model; do not revert to the old fixed linear SVG flow.
+- Preserve app lifecycle media slots: pre-match, live, tracked-live, post-match.
+- Preserve Real Match Proof as `what happened -> Explorer -> Strategist -> player adherence`.
+- Never expose OpenHands, model/provider names, secrets, internal prompts, protected evaluation logic or hidden reasoning in customer copy.
+- Keep IT/EN, mobile-first reading order, keyboard accessibility, reduced motion and safe DOM rendering.
+- CRISP remains support transport; native TennisAgents AI remains the product conversation surface.
+- Do not mutate Production, main, shared TEST or release gates from Design Mode.
+- After visual edits run Landing quality, system-story, persistent-AI and visual-review checks.
+
+@docs/landing-v3-decision-coverage.md
+@scripts/check_system_story.py
+@scripts/check_persistent_ai.py
