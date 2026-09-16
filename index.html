@@ -99,9 +99,19 @@
     .ai-shell{display:grid;grid-template-columns:.82fr 1.18fr;gap:18px;align-items:stretch}
     .ai-intro,.ai-chat{border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,var(--panel2),var(--panel));padding:24px;box-shadow:var(--shadow)}
     .ai-intro p,.ai-note{color:var(--muted)}.ai-prompts{display:grid;gap:9px;margin-top:20px}.ai-prompt{border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--ink);border-radius:14px;padding:11px 13px;text-align:left;cursor:pointer}.ai-prompt:hover{border-color:var(--accent)}
+    .ai-capabilities{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.ai-capability{border:1px solid var(--line);border-radius:18px;padding:17px;background:rgba(255,255,255,.025)}.ai-capability h3{margin:4px 0 7px;font-size:20px}.ai-capability p{margin:0;color:var(--muted);font-size:13px}.ai-capability .example-line{margin-top:10px;color:#d7e1ea;font-size:12px}
     .ai-chat{display:grid;grid-template-rows:auto minmax(220px,1fr) auto auto;gap:12px}.ai-chat-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.ai-chat-tools{display:flex;align-items:center;gap:8px}.ai-state{font-size:12px;color:var(--muted)}.ai-reset{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;text-decoration:underline}
     .ai-transcript{min-height:220px;max-height:390px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:4px}.ai-message{max-width:88%;padding:11px 13px;border-radius:15px;white-space:pre-wrap}.ai-message.user{align-self:flex-end;background:color-mix(in srgb,var(--accent) 18%,var(--panel))}.ai-message.assistant{align-self:flex-start;background:rgba(255,255,255,.045);border:1px solid var(--line)}
     .ai-form{display:grid;grid-template-columns:1fr auto;gap:9px}.ai-form input{width:100%;border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:13px;padding:12px 13px}.ai-form input:focus{outline:2px solid color-mix(in srgb,var(--accent) 42%,transparent);outline-offset:1px}.ai-meta{min-height:18px;color:var(--muted);font-size:12px}
+
+    .system-pillars{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:22px 0}.system-pillar{border:1px solid var(--line);border-radius:16px;padding:14px;background:rgba(255,255,255,.025);font-size:13px;font-weight:800}
+    .engine-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.engine-card{border:1px solid var(--line);border-radius:22px;padding:22px;background:linear-gradient(145deg,var(--panel2),var(--panel))}.engine-card.explorer{border-color:color-mix(in srgb,#8b5cf6 55%,var(--line))}.engine-card.strategist{border-color:color-mix(in srgb,var(--accent) 55%,var(--line))}.engine-card ul{color:var(--muted);padding-left:20px}.engine-tag{font-size:12px;font-weight:900;letter-spacing:.7px;text-transform:uppercase}.engine-card.explorer .engine-tag{color:#b79cff}.engine-card.strategist .engine-tag{color:var(--accent)}
+    .graph-scroll{overflow-x:auto;padding-bottom:8px}.knowledge-graph{position:relative;min-width:760px;min-height:620px;border:1px solid var(--line);border-radius:26px;background:radial-gradient(circle at 55% 40%,rgba(118,169,255,.08),transparent 38%),linear-gradient(145deg,var(--panel2),var(--panel));overflow:hidden}.knowledge-graph-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.knowledge-edge{fill:none;stroke:#60718a;stroke-width:1.5;stroke-dasharray:5 8;opacity:.55;animation:graph-dash 12s linear infinite}.knowledge-node{position:absolute;transform:translate(-50%,-50%);max-width:170px;border:1px solid var(--line);border-radius:999px;padding:9px 12px;background:#0d1727;color:var(--ink);font-weight:800;font-size:12px;cursor:default;transition:.2s}.knowledge-node.engine{border-color:var(--accent);box-shadow:0 0 24px rgba(243,181,27,.12)}.knowledge-node.intel{border-color:#8b5cf6}.knowledge-node.human{border-color:#76a9ff}.knowledge-node.data{border-style:dashed}.knowledge-node.dim{opacity:.25}.graph-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:12px}
+
+    .mode-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.mode-card{border:1px solid var(--line);border-radius:22px;padding:18px;background:var(--panel)}.mode-card h3{margin:8px 0}.mode-card p{color:var(--muted)}.app-shot{position:relative;min-height:250px;border:1px dashed #43516d;border-radius:18px;background:linear-gradient(160deg,#0b1524,#111f34);display:grid;place-items:center;overflow:hidden}.app-shot:before{content:'';position:absolute;inset:18px;border:1px solid rgba(255,255,255,.08);border-radius:14px}.asset-slot-label{color:#8594aa;font-size:12px;text-transform:uppercase;letter-spacing:.7px}.gesture-finger{position:absolute;width:34px;height:34px;border-radius:50%;background:rgba(243,181,27,.78);box-shadow:0 0 0 8px rgba(243,181,27,.12);left:30%;top:60%;animation:track-gesture 3.4s ease-in-out infinite}
+    .app-moments{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.app-moment{border:1px solid var(--line);border-radius:18px;padding:13px;background:rgba(255,255,255,.02)}.app-moment .app-shot{min-height:190px}.app-moment strong{display:block;margin-top:10px}.app-moment span{color:var(--muted);font-size:12px}
+    .match-proof-head{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:start}.match-proof-status{border:1px solid var(--line);border-radius:18px;padding:16px;background:var(--panel)}.match-proof-timeline{display:grid;gap:10px;margin-top:18px}.match-proof-row{display:grid;grid-template-columns:.7fr .8fr 1.3fr 1.3fr .7fr;gap:8px;border:1px solid var(--line);border-radius:16px;padding:12px;background:rgba(255,255,255,.02)}.match-proof-cell{display:grid;gap:3px}.match-proof-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}.match-proof-cell strong{font-size:12px}.proof-disclaimer{margin-top:12px;color:var(--muted);font-size:12px}
+    @keyframes graph-dash{to{stroke-dashoffset:-120}}@keyframes track-gesture{0%,100%{transform:translate(0,0)}35%{transform:translate(105px,-65px)}70%{transform:translate(155px,55px)}}
     .appearance-card{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;border:1px solid var(--line);border-radius:22px;padding:22px;background:var(--panel)}
     .appearance-card p{color:var(--muted);margin:5px 0 0}
     details{border-bottom:1px solid var(--line);padding:16px 0}summary{cursor:pointer;font-weight:780}details p{color:var(--muted);max-width:850px}
@@ -110,9 +120,12 @@
     #style-dock{position:fixed;left:16px;bottom:16px;z-index:1000}.style-toggle{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:999px;padding:10px 13px;box-shadow:0 12px 40px rgba(0,0,0,.32);cursor:pointer}
     .style-menu{display:none;position:absolute;left:0;bottom:48px;width:205px;padding:10px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}#style-dock.open .style-menu{display:grid;gap:7px}
     .style-menu button{background:transparent;border:1px solid var(--line);color:var(--ink);padding:9px 10px;border-radius:10px;text-align:left;cursor:pointer}.style-menu button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
+
+    @media(max-width:1000px){.system-pillars{grid-template-columns:repeat(3,1fr)}.mode-grid{grid-template-columns:1fr 1fr}.app-moments{grid-template-columns:1fr 1fr}.match-proof-head{grid-template-columns:1fr}.match-proof-row{grid-template-columns:1fr 1fr}}
+    @media(max-width:720px){.system-pillars,.engine-grid,.mode-grid,.app-moments,.match-proof-row{grid-template-columns:1fr}.knowledge-graph{min-width:720px}}
     @media(max-width:1000px){.hero-grid{grid-template-columns:1fr;grid-template-areas:"intro" "visual" "copy";row-gap:18px}.feed{grid-template-columns:1fr}.grid3,.payer-grid,.premium-grid{grid-template-columns:1fr 1fr}.usage-step{grid-template-columns:48px 120px 1fr}.usage-step .move,.usage-step .agent-result{grid-column:3}.usage-step .move{display:none}.handoff-strip{grid-template-columns:repeat(5,minmax(135px,1fr));overflow-x:auto;padding-bottom:8px}}
-    @media(max-width:720px){.ai-shell{grid-template-columns:1fr}.ai-form{grid-template-columns:1fr}.ai-form .btn{width:100%}.wrap{width:min(100% - 28px,var(--max))}.navlinks>a:not(.btn){display:none}.navlinks .btn{display:none}.nav-right{gap:8px}.hero{padding-top:48px}.team-grid,.grid3,.payer-grid,.premium-grid,.labs,.partner-agents{grid-template-columns:1fr}.team-divider{grid-column:auto}.usage-step{grid-template-columns:42px 1fr}.usage-step .human-input,.usage-step .agent-result{grid-column:2}.ctas .btn{width:100%}section{padding:56px 0}.appearance-card{grid-template-columns:1fr}.brand-word{font-size:22px}#style-dock{left:12px;bottom:12px}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.flow-dot{opacity:.9}}
+    @media(max-width:720px){.ai-shell,.ai-capabilities{grid-template-columns:1fr}.ai-form{grid-template-columns:1fr}.ai-form .btn{width:100%}.wrap{width:min(100% - 28px,var(--max))}.navlinks>a:not(.btn){display:none}.navlinks .btn{display:none}.nav-right{gap:8px}.hero{padding-top:48px}.team-grid,.grid3,.payer-grid,.premium-grid,.labs,.partner-agents{grid-template-columns:1fr}.team-divider{grid-column:auto}.usage-step{grid-template-columns:42px 1fr}.usage-step .human-input,.usage-step .agent-result{grid-column:2}.ctas .btn{width:100%}section{padding:56px 0}.appearance-card{grid-template-columns:1fr}.brand-word{font-size:22px}#style-dock{left:12px;bottom:12px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.knowledge-edge,.gesture-finger{animation:none}.knowledge-edge{stroke-dasharray:none}.flow-dot{opacity:.9}}
   </style>
 </head>
 <body data-requirement="R-CUSTOMER-COPY R-COPY-NO-REDUNDANCY">
@@ -197,11 +210,13 @@
     <div class="ai-shell">
       <div class="ai-intro">
         <h3 data-it="Inizia anche prima di aprire l'app" data-en="Start even before opening the app">Inizia anche prima di aprire l'app</h3>
-        <p data-it="La stessa conversazione può continuare mentre TennisAgents recupera contesto approvato e coinvolge Scout, Strategist o gli altri specialisti quando servono." data-en="The same conversation can continue while TennisAgents retrieves approved context and involves Scout, Strategist or other specialists when needed.">La stessa conversazione può continuare mentre TennisAgents recupera contesto approvato e coinvolge Scout, Strategist o gli altri specialisti quando servono.</p>
+        <p data-it="La stessa conversazione può continuare mentre TennisAgents recupera contesto approvato e coinvolge Scout, Strategist, Tour Manager, Player & Club Intelligence o gli altri specialisti quando servono." data-en="The same conversation can continue while TennisAgents retrieves approved context and involves Scout, Strategist, Tour Manager, Player & Club Intelligence or other specialists when needed.">La stessa conversazione può continuare mentre TennisAgents recupera contesto approvato e coinvolge Scout, Strategist, Tour Manager, Player & Club Intelligence o gli altri specialisti quando servono.</p>
         <div class="ai-prompts" aria-label="Esempi di domande">
           <button class="ai-prompt" type="button" data-persona="player" data-it="Player · Domenica gioco contro Marco: da dove partiamo?" data-en="Player · I play Marco on Sunday: where do we start?">Player · Domenica gioco contro Marco: da dove partiamo?</button>
           <button class="ai-prompt" type="button" data-persona="coach" data-it="Coach · Seguo tre ragazzi: come mi aiuti a preparare i match?" data-en="Coach · I coach three players: how can you help me prepare their matches?">Coach · Seguo tre ragazzi: come mi aiuti a preparare i match?</button>
           <button class="ai-prompt" type="button" data-persona="parent" data-it="Genitore · Mia figlia fa tornei: come posso capire dove aiutarla?" data-en="Parent · My daughter plays tournaments: how can I understand where to help her?">Genitore · Mia figlia fa tornei: come posso capire dove aiutarla?</button>
+          <button class="ai-prompt" type="button" data-persona="player" data-it="Tour Manager · Ho 6 mesi e 1.800 €: quali tornei scelgo tra FITP e ITF?" data-en="Tour Manager · I have six months and €1,800: which FITP and ITF events should I choose?">Tour Manager · Ho 6 mesi e 1.800 €: quali tornei scelgo tra FITP e ITF?</button>
+          <button class="ai-prompt" type="button" data-persona="parent" data-it="Player & Club Intelligence · Quali club sviluppano meglio i junior U14/U16 e come confronto la traiettoria di mio figlio?" data-en="Player & Club Intelligence · Which clubs develop U14/U16 juniors best, and how can I compare my child's trajectory?">Player & Club Intelligence · Quali club sviluppano meglio i junior U14/U16 e come confronto la traiettoria di mio figlio?</button>
         </div>
       </div>
       <div class="ai-chat" id="ta-ai-chat">
@@ -211,6 +226,21 @@
         <div class="ai-meta" id="ta-ai-meta" data-it="La sessione resta opaca nel browser; la memoria canonica rimane reference-first in TennisAgents." data-en="The browser keeps only an opaque session id; canonical memory stays reference-first in TennisAgents.">La sessione resta opaca nel browser; la memoria canonica rimane reference-first in TennisAgents.</div>
       </div>
     </div>
+    <div class="ai-capabilities" aria-label="TennisAgents lifecycle intelligence">
+      <article class="ai-capability"><div class="kicker">TOUR MANAGER</div><h3 data-it="Dal torneo singolo a una stagione sostenibile" data-en="From one tournament to a sustainable season">Dal torneo singolo a una stagione sostenibile</h3><p data-it="Confronta calendario, valore competitivo, probabilità di accesso, viaggio, budget, recovery e conflitti per costruire piani alternativi invece di scegliere i tornei uno alla volta." data-en="Compare calendar, competitive value, entry probability, travel, budget, recovery and conflicts to build alternative plans instead of choosing events one by one.">Confronta calendario, valore competitivo, probabilità di accesso, viaggio, budget, recovery e conflitti per costruire piani alternativi invece di scegliere i tornei uno alla volta.</p><div class="example-line" data-it="Esempio: «U16, 3.1, sei mesi e 1.800 €: fammi vedere tre Tour possibili e spiegami i compromessi»." data-en="Example: ‘U16, 3.1, six months and €1,800: show me three possible Tours and explain the trade-offs.’">Esempio: «U16, 3.1, sei mesi e 1.800 €: fammi vedere tre Tour possibili e spiegami i compromessi».</div></article>
+      <article class="ai-capability"><div class="kicker">PLAYER &amp; CLUB INTELLIGENCE</div><h3 data-it="Capire la traiettoria, non solo la classifica di oggi" data-en="Understand the trajectory, not just today's ranking">Capire la traiettoria, non solo la classifica di oggi</h3><p data-it="Dossier giocatore, evoluzione della classifica, forma recente, avversari, tornei e metriche di sviluppo dei club aiutano Player, Coach e Genitori a confrontare percorsi e contesti con evidenze." data-en="Player dossiers, ranking evolution, recent form, opponents, tournaments and club-development metrics help Players, Coaches and Parents compare pathways and environments with evidence.">Dossier giocatore, evoluzione della classifica, forma recente, avversari, tornei e metriche di sviluppo dei club aiutano Player, Coach e Genitori a confrontare percorsi e contesti con evidenze.</p><div class="example-line" data-it="Esempio: «Quali club producono più junior U14/U16 in crescita e come si confronta la traiettoria di mio figlio?»" data-en="Example: ‘Which clubs produce more improving U14/U16 juniors, and how does my child's trajectory compare?’">Esempio: «Quali club producono più junior U14/U16 in crescita e come si confronta la traiettoria di mio figlio?»</div></article>
+    </div>
+  </div>
+</section>
+
+
+<section id="tennis-intelligence-system" data-requirement="R-SYSTEM-STORY R-EXPLORER-STRATEGIST">
+  <div class="wrap"><div class="section-head"><div class="kicker" data-it="Il sistema TennisAgents" data-en="The TennisAgents system">Il sistema TennisAgents</div>
+    <h2 data-it="Un sistema di intelligenza tennistica, non una singola AI." data-en="A tennis intelligence system, not a single AI.">Un sistema di intelligenza tennistica, non una singola AI.</h2>
+    <p data-it="TennisAgents accompagna il tennis lifecycle con motori diversi, diverse profondità d'uso ed evidenza applicata a casi reali." data-en="TennisAgents follows the tennis lifecycle with different engines, different depths of use and evidence applied to real cases.">TennisAgents accompagna il tennis lifecycle con motori diversi, diverse profondità d'uso ed evidenza applicata a casi reali.</p></div>
+  <div class="system-pillars"><div class="system-pillar">Sistema di intelligenza tennistica</div><div class="system-pillar">Tennis lifecycle continuo</div><div class="system-pillar">Motori diversi</div><div class="system-pillar">Diverse profondità d'uso</div><div class="system-pillar">Evidenza su casi reali</div></div>
+  <div class="engine-grid"><article class="engine-card explorer"><div class="engine-tag">EXPLORER · scopre</div><h3 data-it="Apre possibilità e cerca ciò che vale la pena investigare." data-en="Opens possibilities and finds what is worth investigating.">Apre possibilità e cerca ciò che vale la pena investigare.</h3><ul><li>pattern e anomalie</li><li>ipotesi e contro-ipotesi</li><li>analogie, fonti e scenari</li><li>nuove domande da verificare</li></ul><p data-it="Explorer non decide il piano: allarga e migliora lo spazio delle possibilità." data-en="Explorer does not choose the plan: it expands and improves the space of possibilities.">Explorer non decide il piano: allarga e migliora lo spazio delle possibilità.</p></article>
+  <article class="engine-card strategist"><div class="engine-tag">STRATEGIST · decide</div><h3 data-it="Trasforma evidenze e possibilità in un piano utile adesso." data-en="Turns evidence and possibilities into a useful plan now.">Trasforma evidenze e possibilità in un piano utile adesso.</h3><ul><li>priorità tattiche</li><li>trade-off e vincoli</li><li>next best action</li><li>adattamento al momento del match</li></ul><p data-it="Strategist non esplora tutto: sceglie cosa provare, osservare o cambiare." data-en="Strategist does not explore everything: it chooses what to try, watch or change.">Strategist non esplora tutto: sceglie cosa provare, osservare o cambiare.</p></article></div>
   </div>
 </section>
 
@@ -350,90 +380,16 @@
   </div>
 </section>
 
-<section class="alt" id="flow" data-requirement="R-FLOW-ANIMATION">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="kicker" data-it="Dal dato alla decisione" data-en="From data to decision">Dal dato alla decisione</div>
-      <h2 data-it="Guarda il team mentre si passa il lavoro." data-en="Watch the team hand the work forward.">Guarda il team mentre si passa il lavoro.</h2>
-      <p data-it="I pallini seguono il percorso delle informazioni: entrano da scouting, osservazioni e match data, convergono nell'analisi, diventano strategia e ritornano al Player. I punti successivi riaprono il ciclo." data-en="The moving dots follow the information flow: scouting, observations and match data converge in analysis, become strategy and return to the Player. The next points reopen the loop.">I pallini seguono il percorso delle informazioni: entrano da scouting, osservazioni e match data, convergono nell'analisi, diventano strategia e ritornano al Player. I punti successivi riaprono il ciclo.</p>
-    </div>
-    <div class="flow-shell">
-      <div class="flow-scroll">
-        <svg id="flow-svg" viewBox="0 0 1100 470" role="img" aria-label="TennisAgents workflow">
-          <defs>
-            <circle id="dot-teal" r="6" fill="#4bc69a"/>
-            <circle id="dot-gold" r="6" fill="#f3b51b"/>
-            <circle id="dot-blue" r="6" fill="#76a9ff"/>
-          </defs>
 
-          <path id="flow-path-1" d="M 260 80 C 375 80, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path id="flow-path-2" d="M 260 175 C 375 175, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path id="flow-path-3" d="M 260 270 C 375 270, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path id="flow-path-4" d="M 260 365 C 375 365, 375 225, 430 225" fill="none" stroke="#4bc69a" stroke-width="2" opacity=".28"/>
-          <path id="flow-path-5" d="M 640 225 C 700 225, 690 115, 760 115" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
-          <path id="flow-path-6" d="M 640 225 C 700 225, 690 225, 760 225" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
-          <path id="flow-path-7" d="M 640 225 C 700 225, 690 335, 760 335" fill="none" stroke="#f3b51b" stroke-width="2" opacity=".45"/>
-          <path id="flow-path-8" d="M 930 365 C 930 430, 140 430, 140 400" fill="none" stroke="#76a9ff" stroke-width="2" stroke-dasharray="7 7" opacity=".45"/>
-
-          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="2.5s" repeatCount="indefinite"><mpath href="#flow-path-1"/></animateMotion></circle>
-          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="1.9s" repeatCount="indefinite"><mpath href="#flow-path-2"/></animateMotion></circle>
-          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="3.1s" repeatCount="indefinite"><mpath href="#flow-path-3"/></animateMotion></circle>
-          <circle class="flow-dot" r="5" fill="#4bc69a"><animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#flow-path-4"/></animateMotion></circle>
-          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.2s" repeatCount="indefinite"><mpath href="#flow-path-5"/></animateMotion></circle>
-          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.0s" repeatCount="indefinite"><mpath href="#flow-path-6"/></animateMotion></circle>
-          <circle class="flow-dot" r="5" fill="#f3b51b"><animateMotion dur="2.7s" repeatCount="indefinite"><mpath href="#flow-path-7"/></animateMotion></circle>
-          <circle class="flow-dot" r="5" fill="#76a9ff"><animateMotion dur="4.5s" repeatCount="indefinite"><mpath href="#flow-path-8"/></animateMotion></circle>
-
-          <g transform="translate(20,45)">
-            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
-            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Scout" data-en="Scout">Scout</text>
-            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Avversario + contesto" data-en="Opponent + context">Avversario + contesto</text>
-          </g>
-          <g transform="translate(20,140)">
-            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
-            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Observer" data-en="Observer">Observer</text>
-            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Ciò che vedete in campo" data-en="What you see on court">Ciò che vedete in campo</text>
-          </g>
-          <g transform="translate(20,235)">
-            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
-            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Match data" data-en="Match data">Match data</text>
-            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Quick · Detailed · Tracked" data-en="Quick · Detailed · Tracked">Quick · Detailed · Tracked</text>
-          </g>
-          <g transform="translate(20,330)">
-            <rect width="240" height="70" rx="12" fill="#0c1c2b" stroke="#4bc69a" stroke-width="1.4"/>
-            <text x="18" y="29" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="Player / Coach" data-en="Player / Coach">Player / Coach</text>
-            <text x="18" y="50" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="Feedback + obiettivi" data-en="Feedback + goals">Feedback + obiettivi</text>
-          </g>
-
-          <g transform="translate(430,180)">
-            <rect width="210" height="90" rx="16" fill="#10263a" stroke="#76a9ff" stroke-width="2"/>
-            <text x="105" y="35" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="18" font-weight="700" fill="#fff">ANALYST</text>
-            <text x="105" y="59" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="evidenza + confidence" data-en="evidence + confidence">evidenza + confidence</text>
-          </g>
-
-          <g transform="translate(760,80)">
-            <rect width="190" height="70" rx="13" fill="#0c1c2b" stroke="#f3b51b" stroke-width="1.5"/>
-            <text x="95" y="29" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff">STRATEGIST</text>
-            <text x="95" y="50" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="sceglie il piano" data-en="chooses the plan">sceglie il piano</text>
-          </g>
-          <g transform="translate(760,190)">
-            <rect width="190" height="70" rx="13" fill="#0c1c2b" stroke="#f3b51b" stroke-width="1.5"/>
-            <text x="95" y="29" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff">MATCH COACH</text>
-            <text x="95" y="50" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="rende il piano giocabile" data-en="makes the plan playable">rende il piano giocabile</text>
-          </g>
-          <g transform="translate(760,300)">
-            <rect width="190" height="70" rx="13" fill="#0c1c2b" stroke="#f3b51b" stroke-width="1.5"/>
-            <text x="95" y="29" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#fff" data-it="PLAYER" data-en="PLAYER">PLAYER</text>
-            <text x="95" y="50" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#9eb0c1" data-it="gioca i prossimi punti" data-en="plays the next points">gioca i prossimi punti</text>
-          </g>
-
-          <text x="535" y="310" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" fill="#76a9ff" data-it="I punti successivi riaprono il ciclo" data-en="The next points reopen the loop">I punti successivi riaprono il ciclo</text>
-        </svg>
-      </div>
-      <p class="flow-note" data-it="Animazione illustrativa del passaggio di informazioni fra i ruoli. Se il dispositivo riduce le animazioni, il diagramma resta leggibile in forma statica." data-en="Illustrative animation of information handoffs between roles. If your device reduces motion, the diagram remains readable as a static flow.">Animazione illustrativa del passaggio di informazioni fra i ruoli. Se il dispositivo riduce le animazioni, il diagramma resta leggibile in forma statica.</p>
-    </div>
-  </div>
+<section class="alt" id="flow" data-requirement="R-LIVE-SYSTEM-GRAPH">
+  <div class="wrap"><div class="section-head"><div class="kicker" data-it="Il sistema mentre lavora" data-en="The system at work">Il sistema mentre lavora</div><h2 data-it="Un grafo vivo: ogni nodo aggiunge contesto, evidenza o decisione." data-en="A living graph: every node adds context, evidence or a decision.">Un grafo vivo: ogni nodo aggiunge contesto, evidenza o decisione.</h2><p data-it="Non è una pipeline rigida. Player, Coach, Parent, dati, intelligence e motori possono riaprire il ciclo quando arriva nuova evidenza." data-en="It is not a rigid pipeline. Player, Coach, Parent, data, intelligence and engines can reopen the cycle when new evidence arrives.">Non è una pipeline rigida. Player, Coach, Parent, dati, intelligence e motori possono riaprire il ciclo quando arriva nuova evidenza.</p></div>
+  <div class="graph-scroll"><div id="ta-live-graph" class="knowledge-graph" role="img" aria-label="TennisAgents living intelligence graph"></div></div><div class="graph-legend"><span>EXPLORER = scopre</span><span>STRATEGIST = decide</span><span>Agent = esegue un ruolo specialistico</span><span>Capability = dati / pianificazione / intelligence</span></div></div>
 </section>
+
+
+<section id="match-depth" data-requirement="R-MATCH-MODES-VISUAL"><div class="wrap"><div class="section-head"><div class="kicker" data-it="Tre profondità d'uso" data-en="Three depths of use">Tre profondità d'uso</div><h2 data-it="Quick, Detailed, Tracked: scegli quanta evidenza raccogliere." data-en="Quick, Detailed, Tracked: choose how much evidence to capture.">Quick, Detailed, Tracked: scegli quanta evidenza raccogliere.</h2><p data-it="Più informazioni dai, più TennisAgents può essere preciso. Ma il sistema deve restare utile anche quando hai pochi secondi." data-en="The more information you provide, the more precise TennisAgents can be. But it must remain useful when you only have seconds.">Più informazioni dai, più TennisAgents può essere preciso. Ma il sistema deve restare utile anche quando hai pochi secondi.</p></div>
+<div class="mode-grid"><article class="mode-card"><span class="status live">QUICK</span><h3>Decidi in pochi secondi</h3><div class="app-shot" data-asset-slot="app-quick"><span class="asset-slot-label"></span></div><p>Pochi tap, massimo ritmo: il livello minimo di input per mantenere il filo del match.</p></article><article class="mode-card"><span class="status live">DETAILED</span><h3>Leggi meglio come si sviluppa il match</h3><div class="app-shot" data-asset-slot="app-detailed"><span class="asset-slot-label"></span></div><p>Più contesto su punto, game e pattern quando vuoi una lettura più ricca.</p></article><article class="mode-card"><span class="status live">TRACKED</span><h3>Segui geometria e sequenza</h3><div class="app-shot" data-asset-slot="app-tracked"><span class="asset-slot-label"></span><span class="gesture-finger" aria-hidden="true"></span></div><p>Gesture e tracking stroke-by-stroke quando serve la profondità massima.</p></article></div></div></section>
+<section class="alt" id="app-moments" data-requirement="R-APP-UI-GALLERY"><div class="wrap"><div class="section-head"><div class="kicker">Tennis Lifecycle UI</div><h2 data-it="La app cambia insieme al momento del tuo tennis." data-en="The app changes with the moment of your tennis.">La app cambia insieme al momento del tuo tennis.</h2><p data-it="La struttura è pronta per usare screenshot reali della app nei momenti chiave, senza ridurre TennisAgents a un solo schermo." data-en="The structure is ready for real app screenshots at key moments, without reducing TennisAgents to a single screen.">La struttura è pronta per usare screenshot reali della app nei momenti chiave, senza ridurre TennisAgents a un solo schermo.</p></div><div class="app-moments"><article class="app-moment"><div class="app-shot" data-asset-slot="pre-match"><span class="asset-slot-label"></span></div><strong>Pre-match</strong><span>Scout · opponent context · plan</span></article><article class="app-moment"><div class="app-shot" data-asset-slot="live-match"><span class="asset-slot-label"></span></div><strong>Live</strong><span>Quick / Detailed · Match Coach</span></article><article class="app-moment"><div class="app-shot" data-asset-slot="tracked-live"><span class="asset-slot-label"></span></div><strong>Tracked</strong><span>gesture · geometry · sequence</span></article><article class="app-moment"><div class="app-shot" data-asset-slot="post-match"><span class="asset-slot-label"></span></div><strong>Post-match</strong><span>Analyst · Trainer · Mental</span></article></div></div></section>
 
 <section id="proof">
   <div class="wrap">
@@ -449,6 +405,9 @@
     </div>
   </div>
 </section>
+
+
+<section id="real-match-proof" data-requirement="R-REAL-MATCH-PROOF"><div class="wrap"><div class="match-proof-head"><div class="section-head"><div class="kicker" data-it="Evidenza applicata a casi reali" data-en="Evidence applied to real cases">Evidenza applicata a casi reali</div><h2 data-it="Un match reale, punto per punto: cosa avrebbe visto e consigliato TennisAgents?" data-en="A real match, point by point: what would TennisAgents have seen and suggested?">Un match reale, punto per punto: cosa avrebbe visto e consigliato TennisAgents?</h2><p data-it="La struttura è pronta per ricostruire una finale Grand Slam 2026 e confrontare, nei diversi momenti, evidenza disponibile, ipotesi di Explorer, decisione di Strategist e aderenza dei due Player." data-en="The structure is ready to reconstruct a 2026 Grand Slam final and compare, moment by moment, available evidence, Explorer hypotheses, Strategist decisions and each player's adherence.">La struttura è pronta per ricostruire una finale Grand Slam 2026 e confrontare, nei diversi momenti, evidenza disponibile, ipotesi di Explorer, decisione di Strategist e aderenza dei due Player.</p></div><aside class="match-proof-status"><span class="status beta">CASE STUDY SCAFFOLD</span><h3>Finale Grand Slam 2026</h3><p data-it="Il match definitivo e il dataset punto-per-punto verranno selezionati e verificati prima della pubblicazione." data-en="The final match and point-by-point dataset will be selected and verified before publication.">Il match definitivo e il dataset punto-per-punto verranno selezionati e verificati prima della pubblicazione.</p></aside></div><div id="real-match-timeline" class="match-proof-timeline"></div><p class="proof-disclaimer" data-it="Ogni checkpoint mostrerà: cosa è successo → cosa ha esplorato Explorer → cosa avrebbe scelto Strategist → quanto ciascun Player si è avvicinato a quel piano nei punti successivi." data-en="Each checkpoint will show: what happened → what Explorer explored → what Strategist would choose → how closely each Player followed that plan over the next points.">Ogni checkpoint mostrerà: cosa è successo → cosa ha esplorato Explorer → cosa avrebbe scelto Strategist → quanto ciascun Player si è avvicinato a quel piano nei punti successivi.</p></div></section>
 
 <section class="alt" id="labs">
   <div class="wrap">
@@ -701,6 +660,7 @@
 </script>
 
 <script src="/assets/landing-ai.js" defer></script>
+<script src="/assets/landing-experience.js" type="module"></script>
 
 <script>
 window.$crisp=[];

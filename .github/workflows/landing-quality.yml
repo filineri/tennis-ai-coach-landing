@@ -23,6 +23,8 @@ on:
       - 'scripts/check_analytics.py'
       - 'scripts/check_wearable_landing.py'
       - 'scripts/check_visual_review.py'
+      - 'scripts/check_persistent_ai.py'
+      - 'scripts/check_system_story.py'
       - 'scripts/build_pages.py'
       - '.github/workflows/landing-quality.yml'
       - '.github/workflows/landing-visual-review.yml'
@@ -44,6 +46,12 @@ jobs:
         run: python scripts/check_wearable_landing.py
       - name: Validate visual review contract
         run: python scripts/check_visual_review.py
+      - name: Validate persistent AI + TennisAgents system story
+        run: |
+          python scripts/check_persistent_ai.py
+          python scripts/check_system_story.py
+          node --check assets/landing-ai.js
+          node --check assets/landing-experience.js
       - name: Validate analytics/open-source adoption
         run: |
           python scripts/check_analytics.py
@@ -63,6 +71,8 @@ jobs:
           test -f dist/demo/player/index.html
           test -f dist/assets/analytics.js
           test -f dist/assets/analytics-config.js
+          test -f dist/assets/landing-ai.js
+          test -f dist/assets/landing-experience.js
           grep -q '"enabled":false' dist/assets/analytics-config.js
           grep -q '"consentRequired":true' dist/assets/analytics-config.js
           grep -q '/assets/analytics.js' dist/index.html

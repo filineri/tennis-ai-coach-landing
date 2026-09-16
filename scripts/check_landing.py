@@ -24,7 +24,7 @@ REQUIREMENT_IDS = (
     "R-CLAIM-STATE",
     "R-CTA",
     "R-HERO-MENTORS",
-    "R-FLOW-ANIMATION",
+    "R-LIVE-SYSTEM-GRAPH",
     "R-I18N-IT-EN",
     "R-BRAND-IDENTITY",
     "R-CUSTOMER-COPY",
@@ -136,12 +136,12 @@ def main():
     require("#071426" in icon_svg and "M214 75" in icon_svg and "M333 194" in icon_svg, "definitive logo geometry/signature missing", errors)
     require('width="276" height="58"' not in icon_svg, "legacy V1 T-monogram geometry returned", errors)
 
-    # Animated flow retained and robust across modern desktop/mobile browsers.
-    require(text.count("<animateMotion") >= 5, "animated flow must retain moving dots", errors)
-    require(text.count('<mpath href="#flow-path-') >= 5, "animated flow should reuse visible SVG paths via mpath", errors)
-    require('id="flow-svg"' in text and 'class="flow-dot"' in text, "animated flow structure missing", errors)
-    require("pauseAnimations" in text and "prefers-reduced-motion" in text, "reduced-motion fallback missing", errors)
-
+    # Living system graph supersedes the older linear SVG flow by explicit Founder decision.
+    require('id="ta-live-graph"' in text, "living TennisAgents graph missing", errors)
+    require('/assets/landing-experience.js' in text, "living graph model/runtime missing", errors)
+    require('knowledge-edge' in text and 'graph-dash' in text, "living graph animation contract missing", errors)
+    require("prefers-reduced-motion" in text and "knowledge-edge" in text, "living graph reduced-motion fallback missing", errors)
+    require('EXPLORER · scopre' in text and 'STRATEGIST · decide' in text, "Explorer/Strategist distinction missing", errors)
     # Mobile hero hierarchy + known copy duplication regression.
     require('class="hero-intro"' in text and 'class="hero-copy"' in text, "responsive hero structure missing", errors)
     require('grid-template-areas:"intro" "visual" "copy"' in text, "mobile hero must render headline → visual → copy", errors)
@@ -228,7 +228,7 @@ def main():
     print(f"- title: {title}")
     print(f"- public agents: {', '.join(parser.data_agents)}")
     print(f"- bilingual nodes: {parser.i18n_nodes}")
-    print("- definitive logo, mobile hero order, animated flow, IT/EN and anti-duplication guards preserved")
+    print("- definitive logo, mobile hero order, living system graph, IT/EN and anti-duplication guards preserved")
     print("- customer-copy leak guard PASS")
     print("- agent contracts, human/agent handoff, Parent/Sponsor, visual personality/Crisp separation verified")
     print("- metadata, CTA hierarchy, claim states, proof routes, robots, sitemap and 404 verified")

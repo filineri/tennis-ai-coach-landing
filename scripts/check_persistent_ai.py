@@ -12,6 +12,8 @@ checks={
  'reset':'ta-ai-reset' in html and 'localStorage.removeItem' in js,
  'personas':all(x in html for x in ['data-persona="player"','data-persona="coach"','data-persona="parent"']),
  'crisp_retained':'CRISP_WEBSITE_ID' in html,
+ 'tour_manager':all(x in html for x in ['TOUR MANAGER','calendario','budget']),
+ 'player_club_intelligence':all(x in html for x in ['PLAYER &amp; CLUB INTELLIGENCE','U14/U16','traiettoria']),
 }
 failed=[k for k,v in checks.items() if not v]
 for k,v in checks.items(): print(f'{k}={"PASS" if v else "FAIL"}')
