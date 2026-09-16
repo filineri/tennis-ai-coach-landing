@@ -17,6 +17,7 @@
   <meta name="twitter:title" content="TennisAgents — Il tuo AI Tennis Team">
   <meta name="twitter:description" content="Il Player al centro. Un team di specialisti AI intorno, dal pre-match al prossimo allenamento.">
   <meta name="theme-color" content="#07131f">
+  <meta name="ta-customer-ai-endpoint" content="">
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png">
   <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
   <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png">
@@ -36,7 +37,7 @@
     html[data-theme="centre"]{--bg:#102418;--bg2:#143120;--panel:#193b27;--panel2:#214b32;--line:#3e6a4d;--accent:#ddd4a7;--accent2:#c7bb80;--ok:#a8d46b;--warn:#f0d36d}
     html[data-theme="clay"]{--bg:#21130f;--bg2:#2c1912;--panel:#3a2118;--panel2:#4a291d;--line:#754631;--accent:#f0c28e;--accent2:#dfa76e;--ok:#a8d080;--warn:#f0b76c}
     body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.58}
-    a{color:inherit}button{font:inherit}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:16px;z-index:9999;background:#fff;color:#000;padding:10px 14px;border-radius:8px}
+    a{color:inherit}button{font:inherit}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.skip{position:absolute;left:-9999px}.skip:focus{left:16px;top:16px;z-index:9999;background:#fff;color:#000;padding:10px 14px;border-radius:8px}
     .wrap{width:min(var(--max),calc(100% - 40px));margin:auto}
     nav{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 91%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid rgba(255,255,255,.07)}
     .nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:18px}
@@ -95,6 +96,12 @@
     .partner-agents{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}.mini{border:1px dashed var(--line);padding:16px;border-radius:16px}.mini strong{color:var(--accent)}.mini p{color:var(--muted);margin:5px 0 0;font-size:13px}
     .premium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.pricebox{background:linear-gradient(145deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:24px;padding:24px}.pricebox.featured{border-color:color-mix(in srgb,var(--accent) 42%,transparent)}
     .pricebox ul{padding-left:19px;color:var(--muted)}.pricebox li+li{margin-top:7px}.pricebox h3{font-size:24px;margin:10px 0}.pricebox .for{color:var(--muted);font-size:13px}
+    .ai-shell{display:grid;grid-template-columns:.82fr 1.18fr;gap:18px;align-items:stretch}
+    .ai-intro,.ai-chat{border:1px solid var(--line);border-radius:24px;background:linear-gradient(145deg,var(--panel2),var(--panel));padding:24px;box-shadow:var(--shadow)}
+    .ai-intro p,.ai-note{color:var(--muted)}.ai-prompts{display:grid;gap:9px;margin-top:20px}.ai-prompt{border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--ink);border-radius:14px;padding:11px 13px;text-align:left;cursor:pointer}.ai-prompt:hover{border-color:var(--accent)}
+    .ai-chat{display:grid;grid-template-rows:auto minmax(220px,1fr) auto auto;gap:12px}.ai-chat-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.ai-chat-tools{display:flex;align-items:center;gap:8px}.ai-state{font-size:12px;color:var(--muted)}.ai-reset{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;text-decoration:underline}
+    .ai-transcript{min-height:220px;max-height:390px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:4px}.ai-message{max-width:88%;padding:11px 13px;border-radius:15px;white-space:pre-wrap}.ai-message.user{align-self:flex-end;background:color-mix(in srgb,var(--accent) 18%,var(--panel))}.ai-message.assistant{align-self:flex-start;background:rgba(255,255,255,.045);border:1px solid var(--line)}
+    .ai-form{display:grid;grid-template-columns:1fr auto;gap:9px}.ai-form input{width:100%;border:1px solid var(--line);background:var(--bg2);color:var(--ink);border-radius:13px;padding:12px 13px}.ai-form input:focus{outline:2px solid color-mix(in srgb,var(--accent) 42%,transparent);outline-offset:1px}.ai-meta{min-height:18px;color:var(--muted);font-size:12px}
     .appearance-card{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;border:1px solid var(--line);border-radius:22px;padding:22px;background:var(--panel)}
     .appearance-card p{color:var(--muted);margin:5px 0 0}
     details{border-bottom:1px solid var(--line);padding:16px 0}summary{cursor:pointer;font-weight:780}details p{color:var(--muted);max-width:850px}
@@ -104,7 +111,7 @@
     .style-menu{display:none;position:absolute;left:0;bottom:48px;width:205px;padding:10px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}#style-dock.open .style-menu{display:grid;gap:7px}
     .style-menu button{background:transparent;border:1px solid var(--line);color:var(--ink);padding:9px 10px;border-radius:10px;text-align:left;cursor:pointer}.style-menu button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
     @media(max-width:1000px){.hero-grid{grid-template-columns:1fr;grid-template-areas:"intro" "visual" "copy";row-gap:18px}.feed{grid-template-columns:1fr}.grid3,.payer-grid,.premium-grid{grid-template-columns:1fr 1fr}.usage-step{grid-template-columns:48px 120px 1fr}.usage-step .move,.usage-step .agent-result{grid-column:3}.usage-step .move{display:none}.handoff-strip{grid-template-columns:repeat(5,minmax(135px,1fr));overflow-x:auto;padding-bottom:8px}}
-    @media(max-width:720px){.wrap{width:min(100% - 28px,var(--max))}.navlinks>a:not(.btn){display:none}.navlinks .btn{display:none}.nav-right{gap:8px}.hero{padding-top:48px}.team-grid,.grid3,.payer-grid,.premium-grid,.labs,.partner-agents{grid-template-columns:1fr}.team-divider{grid-column:auto}.usage-step{grid-template-columns:42px 1fr}.usage-step .human-input,.usage-step .agent-result{grid-column:2}.ctas .btn{width:100%}section{padding:56px 0}.appearance-card{grid-template-columns:1fr}.brand-word{font-size:22px}#style-dock{left:12px;bottom:12px}}
+    @media(max-width:720px){.ai-shell{grid-template-columns:1fr}.ai-form{grid-template-columns:1fr}.ai-form .btn{width:100%}.wrap{width:min(100% - 28px,var(--max))}.navlinks>a:not(.btn){display:none}.navlinks .btn{display:none}.nav-right{gap:8px}.hero{padding-top:48px}.team-grid,.grid3,.payer-grid,.premium-grid,.labs,.partner-agents{grid-template-columns:1fr}.team-divider{grid-column:auto}.usage-step{grid-template-columns:42px 1fr}.usage-step .human-input,.usage-step .agent-result{grid-column:2}.ctas .btn{width:100%}section{padding:56px 0}.appearance-card{grid-template-columns:1fr}.brand-word{font-size:22px}#style-dock{left:12px;bottom:12px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}.flow-dot{opacity:.9}}
   </style>
 </head>
@@ -121,6 +128,7 @@
       <div class="navlinks">
         <a href="#team" data-it="Il Team" data-en="The Team">Il Team</a>
         <a href="#how" data-it="Come funziona" data-en="How it works">Come funziona</a>
+        <a href="#ask-tennisagents" data-it="Chiedi all'AI" data-en="Ask the AI">Chiedi all'AI</a>
         <a href="/demo/live-match/" data-it="Demo" data-en="Demo">Demo</a>
         <a href="#premium" data-it="Premium" data-en="Premium">Premium</a>
         <a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents" data-en="Try TennisAgents">Prova TennisAgents</a>
@@ -156,6 +164,7 @@
         <p class="lead" data-it="Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione." data-en="Before the match it studies your opponent. During play it turns points and observations into tactical guidance. After the match it helps you decide what to train. Not one AI coach, but a team of specialists working together to help you make the next decision.">Prima del match studia l'avversario. Durante la partita trasforma punti e osservazioni in indicazioni tattiche. Dopo il match ti aiuta a capire cosa allenare. Non un solo coach AI: un team di specialisti che lavora insieme per aiutarti a prendere la prossima decisione.</p>
         <div class="ctas">
 <a class="btn primary" href="https://tennis-ai-coach-chi.vercel.app" data-track="try" rel="noopener" data-it="Prova TennisAgents →" data-en="Try TennisAgents →">Prova TennisAgents →</a>
+<a class="btn secondary" href="#ask-tennisagents" data-track="customer-ai" data-it="Chiedi al Tennis Team" data-en="Ask the Tennis Team">Chiedi al Tennis Team</a>
 <a class="btn secondary" href="#premium" data-track="premium" data-it="Scopri Premium" data-en="Discover Premium">Scopri Premium</a>
         </div>
         <a class="textlink" href="#how" data-it="Guarda come lavora il tuo team →" data-en="See how your team works →">Guarda come lavora il tuo team →</a>
@@ -177,6 +186,33 @@
     </div>
   </div>
 </header>
+
+<section class="alt" id="ask-tennisagents" data-requirement="R-PERSISTENT-AI R-LANDING-AI">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="kicker" data-it="Parla con il sistema TennisAgents" data-en="Talk to the TennisAgents system">Parla con il sistema TennisAgents</div>
+      <h2 data-it="Raccontaci il tuo tennis. Il team capisce da dove partire." data-en="Tell us about your tennis. The team works out where to start.">Raccontaci il tuo tennis. Il team capisce da dove partire.</h2>
+      <p data-it="Non devi sapere quale Agent usare. ChatGPT orchestra la conversazione, TennisAgents mantiene dati, memoria, evidenze e autorità specialistiche." data-en="You do not need to know which Agent to use. ChatGPT orchestrates the conversation while TennisAgents keeps data, memory, evidence and specialist authority.">Non devi sapere quale Agent usare. ChatGPT orchestra la conversazione, TennisAgents mantiene dati, memoria, evidenze e autorità specialistiche.</p>
+    </div>
+    <div class="ai-shell">
+      <div class="ai-intro">
+        <h3 data-it="Inizia anche prima di aprire l'app" data-en="Start even before opening the app">Inizia anche prima di aprire l'app</h3>
+        <p data-it="La stessa conversazione può continuare mentre TennisAgents recupera contesto approvato e coinvolge Scout, Strategist o gli altri specialisti quando servono." data-en="The same conversation can continue while TennisAgents retrieves approved context and involves Scout, Strategist or other specialists when needed.">La stessa conversazione può continuare mentre TennisAgents recupera contesto approvato e coinvolge Scout, Strategist o gli altri specialisti quando servono.</p>
+        <div class="ai-prompts" aria-label="Esempi di domande">
+          <button class="ai-prompt" type="button" data-persona="player" data-it="Player · Domenica gioco contro Marco: da dove partiamo?" data-en="Player · I play Marco on Sunday: where do we start?">Player · Domenica gioco contro Marco: da dove partiamo?</button>
+          <button class="ai-prompt" type="button" data-persona="coach" data-it="Coach · Seguo tre ragazzi: come mi aiuti a preparare i match?" data-en="Coach · I coach three players: how can you help me prepare their matches?">Coach · Seguo tre ragazzi: come mi aiuti a preparare i match?</button>
+          <button class="ai-prompt" type="button" data-persona="parent" data-it="Genitore · Mia figlia fa tornei: come posso capire dove aiutarla?" data-en="Parent · My daughter plays tournaments: how can I understand where to help her?">Genitore · Mia figlia fa tornei: come posso capire dove aiutarla?</button>
+        </div>
+      </div>
+      <div class="ai-chat" id="ta-ai-chat">
+        <div class="ai-chat-head"><strong data-it="Chiedi al Tennis Team" data-en="Ask the Tennis Team">Chiedi al Tennis Team</strong><div class="ai-chat-tools"><span class="ai-state" id="ta-ai-state">AI preview</span><button class="ai-reset" id="ta-ai-reset" type="button" data-it="Nuova" data-en="New">Nuova</button></div></div>
+        <div class="ai-transcript" id="ta-ai-transcript" aria-live="polite"></div>
+        <form class="ai-form" id="ta-ai-form"><label class="sr-only" for="ta-ai-input">Messaggio</label><input id="ta-ai-input" maxlength="2000" autocomplete="off" data-placeholder-it="Scrivi cosa vuoi ottenere..." data-placeholder-en="Tell us what you want to achieve..." placeholder="Scrivi cosa vuoi ottenere..."><button class="btn primary" type="submit" data-it="Invia" data-en="Send">Invia</button></form>
+        <div class="ai-meta" id="ta-ai-meta" data-it="La sessione resta opaca nel browser; la memoria canonica rimane reference-first in TennisAgents." data-en="The browser keeps only an opaque session id; canonical memory stays reference-first in TennisAgents.">La sessione resta opaca nel browser; la memoria canonica rimane reference-first in TennisAgents.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section class="alt" id="team" data-requirement="R-AGENT-TEAM R-AGENT-CONTRACT R-CLAIM-STATE">
   <div class="wrap">
@@ -633,6 +669,7 @@
       const value=el.getAttribute('data-'+lang);
       if(value!==null) el.textContent=value;
     });
+    document.querySelectorAll('[data-placeholder-it][data-placeholder-en]').forEach(el=>{el.setAttribute('placeholder',el.getAttribute('data-placeholder-'+lang));});
     document.querySelectorAll('[data-alt-it][data-alt-en]').forEach(el=>{
       el.setAttribute('alt',el.getAttribute('data-alt-'+lang));
     });
@@ -662,6 +699,8 @@
 
 })();
 </script>
+
+<script src="/assets/landing-ai.js" defer></script>
 
 <script>
 window.$crisp=[];
