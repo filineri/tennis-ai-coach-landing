@@ -15,6 +15,6 @@ export function saveDiscovery(result,storage=globalThis.localStorage){storage?.s
 export function saveSelectedProposal(proposal,context={},storage=globalThis.localStorage){const value={proposal,context};storage?.setItem?.(SELECTED_KEY,JSON.stringify(value));return value;}
 export function loadSelectedProposal(storage=globalThis.localStorage){try{return JSON.parse(storage?.getItem?.(SELECTED_KEY)||'null');}catch{return null;}}
 export const PREVIEW_RUNS=3;
-const USAGE_KEY='tennisagents.tourManagerPreviewRuns.v1';
+const USAGE_KEY='tennisagents.tourManagerPreviewRuns.v2';
 export function previewUsage(storage=globalThis.localStorage){const used=Math.max(0,Number(storage?.getItem?.(USAGE_KEY)||0));return {used,remaining:Math.max(0,PREVIEW_RUNS-used),limit:PREVIEW_RUNS};}
 export function consumePreviewRun(storage=globalThis.localStorage){const u=previewUsage(storage);if(u.remaining<=0)return {...u,allowed:false};storage?.setItem?.(USAGE_KEY,String(u.used+1));return {used:u.used+1,remaining:u.remaining-1,limit:u.limit,allowed:true};}

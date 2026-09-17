@@ -212,3 +212,5 @@ test('tour discovery client reports empty or non-JSON responses explicitly',asyn
  const html=async()=>({ok:false,status:404,headers:{get:()=> 'text/html'},json:async()=>({})});
  await assert.rejects(()=>requestTourDiscovery(base,html),/TOUR_DISCOVERY_NON_JSON_RESPONSE_404/);
 });
+
+test('tour timeline selection is non-recursive and shows today reference',()=>{const html=require('node:fs').readFileSync(new URL('./tour-manager.html',import.meta.url),'utf8');assert.match(html,/showCurrentTime:true/);assert.match(html,/selectEvent\(p\.items\[0\],false\)/);assert.match(html,/timeline\.getSelection/);assert.match(html,/id="todayRef"/);});

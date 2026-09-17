@@ -1,5 +1,5 @@
 export const PREVIEW_RUNS = 3;
-export function usageMeterKey(){return 'tennisagents.tourManagerPreviewRuns.v1';}
+export function usageMeterKey(){return 'tennisagents.tourManagerPreviewRuns.v2';}
 export function previewUsage(storage=globalThis.localStorage){
   const used=Math.max(0,Number(storage?.getItem?.(usageMeterKey())||0));
   return {used,remaining:Math.max(0,PREVIEW_RUNS-used),limit:PREVIEW_RUNS};
