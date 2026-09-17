@@ -205,3 +205,10 @@ test('single-page workspace keeps detail categories fixed and second page only a
  assert.match(html,/Vista operativa estesa \(fallback\)/);
  assert.doesNotMatch(html,/location\.href=['"]\.\/tour-plan\.html/);
 });
+
+test('tour discovery client reports empty or non-JSON responses explicitly',async()=>{
+ const empty=async()=>({ok:false,status:502,headers:{get:()=> 'application/json'},json:async()=>{throw new SyntaxError('Unexpected end of JSON input');}});
+ await assert.rejects(()=>requestTourDiscovery(base,empty),/TOUR_DISCOVERY_INVALID_JSON_502/);
+ const html=async()=>({ok:false,status:404,headers:{get:()=> 'text/html'},json:async()=>({})});
+ await assert.rejects(()=>requestTourDiscovery(base,html),/TOUR_DISCOVERY_NON_JSON_RESPONSE_404/);
+});

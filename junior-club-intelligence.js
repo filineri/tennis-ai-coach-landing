@@ -51,10 +51,10 @@ function showPlayer(p){
 }
 function renderTables(){
   const clubs=clubRows(),est=cohortRows('established'),em=cohortRows('emerging');
-  if(!clubTable)clubTable=new Tabulator('#clubTable',{data:clubs,layout:'fitColumns',height:410,initialSort:[{column:'decisionSupportScore',dir:'desc'}],columns:clubColumns(),rowClick:(_,row)=>showClub(row.getData())});else clubTable.replaceData(clubs);
-  const opts=(el,data)=>({data,layout:'fitColumns',height:410,columns:playerColumns(),rowClick:(_,row)=>showPlayer(row.getData())});
-  if(!establishedTable)establishedTable=new Tabulator('#establishedTable',opts('#establishedTable',est));else establishedTable.replaceData(est);
-  if(!emergingTable)emergingTable=new Tabulator('#emergingTable',opts('#emergingTable',em));else emergingTable.replaceData(em);
+  if(!clubTable){clubTable=new Tabulator('#clubTable',{data:clubs,layout:'fitColumns',height:410,initialSort:[{column:'decisionSupportScore',dir:'desc'}],columns:clubColumns()});clubTable.on('rowClick',(_,row)=>showClub(row.getData()));}else clubTable.replaceData(clubs);
+  const opts=(data)=>({data,layout:'fitColumns',height:410,columns:playerColumns()});
+  if(!establishedTable){establishedTable=new Tabulator('#establishedTable',opts(est));establishedTable.on('rowClick',(_,row)=>showPlayer(row.getData()));}else establishedTable.replaceData(est);
+  if(!emergingTable){emergingTable=new Tabulator('#emergingTable',opts(em));emergingTable.on('rowClick',(_,row)=>showPlayer(row.getData()));}else emergingTable.replaceData(em);
   renderMetrics();
 }
 function fillProvince(){const values=[...new Set((report.clubs||[]).map(x=>x.province).filter(Boolean))].sort();for(const p of values){const o=document.createElement('option');o.value=p;o.textContent=p;$('province').appendChild(o);}}

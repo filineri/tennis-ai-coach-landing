@@ -13,7 +13,9 @@ export function consumePreviewRun(storage=globalThis.localStorage){
 export async function requestTourComparison(payload,fetchImpl=globalThis.fetch){
   if(typeof fetchImpl!=='function') throw new Error('FETCH_UNAVAILABLE');
   const response=await fetchImpl('/api/tour-manager',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});
-  const body=await response.json();
+  const type=response?.headers?.get?.('content-type')||'';
+  if(type&&!type.toLowerCase().includes('application/json'))throw new Error(`TOUR_MANAGER_NON_JSON_RESPONSE_${response.status||'UNKNOWN'}`);
+  let body;try{body=await response.json();}catch{throw new Error(`TOUR_MANAGER_INVALID_JSON_${response.status||'UNKNOWN'}`);}
   if(!response.ok) throw new Error(body?.message||body?.error||'TOUR_MANAGER_REQUEST_FAILED');
   return body;
 }

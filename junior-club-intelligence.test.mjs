@@ -13,3 +13,7 @@ test('junior surface reads generated structured report without fabricated fallba
 test('junior surface preserves non-causal decision support warning',()=>{
   assert.match(html,/non una valutazione assoluta/i);assert.match(html,/non dimostra che il club abbia/i);
 });
+test('Tabulator row interactions are registered with runtime events',()=>{
+  assert.doesNotMatch(js,/rowClick\s*:/);
+  assert.ok((js.match(/\.on\('rowClick'/g)||[]).length>=3);
+});
