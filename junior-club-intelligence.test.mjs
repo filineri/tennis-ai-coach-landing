@@ -21,3 +21,5 @@ test('Tabulator row interactions are registered with runtime events',()=>{
 test('junior UX uses on-demand drawer, responsive tables and Excel OSS export',()=>{assert.match(html,/id="clubDrawer"/);assert.match(html,/xlsx@0\.18\.5/);assert.match(js,/responsiveLayout:'collapse'/);assert.match(js,/XLSX\.writeFile/);assert.match(js,/genderScopes/);});
 
 test('junior surface supports multi-club and multi-player evidence comparison',()=>{for(const id of ['compareBar','compareClubs','comparePlayers','comparePanel','compareChart'])assert.match(html,new RegExp(`id=\"${id}\"`));assert.match(js,/selectedClubs=new Map/);assert.match(js,/selectedPlayers=new Map/);assert.match(js,/renderComparison\('club'\)/);assert.match(js,/renderComparison\('player'\)/);assert.match(js,/type:'radar'/);});
+
+test('compare action cells do not open detail drawers',()=>{assert.match(js,/tabulator-field=\"clubId\"/);assert.match(js,/tabulator-field=\"playerId\"/);});

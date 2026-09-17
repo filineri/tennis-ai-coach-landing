@@ -81,10 +81,10 @@ function renderComparison(kind){
 function renderTables(){
   const clubs=clubRows(),est=cohortRows('established'),em=cohortRows('emerging');
   const common={layout:'fitColumns',responsiveLayout:'collapse',responsiveLayoutCollapseStartOpen:false,height:440,columnDefaults:{resizable:true,tooltip:true}};
-  if(!clubTable){clubTable=new Tabulator('#clubTable',{...common,data:clubs,initialSort:[{column:'decisionSupportScore',dir:'desc'}],columns:clubColumns()});clubTable.on('rowClick',(_,row)=>showClub(row.getData()));}else clubTable.replaceData(clubs);
+  if(!clubTable){clubTable=new Tabulator('#clubTable',{...common,data:clubs,initialSort:[{column:'decisionSupportScore',dir:'desc'}],columns:clubColumns()});clubTable.on('rowClick',(e,row)=>{if(e.target?.closest?.('[tabulator-field="clubId"]'))return;showClub(row.getData());});}else clubTable.replaceData(clubs);
   const opts=data=>({...common,data,columns:playerColumns()});
-  if(!establishedTable){establishedTable=new Tabulator('#establishedTable',opts(est));establishedTable.on('rowClick',(_,row)=>showPlayer(row.getData()));}else establishedTable.replaceData(est);
-  if(!emergingTable){emergingTable=new Tabulator('#emergingTable',opts(em));emergingTable.on('rowClick',(_,row)=>showPlayer(row.getData()));}else emergingTable.replaceData(em);
+  if(!establishedTable){establishedTable=new Tabulator('#establishedTable',opts(est));establishedTable.on('rowClick',(e,row)=>{if(e.target?.closest?.('[tabulator-field="playerId"]'))return;showPlayer(row.getData());});}else establishedTable.replaceData(est);
+  if(!emergingTable){emergingTable=new Tabulator('#emergingTable',opts(em));emergingTable.on('rowClick',(e,row)=>{if(e.target?.closest?.('[tabulator-field="playerId"]'))return;showPlayer(row.getData());});}else emergingTable.replaceData(em);
   renderMetrics();
 }
 function fillProvince(){const values=[...new Set((report.clubs||[]).map(x=>x.province).filter(Boolean))].sort();for(const p of values){const o=document.createElement('option');o.value=p;o.textContent=p;$('province').appendChild(o);}}
