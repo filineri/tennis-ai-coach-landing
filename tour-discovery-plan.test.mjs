@@ -214,3 +214,5 @@ test('tour discovery client reports empty or non-JSON responses explicitly',asyn
 });
 
 test('tour timeline selection is non-recursive and shows today reference',()=>{const html=require('node:fs').readFileSync(new URL('./tour-manager.html',import.meta.url),'utf8');assert.match(html,/showCurrentTime:true/);assert.match(html,/selectEvent\(p\.items\[0\],false\)/);assert.match(html,/timeline\.getSelection/);assert.match(html,/id="todayRef"/);});
+
+test('tour timeline group template is null-safe during redraw',()=>{const html=require('node:fs').readFileSync(new URL('./tour-manager.html',import.meta.url),'utf8');assert.match(html,/group\?\.event/);assert.match(html,/if\(!e\)\{wrap\.setAttribute/);});
