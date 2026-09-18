@@ -1,32 +1,24 @@
-import {validateDashboard,drilldownModel,dashboardPath} from './player-intelligence-contract.mjs';
 const PUBLIC_NAMED_PLAYER_ENABLED=false;
-const $=(q)=>document.querySelector(q),esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let state={data:null,drill:null,table:null,ranking:null,form:null,network:null,selectedPlayerId:null,activeTable:'underrated'};
-async function load(playerId=state.selectedPlayerId||''){
-  if(!PUBLIC_NAMED_PLAYER_ENABLED)return showPublicGate();
-  $('#status').textContent='Aggiornamento dal grafo SCOUT…';
-  try{const r=await fetch(dashboardPath(playerId,$('#region').value),{cache:'no-store'}),raw=await r.json();if(!r.ok)throw new Error(raw?.error||`HTTP_${r.status}`);state.data=validateDashboard(raw);state.drill=drilldownModel(raw);state.selectedPlayerId=raw.selectedPlayerId||playerId;renderAll();}
-  catch(error){$('#status').innerHTML=`<span class="warning">Dati non disponibili: ${esc(error.message)}</span>`;}
-}
-function renderMetrics(){const s=state.data.summary||{},cov=state.data.coverage||{};$('#metrics').innerHTML=[[s.players,'Giocatori'],[s.clubs,'Club'],[s.matches,'Match'],[s.tournaments,'Tornei']].map(([v,l])=>`<div class="metric"><b>${Number(v||0)}</b><span>${l}</span></div>`).join('');$('#status').innerHTML=`Snapshot <b>${esc(state.data.snapshotDate)}</b> · fonte <b>${esc(state.data.provenance?.source||'UNKNOWN')}</b> · copertura <b>${esc(cov.mode||'UNVERIFIED')}</b> ${cov.liveNationwide===false?'· <span class="warning">preview, non copertura nazionale live</span>':''}`;}
-function renderCharts(){for(const k of ['ranking','form']){state[k]?.dispose?.();const el=$(`#${k}Chart`),spec=state.data.charts?.[k];state[k]=spec&&window.echarts?echarts.init(el):null;if(state[k])state[k].setOption(spec.option);else el.innerHTML='<div class="muted" style="padding:14px">Grafico non disponibile.</div>';}}
-function renderNetwork(){const el=$('#network');if(state.network){state.network.destroy();state.network=null;}const spec=state.data.network;if(!spec||!window.cytoscape){el.innerHTML='<div class="muted" style="padding:14px">Network non disponibile.</div>';return;}state.network=cytoscape({container:el,elements:spec.elements,layout:spec.layout,style:[{selector:'node',style:{'background-color':'#f5b737','label':'data(label)','color':'#eef2ff','font-size':10,'text-wrap':'wrap','text-max-width':90}},{selector:'edge',style:{'line-color':'#59647f','target-arrow-color':'#59647f','target-arrow-shape':'triangle','curve-style':'bezier','width':1.5}}]});state.network.on('tap','node',e=>openPlayer(e.target.id()));}
-function renderMatches(){const rows=state.data.dossier?.recentMatches||[];$('#matches').innerHTML=rows.length?`<h3>Ultimi risultati</h3>${rows.map(m=>`<div class="match"><span>${esc(m.date)}</span><span>${esc(m.opponent)} · ${esc(m.opponentClassification||'')}</span><b class="${m.result==='W'?'good':'warning'}">${esc(m.result)}</b></div>`).join('')}`:'<div class="muted">Nessun match disponibile.</div>';}
-function playerDetail(p){const d=state.data.dossier;if(!p)return;$('#detailTitle').textContent=p.name;$('#detailBody').innerHTML=`<div class="detail"><div><small>Classifica</small><b>${esc(p.classification||d?.player?.classification||'n/d')}</b></div><div><small>Club</small><b>${esc(p.club?.name||d?.player?.club||'n/d')}</b></div><div><small>Età</small><b>${esc(p.age??d?.player?.age??'n/d')}</b></div><div><small>Simulata</small><b>${esc(d?.simulatedClassification?.simulated||'n/d')}</b></div></div>`;}
-function clubDetail(c){if(!c)return;$('#detailTitle').textContent=c.name;$('#detailBody').innerHTML=`<p class="muted">${esc(c.region||'')} ${esc(c.province||'')}</p><div class="entity-list">${c.players.map(p=>`<button class="entity" data-player="${esc(p.id)}"><b>${esc(p.name)}</b><div class="muted">${esc(p.classification||'n/d')} · ${esc(p.age??'età n/d')}</div></button>`).join('')||'<div class="muted">Nessun giocatore collegato.</div>'}</div>`;bindEntityButtons();}
-function tournamentDetail(t){if(!t)return;$('#detailTitle').textContent=t.name;$('#detailBody').innerHTML=`<p class="muted">${esc(t.city||'')} · ${esc(t.startDate||'')} → ${esc(t.endDate||'')}</p>${t.club?`<button class="entity" data-club="${esc(t.club.id)}"><b>${esc(t.club.name)}</b><div class="muted">Club organizzatore</div></button>`:''}<h3 style="margin-top:12px">Field conosciuto</h3><div class="entity-list">${t.players.map(p=>`<button class="entity" data-player="${esc(p.id)}"><b>${esc(p.name)}</b><div class="muted">${esc(p.classification||'n/d')}</div></button>`).join('')||'<div class="muted">Partecipanti non disponibili.</div>'}</div>`;bindEntityButtons();}
-async function openPlayer(id){if(String(id)!==String(state.selectedPlayerId))return load(id);playerDetail(state.drill.player(id));}
-function bindEntityButtons(){document.querySelectorAll('[data-player]').forEach(x=>x.onclick=()=>openPlayer(x.dataset.player));document.querySelectorAll('[data-club]').forEach(x=>x.onclick=()=>clubDetail(state.drill.club(x.dataset.club));document.querySelectorAll('[data-tournament]').forEach(x=>x.onclick=()=>tournamentDetail(state.drill.tournament(x.dataset.tournament));}
-function renderEntities(){const q=$('#search').value.trim().toLowerCase(),type=$('#entityType').value,rows=[];if(type==='ALL'||type==='PLAYER')for(const p of state.data.catalog.players||[])if(!q||p.name.toLowerCase().includes(q))rows.push({type:'PLAYER',id:p.id,title:p.name,meta:`${p.classification||'n/d'} · ${p.age??'età n/d'}`});if(type==='ALL'||type==='CLUB')for(const c of state.data.catalog.clubs||[])if(!q||c.name.toLowerCase().includes(q))rows.push({type:'CLUB',id:c.id,title:c.name,meta:`${c.region||''} · ${(c.playerIds||[]).length} giocatori`});if(type==='ALL'||type==='TOURNAMENT')for(const t of state.data.catalog.tournaments||[])if(!q||t.name.toLowerCase().includes(q))rows.push({type:'TOURNAMENT',id:t.id,title:t.name,meta:`${t.city||''} · ${(t.playerIds||[]).length} giocatori`});$('#entities').innerHTML=rows.slice(0,30).map(x=>`<button class="entity" data-${x.type==='PLAYER'?'player':x.type==='CLUB'?'club':'tournament'}="${esc(x.id)}"><b>${esc(x.title)}</b><div class="muted">${esc(x.meta)}</div></button>`).join('')||'<div class="muted">Nessun risultato.</div>';bindEntityButtons();}
-function renderTable(){const spec=state.data.tables?.[state.activeTable];if(state.table){state.table.destroy();state.table=null;}if(!spec||!window.Tabulator)return;state.table=new Tabulator('#intelTable',{data:spec.data||[],columns:spec.columns||[],layout:'fitDataStretch',height:360,placeholder:'Nessun dato',rowClick:(_,row)=>{const d=row.getData();if(d.playerId)return openPlayer(d.playerId);if(d.clubId)return clubDetail(state.drill.club(d.clubId));if(d.tournamentId)return tournamentDetail(state.drill.tournament(d.tournamentId));}});}
-function renderAll(){renderMetrics();renderCharts();renderNetwork();renderMatches();renderEntities();renderTable();playerDetail(state.drill.player(state.selectedPlayerId));}
+const $=q=>document.querySelector(q);
+
 function showPublicGate(){
   $('#status').innerHTML='<span class="warning"><b>Profili nominativi non pubblicati in questa Preview.</b> Usa Junior & Club per club aggregati e benchmark de-identificati. La vista nominativa completa resta Founder/internal.</span>';
   $('#detailTitle').textContent='Privacy-first public preview';
   $('#detailBody').innerHTML='<p class="muted">La ricerca nominativa e i dossier individuali sono disabilitati sul canale pubblico durante la validazione LIA/DPIA. I dati interni non vengono inviati al browser.</p>';
-  $('#metrics').innerHTML='';$('#entities').innerHTML='<div class="muted">Nessun catalogo nominativo caricato.</div>';$('#matches').innerHTML='';
+  $('#metrics').innerHTML='';
+  $('#entities').innerHTML='<div class="muted">Nessun catalogo nominativo caricato.</div>';
+  $('#matches').innerHTML='';
   for(const id of ['search','region','entityType','refresh']){const el=$('#'+id);if(el)el.disabled=true;}
-  for(const id of ['rankingChart','formChart','network']){const el=$('#'+id);if(el)el.innerHTML='<div class="muted" style="padding:14px">Disponibile solo nella vista autorizzata.</div>';}
+  for(const id of ['rankingChart','formChart','network']){
+    const el=$('#'+id);
+    if(el)el.innerHTML='<div class="muted" style="padding:14px">Disponibile solo nella vista autorizzata.</div>';
+  }
+  const table=$('#intelTable');
+  if(table)table.innerHTML='<div class="muted" style="padding:14px">La tabella nominativa non viene caricata sul canale pubblico.</div>';
 }
-$('#refresh').onclick=()=>load();$('#search').oninput=()=>state.data&&renderEntities();$('#entityType').onchange=()=>state.data&&renderEntities();$('#region').onchange=()=>load();document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));state.activeTable=b.dataset.table;renderTable();});window.addEventListener('resize',()=>{state.ranking?.resize?.();state.form?.resize?.();});
+
+function load(){
+  if(!PUBLIC_NAMED_PLAYER_ENABLED)return showPublicGate();
+}
+
 load();
