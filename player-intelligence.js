@@ -1,7 +1,9 @@
 import {validateDashboard,drilldownModel,dashboardPath} from './player-intelligence-contract.mjs';
+const PUBLIC_NAMED_PLAYER_ENABLED=false;
 const $=(q)=>document.querySelector(q),esc=(v)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let state={data:null,drill:null,table:null,ranking:null,form:null,network:null,selectedPlayerId:null,activeTable:'underrated'};
 async function load(playerId=state.selectedPlayerId||''){
+  if(!PUBLIC_NAMED_PLAYER_ENABLED)return showPublicGate();
   $('#status').textContent='Aggiornamento dal grafo SCOUT…';
   try{const r=await fetch(dashboardPath(playerId,$('#region').value),{cache:'no-store'}),raw=await r.json();if(!r.ok)throw new Error(raw?.error||`HTTP_${r.status}`);state.data=validateDashboard(raw);state.drill=drilldownModel(raw);state.selectedPlayerId=raw.selectedPlayerId||playerId;renderAll();}
   catch(error){$('#status').innerHTML=`<span class="warning">Dati non disponibili: ${esc(error.message)}</span>`;}
@@ -18,5 +20,13 @@ function bindEntityButtons(){document.querySelectorAll('[data-player]').forEach(
 function renderEntities(){const q=$('#search').value.trim().toLowerCase(),type=$('#entityType').value,rows=[];if(type==='ALL'||type==='PLAYER')for(const p of state.data.catalog.players||[])if(!q||p.name.toLowerCase().includes(q))rows.push({type:'PLAYER',id:p.id,title:p.name,meta:`${p.classification||'n/d'} · ${p.age??'età n/d'}`});if(type==='ALL'||type==='CLUB')for(const c of state.data.catalog.clubs||[])if(!q||c.name.toLowerCase().includes(q))rows.push({type:'CLUB',id:c.id,title:c.name,meta:`${c.region||''} · ${(c.playerIds||[]).length} giocatori`});if(type==='ALL'||type==='TOURNAMENT')for(const t of state.data.catalog.tournaments||[])if(!q||t.name.toLowerCase().includes(q))rows.push({type:'TOURNAMENT',id:t.id,title:t.name,meta:`${t.city||''} · ${(t.playerIds||[]).length} giocatori`});$('#entities').innerHTML=rows.slice(0,30).map(x=>`<button class="entity" data-${x.type==='PLAYER'?'player':x.type==='CLUB'?'club':'tournament'}="${esc(x.id)}"><b>${esc(x.title)}</b><div class="muted">${esc(x.meta)}</div></button>`).join('')||'<div class="muted">Nessun risultato.</div>';bindEntityButtons();}
 function renderTable(){const spec=state.data.tables?.[state.activeTable];if(state.table){state.table.destroy();state.table=null;}if(!spec||!window.Tabulator)return;state.table=new Tabulator('#intelTable',{data:spec.data||[],columns:spec.columns||[],layout:'fitDataStretch',height:360,placeholder:'Nessun dato',rowClick:(_,row)=>{const d=row.getData();if(d.playerId)return openPlayer(d.playerId);if(d.clubId)return clubDetail(state.drill.club(d.clubId));if(d.tournamentId)return tournamentDetail(state.drill.tournament(d.tournamentId));}});}
 function renderAll(){renderMetrics();renderCharts();renderNetwork();renderMatches();renderEntities();renderTable();playerDetail(state.drill.player(state.selectedPlayerId));}
+function showPublicGate(){
+  $('#status').innerHTML='<span class="warning"><b>Profili nominativi non pubblicati in questa Preview.</b> Usa Junior & Club per club aggregati e benchmark de-identificati. La vista nominativa completa resta Founder/internal.</span>';
+  $('#detailTitle').textContent='Privacy-first public preview';
+  $('#detailBody').innerHTML='<p class="muted">La ricerca nominativa e i dossier individuali sono disabilitati sul canale pubblico durante la validazione LIA/DPIA. I dati interni non vengono inviati al browser.</p>';
+  $('#metrics').innerHTML='';$('#entities').innerHTML='<div class="muted">Nessun catalogo nominativo caricato.</div>';$('#matches').innerHTML='';
+  for(const id of ['search','region','entityType','refresh']){const el=$('#'+id);if(el)el.disabled=true;}
+  for(const id of ['rankingChart','formChart','network']){const el=$('#'+id);if(el)el.innerHTML='<div class="muted" style="padding:14px">Disponibile solo nella vista autorizzata.</div>';}
+}
 $('#refresh').onclick=()=>load();$('#search').oninput=()=>state.data&&renderEntities();$('#entityType').onchange=()=>state.data&&renderEntities();$('#region').onchange=()=>load();document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));state.activeTable=b.dataset.table;renderTable();});window.addEventListener('resize',()=>{state.ranking?.resize?.();state.form?.resize?.();});
 load();
